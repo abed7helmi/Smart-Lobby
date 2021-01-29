@@ -1,5 +1,10 @@
 *.project
-*.target
+backend-server/target
+client/target
 *.class
 *.iml
 .idea
+backend-server/.classpath
+backend-server/.settings
+client/.classpath
+client/.settings
