@@ -1,12 +1,13 @@
 package episen.si.ing1.pds.client;
 
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Client {
 
-	private final static Logger logclient = Logger.getLogger("Client Logger");
-	
+	private final static Logger logger = LoggerFactory.getLogger(Client.class.getName());
+
     public static void main(String[] args) {
-        logclient.info("client working");
+    	logger.info("client working");
     }
 }
