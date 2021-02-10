@@ -37,7 +37,6 @@ public class BackendServer {
             }
 
             if (commandLine.hasOption("numberConnection")) {
-                testmodeV = true;
                 numberConnectionV = Integer.parseInt(commandLine.getOptionValue("numberConnection"));
             }
 
