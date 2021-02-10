@@ -27,7 +27,7 @@ public class BackendServer {
 
         boolean testmodeV = false;
 
-        InputStream inStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("properties");
+        InputStream inStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("application.properties");
         Properties props = new Properties();
         try {
             props.load(inStream);
