@@ -16,7 +16,7 @@ public class BackendServer {
         final Options options = new Options();
 
         final Option testmode = Option.builder().longOpt("testmode").build();
-        final Option numberConnection = Option.builder().longOpt("numberConnection").hasArg().argName("numberConnection").build();
+        final Option numberConnection = Option.builder().longOpt("max_connection").hasArg().argName("max_connection").build();
 
         options.addOption(testmode);
         options.addOption(numberConnection);
@@ -31,17 +31,17 @@ public class BackendServer {
         Properties props = new Properties();
         try {
             props.load(inStream);
-            int numberConnectionV = Integer.parseInt(props.getProperty("server.numberConnectionV"));
+            int maxConnection = Integer.parseInt(props.getProperty("server.maxConnection"));
             if (commandLine.hasOption("testmode")) {
                 testmodeV = true;
             }
 
-            if (commandLine.hasOption("numberConnection")) {
-                numberConnectionV = Integer.parseInt(commandLine.getOptionValue("numberConnection"));
+            if (commandLine.hasOption("max_connection")) {
+                maxConnection = Integer.parseInt(commandLine.getOptionValue("max_connection"));
             }
 
-            logger.info("BackendServer is running with (testmode = {}), numberConnection = {}.",
-                    testmodeV, numberConnectionV);
+            logger.info("BackendServer is running with (testmode = {}), max_connection = {}.",
+                    testmodeV, maxConnection);
 
         } catch (Exception e) {
             logger.info(e.getMessage());
