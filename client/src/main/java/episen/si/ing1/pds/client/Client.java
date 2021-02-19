@@ -4,7 +4,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.commons.cli.*;
 import java.sql.*;
-import javax.swing.*;
 
 
 
@@ -12,12 +11,15 @@ public class Client {
 
 	private final static Logger logger = LoggerFactory.getLogger(Client.class.getName());
 
-    public static void main(String[] args) throws Exception {
-        ConnectionDB connection = new ConnectionDB("org.postgresql.Driver", "jdbc:postgresql://localhost:5432/pds", "postgres", "0000");
-        connection.connect();
-        Frame f1 = new Frame(connection);
+    private static Connection c = null;
 
-        final Options options = new Options();
+
+
+
+
+    public static void main(String[] args) throws Exception {
+
+        /*final Options options = new Options();
         final CommandLineParser clp = new DefaultParser();
         final Option testmode = Option.builder().longOpt("testmode").build();
         options.addOption(testmode);
@@ -27,21 +29,25 @@ public class Client {
                 commandLine.hasOption("testmode")
         )
             testmodeV = true;
-        logger.info("Client is running with testmode = {}",testmodeV);
+        logger.info("Client is running with testmode = {}",testmodeV);*/
+
+    }
+
+    public void test(DataSource d) throws SQLException{
+        this.c =  d.send();
+        this.c.setAutoCommit(true);
+        Statement stmt = c.createStatement();
+
+        int testInsert = stmt.executeUpdate("Insert into testPds values ('lol')");
 
 
 
-        /* test requete */
-        ResultSet rs = connection.execute("select * from entreprise");
-        String result = "";
-        while(rs.next()) {
-            result = "voici le nom de l'entreprise : " + rs.getString("libelle_entreprise");
-            System.out.println("voici le nom de l'entreprise : " + rs.getString("libelle_entreprise"));
+        ResultSet testSelect = stmt.executeQuery("select * from testPds");
+        while(testSelect.next()) {
+            System.out.println(testSelect.getString(2));
         }
 
-        f1.getContentPane().add(new JLabel(result));
-        f1.setVisible(true);
-
+        int testDelete = stmt.executeUpdate("Delete from testPds");
     }
 }
 
