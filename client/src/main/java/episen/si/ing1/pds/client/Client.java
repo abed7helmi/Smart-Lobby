@@ -38,16 +38,16 @@ public class Client {
         this.c.setAutoCommit(true);
         Statement stmt = c.createStatement();
 
-        int testInsert = stmt.executeUpdate("Insert into testPds values ('lol')");
+        //int testInsert = stmt.executeUpdate("Insert into test ()values ('lol')");
 
 
 
-        ResultSet testSelect = stmt.executeQuery("select * from testPds");
+        ResultSet testSelect = stmt.executeQuery("select * from test");
         while(testSelect.next()) {
             System.out.println(testSelect.getString(2));
         }
 
-        int testDelete = stmt.executeUpdate("Delete from testPds");
+        //int testDelete = stmt.executeUpdate("Delete from testPds");
     }
 }
 

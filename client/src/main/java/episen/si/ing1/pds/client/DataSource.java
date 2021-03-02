@@ -3,11 +3,12 @@ package episen.si.ing1.pds.client;
 import java.sql.Connection;
 
 public class DataSource {
-
+    private int NBCONNECTION;
     private static JDBCConnectionPool connectionPool = new JDBCConnectionPool();
 
-    public DataSource() {
-        connectionPool.initPool();
+    public DataSource(int nb) {
+        NBCONNECTION = nb;
+        connectionPool.initPool(NBCONNECTION);
     }
     public static Connection send(){
         synchronized (connectionPool) {

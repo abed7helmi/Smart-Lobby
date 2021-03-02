@@ -1,6 +1,11 @@
 package episen.si.ing1.pds.client;
 
+import org.apache.commons.cli.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -9,13 +14,14 @@ import java.util.Properties;
 
 public class JDBCConnectionPool {
 
-    static String DRIVER_NAME;
-    static String DATABASE_URL;
-    static String USERNAME;
-    static String PASSWORD;
+
+    final String DRIVER_NAME;
+    final String DATABASE_URL;
+    final String USERNAME;
+    final String PASSWORD;
 
     protected ArrayList<Connection> Pool = new ArrayList<Connection>();
-    static int nbConnection=5;
+
 
     public JDBCConnectionPool(){
         Properties props = new Properties();
@@ -24,19 +30,23 @@ public class JDBCConnectionPool {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+
         DRIVER_NAME = props.getProperty("DRIVER_NAME");
         DATABASE_URL = props.getProperty("DATABASE_URL");
         USERNAME = props.getProperty("USERNAME");
         PASSWORD = props.getProperty("PASSWORD");
     }
 
-    public void initPool(){
+    public void initPool(int NBCONNECTION){
+        System.out.println(NBCONNECTION+"lala");
         try {
             Class.forName(DRIVER_NAME);
         } catch (ClassNotFoundException e1) {
             e1.printStackTrace();
         }
-        for(int i=0;i<nbConnection;i++) {
+
+        for(int i=0;i<NBCONNECTION;i++) {
             try {
                 Connection c = DriverManager.getConnection(DATABASE_URL, USERNAME, PASSWORD);
                 c.setAutoCommit(false);
