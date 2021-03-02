@@ -49,6 +49,33 @@ public class Client {
 
         //int testDelete = stmt.executeUpdate("Delete from testPds");
     }
+
+
+
+    public void Ajout (String ch,DataSource d) throws SQLException {
+        this.c = d.send();
+        this.c.setAutoCommit(true);
+       // Statement stmt = c.createStatement();
+
+        //int testInsert = stmt.executeUpdate("Insert into test ()values ('lol')");
+
+
+        //ResultSet testSelect = stmt.executeQuery("Insert into test() values ('waaa3')");
+        /*while (testSelect.next()) {
+            System.out.println(testSelect.getString(2));
+        }*/
+
+        //int testDel
+
+        String requete = "INSERT INTO test VALUES (4897,'client 3')";
+        try {
+            Statement stmt = c.createStatement();
+            int nbMaj = stmt.executeUpdate(requete);
+            System.out.print("nb mise a jour = "+nbMaj);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }
 
 

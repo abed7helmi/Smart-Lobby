@@ -1,5 +1,8 @@
 package episen.si.ing1.pds.client;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -9,16 +12,18 @@ import java.awt.event.ActionListener;
 
 public class InterfaceSmart extends JFrame implements ActionListener {
 
+    private final static Logger logger = LoggerFactory.getLogger(AppMain.class.getName());
+
     Client c;
     DataSource data;
 
     private JButton bouton = new JButton("Valider");
-    private JLabel intituléNom = new JLabel("Nom :");
-    private JLabel intituléPrénom = new JLabel("Prénom :");
-    private Saisie prénom = new Saisie("Votre prénom");
-    private Saisie nom = new Saisie("Votre nom");
+    private JLabel insertlabel = new JLabel("Votre Saisie :");
+   // private JLabel intituléPrénom = new JLabel("Prénom :");
+   // private Saisie prénom = new Saisie("Votre prénom");
+    private Saisie insert= new Saisie("Tapez votre phrase");
 
-    private Saisie résultat = new Saisie("Effectuer votre saisie");
+    // private Saisie résultat = new Saisie("Effectuer votre saisie");
     public InterfaceSmart(Client a,DataSource d) throws Exception{
         this.c=a;
         this.data=d;
@@ -30,12 +35,12 @@ public class InterfaceSmart extends JFrame implements ActionListener {
         fenetre.setSize(screenSize.width, screenSize.height); fenetre.setLocationRelativeTo(null);
         bouton = new JButton("ENVOYER"); bouton.addActionListener(this);
         fenetre.getContentPane().add(bouton);
-        fenetre.getContentPane().add(intituléPrénom);
-        fenetre.getContentPane().add(prénom);
-        fenetre.getContentPane().add(intituléNom);
-        fenetre.getContentPane().add(nom);
+        //fenetre.getContentPane().add(intituléPrénom);
+        //fenetre.getContentPane().add(prénom);
+        fenetre.getContentPane().add(insertlabel);
+        fenetre.getContentPane().add(insert);
 
-        fenetre.getContentPane().add(résultat);
+      //  fenetre.getContentPane().add(résultat);
 
         fenetre.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         fenetre.setVisible(true);
@@ -53,7 +58,20 @@ public class InterfaceSmart extends JFrame implements ActionListener {
     }
 
     public void actionPerformed(ActionEvent event) {
-        résultat.setText(prénom.getText()+' '+nom.getText());
+       // résultat.setText(prénom.getText()+' '+nom.getText());
+        JOptionPane d = new JOptionPane();
+        d.showMessageDialog( this, "Votre phrase est bien enregistré",
+                "SmartLobbyAjout", JOptionPane.INFORMATION_MESSAGE);
+        logger.info("waaw");
+        String ch=insert.getText();
+        try{c.Ajout(ch,data);
+        }catch(Exception e){
+            logger.info("erreur");
+        }
+
+
+
+
     }
 }
 
