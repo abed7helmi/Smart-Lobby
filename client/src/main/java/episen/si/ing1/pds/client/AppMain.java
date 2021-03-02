@@ -47,11 +47,11 @@ public class AppMain {
         Client e = new Client();
         Client f = new Client();
 
-        a.test(d);
-        b.test(d);
-        z.test(d);
-        l.test(d);
-        e.test(d);
+
+        InterfaceSmart Interface = new InterfaceSmart(a,d);
+
+
+
 
     }
 }
