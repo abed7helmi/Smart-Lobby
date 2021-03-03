@@ -33,7 +33,7 @@ public class DataSource {
 		}
 	}
 
-	public void close() {
+	public void closeConnection() {
 		connectionPool.closeAllConnection();
 	}
 
