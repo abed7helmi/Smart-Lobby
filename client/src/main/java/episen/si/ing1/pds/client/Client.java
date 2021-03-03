@@ -51,7 +51,7 @@ public class Client {
         this.c.setAutoCommit(true);
         Statement stmt = c.createStatement();
 
-        ResultSet testSelect = stmt.executeQuery("DELETE from test2");
+        stmt.executeQuery("DELETE from test2");
 
 
 
