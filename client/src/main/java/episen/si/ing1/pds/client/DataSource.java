@@ -4,26 +4,40 @@ import java.sql.Connection;
 
 public class DataSource {
 
-    private static JDBCConnectionPool connectionPool = new JDBCConnectionPool();
+	private static JDBCConnectionPool connectionPool;
 
-    public DataSource() {
-        connectionPool.initPool();
-    }
-    public static Connection send(){
-        synchronized (connectionPool) {
-            return connectionPool.sendConnection();
-        }
-    }
+	public DataSource(int nbConnection) {
+		connectionPool = JDBCConnectionPool.getInstance(nbConnection);
+	}
+	
+	public Connection send() {
+		synchronized (connectionPool) {
+			while (true) {
+				if (connectionPool.Pool.size() == 0) {
+					try {
+						connectionPool.wait();
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				} else {
+					return connectionPool.sendConnection();
+				}
+			}
+		}
+	}
 
-    public static void receive(Connection c) {
-        synchronized (connectionPool){
-            connectionPool.receiveConnection(c);
-        }
-    }
+	public void receive(Connection c) {
+		synchronized (connectionPool) {
+			connectionPool.receiveConnection(c);
+			connectionPool.notifyAll();
+		}
+	}
 
-    public static void close(){
-        synchronized (connectionPool){
-            connectionPool.closeAllConnection();
-        }
-    }
+	public void close() {
+		connectionPool.closeAllConnection();
+	}
+
+	public JDBCConnectionPool test() {
+		return connectionPool;
+	}
 }

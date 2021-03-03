@@ -1,28 +1,25 @@
 package episen.si.ing1.pds.client;
 
-import java.sql.*;
+import org.apache.commons.cli.*;
 
 public class AppMain {
 
-    private static DataSource d = new DataSource();
-
-
-
+    static DataSource d;
+    static int NBCONNECTION=-1;
 
     public static void main(String[] args) throws Exception {
+        final Options options = new Options();
 
+        final Option numberConnection = Option.builder().longOpt("max_connection").hasArg().argName("max_connection").build();
+        options.addOption(numberConnection);
+
+        final CommandLineParser clp = new DefaultParser();
+        final CommandLine commandLine = clp.parse(options, args);
+
+        if (commandLine.hasOption("max_connection")) NBCONNECTION = Integer.parseInt(commandLine.getOptionValue("max_connection"));
+        
+        d = new DataSource(NBCONNECTION);
         Client a = new Client();
-        Client b = new Client();
-        Client z = new Client();
-        Client l = new Client();
-        Client e = new Client();
-        Client f = new Client();
-
         a.test(d);
-        b.test(d);
-        z.test(d);
-        l.test(d);
-        e.test(d);
-
     }
 }
