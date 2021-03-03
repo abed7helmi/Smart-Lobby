@@ -4,78 +4,79 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.commons.cli.*;
 import java.sql.*;
-
-
+import java.util.Scanner;
 
 public class Client {
 
 	private final static Logger logger = LoggerFactory.getLogger(Client.class.getName());
 
-    private static Connection c = null;
+	public static void main(String[] args) throws Exception {
 
+		final Options options = new Options();
+		final CommandLineParser clp = new DefaultParser();
+		final Option testmode = Option.builder().longOpt("testmode").build();
+		options.addOption(testmode);
+		final CommandLine commandLine = clp.parse(options, args);
+		boolean testmodeV = false;
+		if (commandLine.hasOption("testmode"))
+			testmodeV = true;
+		logger.info("Client is running with testmode = {}", testmodeV);
 
+	}
 
+	public void test(DataSource d) throws SQLException {
+		Connection c = d.send();
+		c.setAutoCommit(true);
+		Statement s = c.createStatement();
+		Scanner sc = new Scanner(System.in);
+		int input=0;
+		while (input != 5) {
+			logger.info("\n1.select\n2.insert\n3.update\n4.delete\n5.exit");
+			input = Integer.parseInt(sc.nextLine());
+			switch (input) {
+			case 1:
+				logger.info(select(s));
+				break;
+			case 2:
+				logger.info("Type the name to insert:");
+				String name = sc.nextLine();
+				insert(name, s);
+				break;
+			case 3:
+				logger.info("Type the name to update:");
+				String oldName = sc.nextLine();
+				logger.info("Type the new name:");
+				String newName = sc.nextLine();
+				update(oldName,newName, s);
+				break;
+			case 4:
+				logger.info("Type the name to delete:");
+				String nameDeleted = sc.nextLine();
+				delete(nameDeleted, s);
+				break;
+			}
+		}
+		d.receive(c);
+	}
 
+	public int insert(String name, Statement s) throws SQLException {
+		return s.executeUpdate("insert into test(name) values('" + name + "')");
+	}
 
-    public static void main(String[] args) throws Exception {
+	public int update(String oldName, String newName, Statement s) throws SQLException {
+		return s.executeUpdate("update test set name='" + newName + "' where name='" + oldName + "'");
+	}
 
-        /*final Options options = new Options();
-        final CommandLineParser clp = new DefaultParser();
-        final Option testmode = Option.builder().longOpt("testmode").build();
-        options.addOption(testmode);
-        final CommandLine commandLine = clp.parse(options, args) ;
-        boolean testmodeV = false;
-        if (
-                commandLine.hasOption("testmode")
-        )
-            testmodeV = true;
-        logger.info("Client is running with testmode = {}",testmodeV);*/
+	public int delete(String name, Statement s) throws SQLException {
+		return s.executeUpdate("delete from test where name='" + name + "'");
+	}
 
-    }
-
-    public void GET (DataSource d) throws SQLException{
-        this.c =  d.send();
-        this.c.setAutoCommit(true);
-        Statement stmt = c.createStatement();
-
-        ResultSet testSelect = stmt.executeQuery("select * from test2");
-        while(testSelect.next()) {
-            System.out.println(testSelect.getString(2));
-        }
-
-
-    }
-
-    public void Delete (DataSource d) throws SQLException{
-        this.c =  d.send();
-        this.c.setAutoCommit(true);
-        Statement stmt = c.createStatement();
-
-        stmt.executeQuery("DELETE from test2");
-
-
-
-    }
-
-
-    public void Ajout (String ch,DataSource d) throws SQLException {
-        this.c = d.send();
-        this.c.setAutoCommit(true);
-        //logger.info(ch);
-
-        String requete = "INSERT INTO test2(nom) VALUES (?)";
-        try {
-
-
-            PreparedStatement PreparedStmt = c.prepareStatement(requete);
-
-            PreparedStmt.setString(1, ch);
-            PreparedStmt.execute();
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
+	public String select(Statement s) throws SQLException {
+		StringBuilder sb = new StringBuilder();
+		ResultSet Select = s.executeQuery("select * from test");
+		while (Select.next()) {
+			sb.append("id=" + Select.getInt(1) + "|name=" + Select.getString(2) + "\n");
+		}
+		return sb.toString();
+	}
 }
-
-
