@@ -33,23 +33,29 @@ public class Client {
 
     }
 
-    public void test(DataSource d) throws SQLException{
+    public void GET (DataSource d) throws SQLException{
         this.c =  d.send();
         this.c.setAutoCommit(true);
         Statement stmt = c.createStatement();
-
-        //int testInsert = stmt.executeUpdate("Insert into test ()values ('lol')");
-
-
 
         ResultSet testSelect = stmt.executeQuery("select * from test2");
         while(testSelect.next()) {
             System.out.println(testSelect.getString(2));
         }
 
-        //int testDelete = stmt.executeUpdate("Delete from testPds");
+
     }
 
+    public void Delete (DataSource d) throws SQLException{
+        this.c =  d.send();
+        this.c.setAutoCommit(true);
+        Statement stmt = c.createStatement();
+
+        ResultSet testSelect = stmt.executeQuery("DELETE from test2");
+
+
+
+    }
 
 
     public void Ajout (String ch,DataSource d) throws SQLException {
