@@ -42,7 +42,7 @@ public class Client {
 
 
 
-        ResultSet testSelect = stmt.executeQuery("select * from test");
+        ResultSet testSelect = stmt.executeQuery("select * from test2");
         while(testSelect.next()) {
             System.out.println(testSelect.getString(2));
         }
@@ -55,23 +55,17 @@ public class Client {
     public void Ajout (String ch,DataSource d) throws SQLException {
         this.c = d.send();
         this.c.setAutoCommit(true);
-       // Statement stmt = c.createStatement();
+        //logger.info(ch);
 
-        //int testInsert = stmt.executeUpdate("Insert into test ()values ('lol')");
-
-
-        //ResultSet testSelect = stmt.executeQuery("Insert into test() values ('waaa3')");
-        /*while (testSelect.next()) {
-            System.out.println(testSelect.getString(2));
-        }*/
-
-        //int testDel
-
-        String requete = "INSERT INTO test VALUES (4897,'client 3')";
+        String requete = "INSERT INTO test2(nom) VALUES (?)";
         try {
-            Statement stmt = c.createStatement();
-            int nbMaj = stmt.executeUpdate(requete);
-            System.out.print("nb mise a jour = "+nbMaj);
+
+
+            PreparedStatement PreparedStmt = c.prepareStatement(requete);
+
+            PreparedStmt.setString(1, ch);
+            PreparedStmt.execute();
+
         } catch (SQLException e) {
             e.printStackTrace();
         }

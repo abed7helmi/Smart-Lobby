@@ -60,14 +60,19 @@ public class InterfaceSmart extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent event) {
        // résultat.setText(prénom.getText()+' '+nom.getText());
         JOptionPane d = new JOptionPane();
-        d.showMessageDialog( this, "Votre phrase est bien enregistré",
+        /*d.showMessageDialog( this, "Votre phrase est bien enregistré",
                 "SmartLobbyAjout", JOptionPane.INFORMATION_MESSAGE);
-        logger.info("waaw");
+        logger.info("waaw");*/
         String ch=insert.getText();
         try{c.Ajout(ch,data);
+
         }catch(Exception e){
             logger.info("erreur");
+            d.showMessageDialog( this, "Erreur Enregistrement",
+                    "SmartLobbyAjout", JOptionPane.ERROR_MESSAGE);
         }
+        d.showMessageDialog( this, "Votre phrase est bien enregistré",
+                "SmartLobbyAjout", JOptionPane.INFORMATION_MESSAGE);
 
 
 
