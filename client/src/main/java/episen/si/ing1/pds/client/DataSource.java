@@ -3,28 +3,41 @@ package episen.si.ing1.pds.client;
 import java.sql.Connection;
 
 public class DataSource {
-    private int NBCONNECTION;
-    private static JDBCConnectionPool connectionPool = new JDBCConnectionPool();
 
-    public DataSource(int nb) {
-        NBCONNECTION = nb;
-        connectionPool.initPool(NBCONNECTION);
-    }
-    public static Connection send(){
-        synchronized (connectionPool) {
-            return connectionPool.sendConnection();
-        }
-    }
+	private static JDBCConnectionPool connectionPool;
 
-    public static void receive(Connection c) {
-        synchronized (connectionPool){
-            connectionPool.receiveConnection(c);
-        }
-    }
+	public DataSource(int nbConnection) {
+		connectionPool = JDBCConnectionPool.getInstance(nbConnection);
+	}
+	
+	public Connection send() {
+		synchronized (connectionPool) {
+			while (true) {
+				if (connectionPool.Pool.size() == 0) {
+					try {
+						connectionPool.wait();
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				} else {
+					return connectionPool.sendConnection();
+				}
+			}
+		}
+	}
 
-    public static void close(){
-        synchronized (connectionPool){
-            connectionPool.closeAllConnection();
-        }
-    }
+	public void receive(Connection c) {
+		synchronized (connectionPool) {
+			connectionPool.receiveConnection(c);
+			connectionPool.notifyAll();
+		}
+	}
+
+	public void close() {
+		connectionPool.closeAllConnection();
+	}
+
+	public JDBCConnectionPool test() {
+		return connectionPool;
+	}
 }
