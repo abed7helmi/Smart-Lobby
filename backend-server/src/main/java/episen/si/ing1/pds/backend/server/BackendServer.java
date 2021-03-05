@@ -10,59 +10,105 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Properties;
 import java.util.Scanner;
 
 public class BackendServer {
 
 	static DataSource d;
-    static int NBCONNECTION=-1;
-    
-    private final static Logger logger = LoggerFactory.getLogger(BackendServer.class.getName());
+	static int NBCONNECTION;
 
-    public static void main(String[] args) throws Exception {
-        final Options options = new Options();
+	private final static Logger logger = LoggerFactory.getLogger(BackendServer.class.getName());
 
-        final Option testmode = Option.builder().longOpt("testmode").build();
-        final Option numberConnection = Option.builder().longOpt("max_connection").hasArg().argName("max_connection").build();
+	public static void main(String[] args) {
+		try {
+			final Options options = new Options();
 
-        options.addOption(testmode);
-        options.addOption(numberConnection);
+			final Option testmode = Option.builder().longOpt("testmode").build();
+			final Option numberConnection = Option.builder().longOpt("max_connection").hasArg()
+					.argName("max_connection").build();
 
+			options.addOption(testmode);
+			options.addOption(numberConnection);
 
-        final CommandLineParser clp = new DefaultParser();
-        final CommandLine commandLine = clp.parse(options, args);
+			final CommandLineParser clp = new DefaultParser();
+			final CommandLine commandLine = clp.parse(options, args);
 
-        boolean testmodeV = false;
+			boolean testmodeV = false;
 
-        InputStream inStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("application.properties");
-        Properties props = new Properties();
-        try {
-            props.load(inStream);
-            if (commandLine.hasOption("testmode")) {
-                testmodeV = true;
+			InputStream inStream = Thread.currentThread().getContextClassLoader()
+					.getResourceAsStream("application.properties");
+			Properties props = new Properties();
+
+			props.load(inStream);
+			if (commandLine.hasOption("testmode")) {
+				testmodeV = true;
+			}
+
+			if (commandLine.hasOption("max_connection"))
+				NBCONNECTION = Integer.parseInt(commandLine.getOptionValue("max_connection"));
+			else
+				NBCONNECTION = Integer.valueOf(props.getProperty("NBCONNECTION"));
+
+			logger.info("BackendServer is running with (testmode = {}), max_connection = {}.", testmodeV,
+					NBCONNECTION);
+
+			d = new DataSource(NBCONNECTION);
+			BackendServer bs = new BackendServer();
+			
+			if(!testmodeV) bs.crud(d);
+			else bs.testConnection(d);
+			
+		} catch (Exception e) {
+			logger.info(e.getMessage());
+		}
+	}
+
+	//testing when there is more connection requested than available in the pool
+	public void testConnection(DataSource d){
+		ArrayList<Connection> activeConnections = new ArrayList<Connection>();
+		Thread t1 = new Thread() {
+			@Override
+            public void run() {
+				while(true) {
+					logger.info("Number of active connections:"+activeConnections.size());
+					activeConnections.add(d.send());
+					logger.info("One user is connecting");
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {}
+				}
             }
+		};
+		Thread t2 = new Thread() {
+			@Override
+            public void run() {
+				while(true) {
+					try {
+						Thread.sleep(10000);
+					} catch (InterruptedException e) {}
+					if(activeConnections.size()>0) {
+					logger.info("One user is done using his connection, putting it back into the pool.");
+					d.receive(activeConnections.get(0));
+					activeConnections.remove(0);
+					logger.info("Number of active connections:"+activeConnections.size());
+					
+					}
+				}
+            }
+		};
+		t1.start();
+		t2.start();
+	}
 
-            if (commandLine.hasOption("max_connection")) NBCONNECTION = Integer.parseInt(commandLine.getOptionValue("max_connection"));
-
-            logger.info("BackendServer is running with (testmode = {}), max_connection = {}.",
-                    testmodeV, NBCONNECTION);
-
-            d = new DataSource(NBCONNECTION);
-            BackendServer bs = new BackendServer();
-            bs.test(d);
-            
-        } catch (Exception e) {
-            logger.info(e.getMessage());
-        }
-    }
-    
-    public void test(DataSource d) throws SQLException {
+	//testing the crud with basic request on the database
+	public void crud(DataSource d) throws SQLException {
 		Connection c = d.send();
 		c.setAutoCommit(true);
 		Statement s = c.createStatement();
 		Scanner sc = new Scanner(System.in);
-		int input=0;
+		int input = 0;
 		while (input != 5) {
 			logger.info("\n1.select\n2.insert\n3.update\n4.delete\n5.exit");
 			input = Integer.parseInt(sc.nextLine());
@@ -80,7 +126,7 @@ public class BackendServer {
 				String oldName = sc.nextLine();
 				logger.info("Type the new name:");
 				String newName = sc.nextLine();
-				update(oldName,newName, s);
+				update(oldName, newName, s);
 				break;
 			case 4:
 				logger.info("Type the name to delete:");
