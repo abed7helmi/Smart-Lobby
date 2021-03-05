@@ -23,8 +23,7 @@ public class JDBCConnectionPool {
 	}
 
 	public static JDBCConnectionPool getInstance(int nbConnection) {
-		if(nbConnection==-1) connectionPool.initPool(Integer.valueOf(props.getProperty("NBCONNECTION")));
-		else connectionPool.initPool(nbConnection);
+		connectionPool.initPool(nbConnection);
 		return connectionPool;
 	}
 
@@ -70,5 +69,12 @@ public class JDBCConnectionPool {
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
+	}
+	
+	//Return an additionnal connection in case a user is waiting too long to get his connection
+	public Connection additionnalConnection() throws SQLException {
+		Connection c = DriverManager.getConnection(props.getProperty("DATABASE_URL"), props.getProperty("USERNAME"), props.getProperty("PASSWORD"));
+		c.setAutoCommit(false);
+		return c;
 	}
 }
