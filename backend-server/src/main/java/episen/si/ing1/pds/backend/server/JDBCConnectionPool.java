@@ -11,7 +11,9 @@ public class JDBCConnectionPool {
 
 	static Properties props = new Properties();
 
+	//the pool containing all the connection to the database
 	protected ArrayList<Connection> Pool = new ArrayList<Connection>();
+	//singleton instance of the class
 	private static JDBCConnectionPool connectionPool = new JDBCConnectionPool();
 
 	private JDBCConnectionPool() {
@@ -26,6 +28,7 @@ public class JDBCConnectionPool {
 		return connectionPool;
 	}
 
+	//Initializing the connections and adding them to the pool
 	public void initPool(int nbConnection) {
 		try {
 			Class.forName(props.getProperty("DRIVER_NAME"));
