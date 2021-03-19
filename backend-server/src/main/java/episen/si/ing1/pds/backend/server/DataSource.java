@@ -20,8 +20,7 @@ public class DataSource {
 						System.out.println("No more connection available, waiting.");
 						connectionPool.wait(10000);
 						return connectionPool.additionnalConnection();
-					} catch (InterruptedException e) {e.printStackTrace();
-					} catch (SQLException e) {e.printStackTrace();}
+					} catch (InterruptedException | SQLException e) {e.printStackTrace();}
 				} else {
 					return connectionPool.sendConnection();
 				}

@@ -5,7 +5,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.commons.cli.*;
 
-import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -26,8 +25,7 @@ public class BackendServer {
 			final Options options = new Options();
 
 			final Option testmode = Option.builder().longOpt("testmode").build();
-			final Option numberConnection = Option.builder().longOpt("max_connection").hasArg()
-					.argName("max_connection").build();
+			final Option numberConnection = Option.builder().longOpt("max_connection").hasArg().argName("max_connection").build();
 
 			options.addOption(testmode);
 			options.addOption(numberConnection);
@@ -35,33 +33,26 @@ public class BackendServer {
 			final CommandLineParser clp = new DefaultParser();
 			final CommandLine commandLine = clp.parse(options, args);
 
-			boolean testmodeV = false;
-
-			InputStream inStream = Thread.currentThread().getContextClassLoader()
-					.getResourceAsStream("application.properties");
 			Properties props = new Properties();
-
-			props.load(inStream);
-			if (commandLine.hasOption("testmode")) {
-				testmodeV = true;
-			}
+			props.load(Thread.currentThread().getContextClassLoader().getResourceAsStream("application.properties"));
 
 			if (commandLine.hasOption("max_connection"))
 				NBCONNECTION = Integer.parseInt(commandLine.getOptionValue("max_connection"));
 			else
 				NBCONNECTION = Integer.valueOf(props.getProperty("NBCONNECTION"));
 
-			logger.info("BackendServer is running with (testmode = {}), max_connection = {}.", testmodeV,
-					NBCONNECTION);
+			logger.info("BackendServer is running with (testmode = {}), max_connection = {}.", commandLine.hasOption("testmode"),NBCONNECTION);
 
 			d = new DataSource(NBCONNECTION);
-			BackendServer bs = new BackendServer();
+			//BackendServer bs = new BackendServer();
+			//if(commandLine.hasOption("testmode")) bs.testConnection(d);
+			//else bs.crud(d);
 			
-			if(!testmodeV) bs.crud(d);
-			else bs.testConnection(d);
+			ServerCore sc = new ServerCore(new ServerConfig());
+			sc.serve(d);
 			
 		} catch (Exception e) {
-			logger.info(e.getMessage());
+			logger.info("toto");
 		}
 	}
 
@@ -135,6 +126,7 @@ public class BackendServer {
 				break;
 			}
 		}
+		sc.close();
 		d.receive(c);
 	}
 
