@@ -1,6 +1,7 @@
 package episen.si.ing1.pds.backend.server;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 
 public class DataSource {
 
@@ -17,10 +18,9 @@ public class DataSource {
 				if (connectionPool.Pool.size() == 0) {
 					try {
 						System.out.println("No more connection available, waiting.");
-						connectionPool.wait();
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
+						connectionPool.wait(10000);
+						return connectionPool.additionnalConnection();
+					} catch (InterruptedException | SQLException e) {e.printStackTrace();}
 				} else {
 					return connectionPool.sendConnection();
 				}
