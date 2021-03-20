@@ -52,7 +52,7 @@ public class BackendServer {
 			sc.serve(d);
 			
 		} catch (Exception e) {
-			logger.info("toto");
+			e.printStackTrace();
 		}
 	}
 
