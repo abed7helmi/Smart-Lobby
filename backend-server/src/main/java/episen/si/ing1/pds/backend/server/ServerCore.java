@@ -1,6 +1,7 @@
 package episen.si.ing1.pds.backend.server;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
@@ -22,16 +23,24 @@ public class ServerCore {
 
 	public void serve(DataSource d) throws IOException, SQLException {
 		while (true) {
-			Connection c = d.send();
 			try {
 				final Socket socket = serverSocket.accept();
 				logger.debug("Request received");
-				final ClientRequestManager clientRequestManager = new ClientRequestManager(socket, c);
-				clientRequestManager.getSelf().join();;
-			} catch (SocketTimeoutException | InterruptedException e) {
+				try {
+					Connection c = d.send();
+					final ClientRequestManager clientRequestManager = new ClientRequestManager(socket, c);
+					clientRequestManager.getSelf().join();
+					d.receive(c);
+				}catch (InterruptedException e) {
+					e.printStackTrace();
+				}catch(Exception e) {
+					PrintWriter output = new PrintWriter(socket.getOutputStream(),true);
+					output.println(e.getMessage());
+				}
+			} catch (SocketTimeoutException e) {
 				logger.debug("Request timeout");
-			} finally {
-				d.receive(c);
+				Thread.currentThread().interrupt();
+				break;
 			}
 		}
 	}
