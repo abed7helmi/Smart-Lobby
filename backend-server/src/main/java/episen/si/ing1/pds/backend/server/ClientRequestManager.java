@@ -8,42 +8,70 @@ import java.net.Socket;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ClientRequestManager implements Runnable{
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+public class ClientRequestManager {
 
 	private final static Logger logger = LoggerFactory.getLogger(ClientRequestManager.class);
 	private final PrintWriter output;
 	private final BufferedReader input;
-	private final static String name="client-thread-manager";
-	private Thread self;
 	private Connection c;
-	
-	public ClientRequestManager(Socket socket, Connection connection) throws IOException {
+	private String name = "client-thread";
+	private Thread self;
+
+	public ClientRequestManager(Socket socket, Connection connection) throws SQLException, IOException {
+		c = connection;
+		c.setAutoCommit(true);
 		output = new PrintWriter(socket.getOutputStream(),true);
 		input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-		self = new Thread(name);
-		self.run();
-		c = connection;
+		self = new Thread(name) {
+			@Override
+			public void run() {
+				try {
+					String clientInput = input.readLine();
+					String requestType = clientInput.split("=")[0];
+					String values = clientInput.split("=")[1];
+					ObjectMapper mapper = new ObjectMapper(new JsonFactory());
+					Map<String, Map<String,String>> map = mapper.readValue(values, new TypeReference<Map<String,Map<String,String>>>(){});
+					switch(requestType) {
+						case "select":
+							StringBuilder sb = new StringBuilder();
+							ResultSet result = c.createStatement().executeQuery("select * from test");
+							while (result.next()) {
+								sb.append("id=" + result.getInt(1) + ",name=" + result.getString(2) + "|");
+							}
+							output.println(sb.toString());
+	                    break;
+						case "insert":
+							StringBuilder request = new StringBuilder();
+							request.append("insert into test values"); 
+							for(Map<String,String> m: map.values()) request.append("('"+m.get("id")+"','"+m.get("name")+"'),");
+							request.deleteCharAt(request.length()-1);
+							request.append(";");
+							output.println("Successfully inserted "+c.createStatement().executeUpdate(request.toString())+" rows.");
+	                    break;
+						case "delete":
+							output.println("Successfully deleted "+c.createStatement().executeUpdate("delete from test")+" rows.");
+	                    break;
+					}
+				} catch (IOException e) {
+					e.printStackTrace();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		};
+		self.start();
 	}
 	
-	@Override
-	public void run() {
-		try {
-			logger.info(input.readLine());
-			ResultSet rs = c.createStatement().executeQuery("select * from test");
-			StringBuilder sb = new StringBuilder();
-			while (rs.next()) {
-				sb.append("id=" + rs.getInt(1) + "|name=" + rs.getString(2) + "\n");
-			}
-			output.print(sb.toString());
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+	public Thread getSelf() {
+		return self;
 	}
-
 }
