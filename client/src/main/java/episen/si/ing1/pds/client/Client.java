@@ -28,10 +28,14 @@ public class Client {
 
 	private static final String episenClientJson = "CLIENT_JSON";
 	private static String episenClientFileLocation;
+
+	private static final String episenClientJsonUpdate = "CLIENT_UPDATE";
+	private static String episenClientFileUpdate;
+
 	private static final String configClient = "CONFIG_CLIENT";
-    private static String episenClientConfig;
-    private static ClientConfig config;
-	
+	private static String episenClientConfig;
+	private static ClientConfig config;
+
 	public static void main(String[] args) {
 		try {
 			final Options options = new Options();
@@ -54,13 +58,21 @@ public class Client {
 			BufferedReader input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 			
 			String requestType = commandLine.getOptionValue("requesttype");
-			
-			
-			episenClientFileLocation = System.getenv(episenClientJson);
-			String data = Files.readString(Path.of(episenClientFileLocation));
-			output.println(requestType+"="+data);
+
+			String data = " ";
+
+			if(requestType.equals("insert")){
+				episenClientFileLocation = System.getenv(episenClientJson);
+				data = Files.readString(Path.of(episenClientFileLocation));
+				output.println(requestType+"="+data);
+			} else if(requestType.equals("update")) {
+				episenClientFileUpdate = System.getenv(episenClientJsonUpdate);
+				data = Files.readString(Path.of(episenClientFileUpdate));
+				output.println(requestType+"="+data);
+			} else
+				output.println(requestType+"="+data);
+
 			logger.info(input.readLine());
-			
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (ParseException e) {
