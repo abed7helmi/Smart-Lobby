@@ -57,6 +57,7 @@ public class Client {
 			
 			
 			episenClientFileLocation = System.getenv(episenClientJson);
+			
 			String data = Files.readString(Path.of(episenClientFileLocation));
 			output.println(requestType+"="+data);
 			logger.info(input.readLine());

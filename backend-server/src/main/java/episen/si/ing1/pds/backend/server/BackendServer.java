@@ -36,11 +36,8 @@ public class BackendServer {
 			Properties props = new Properties();
 			props.load(Thread.currentThread().getContextClassLoader().getResourceAsStream("application.properties"));
 
-			if (commandLine.hasOption("max_connection"))
-				NBCONNECTION = Integer.parseInt(commandLine.getOptionValue("max_connection"));
-			else
-				NBCONNECTION = Integer.valueOf(props.getProperty("NBCONNECTION"));
-
+			NBCONNECTION = commandLine.hasOption("max_connection") ? Integer.parseInt(commandLine.getOptionValue("max_connection")) : Integer.valueOf(props.getProperty("NBCONNECTION"));
+			
 			logger.info("BackendServer is running with (testmode = {}), max_connection = {}.", commandLine.hasOption("testmode"),NBCONNECTION);
 
 			d = new DataSource(NBCONNECTION);
