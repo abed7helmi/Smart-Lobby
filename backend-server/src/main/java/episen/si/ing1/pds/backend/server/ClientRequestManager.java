@@ -29,47 +29,53 @@ public class ClientRequestManager {
 	public ClientRequestManager(Socket socket, Connection connection) throws SQLException, IOException {
 		c = connection;
 		c.setAutoCommit(true);
-		output = new PrintWriter(socket.getOutputStream(),true);
+		output = new PrintWriter(socket.getOutputStream(), true);
 		input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 		self = new Thread(name) {
 			@Override
 			public void run() {
 				try {
 					String clientInput = input.readLine();
-
 					String requestType = clientInput.split("=")[0];
 					String values = clientInput.split("=")[1];
 					ObjectMapper mapper = new ObjectMapper(new JsonFactory());
+					Map<String, Map<String, String>> map = mapper.readValue(values,
+							new TypeReference<Map<String, Map<String, String>>>() {
+							});
+					switch (requestType) {
+					case "insert":
+						StringBuilder request = new StringBuilder();
+						request.append("insert into test(name,age) values");
+						for (Map<String, String> m : map.values())
+							request.append("('" + m.get("name") + "','" + m.get("age") + "'),");
+						request.deleteCharAt(request.length() - 1);
+						output.println("Successfully inserted " + c.createStatement().executeUpdate(request.toString())
+								+ " rows.");
+						break;
+					case "select":
+						StringBuilder sb = new StringBuilder();
+						ResultSet result = c.createStatement().executeQuery("select * from test");
+						while (result.next()) {
+							sb.append("id=" + result.getInt(1) + ",name=" + result.getString(2) + ",age=" + result.getInt(3) +"|");
+						}
+						output.println(sb.toString());
+						break;
 
-					switch(requestType) {
-						case "select":
-							StringBuilder sb = new StringBuilder();
-							ResultSet result = c.createStatement().executeQuery("select * from test");
-							while (result.next()) {
-								sb.append("id=" + result.getInt(1) + ",name=" + result.getString(2) +
-										",age=" + result.getString(3) + "|");
-							}
-							output.println(sb.toString());
-	                    break;
-						case "insert":
-							Map<String, Map<String,String>> map = mapper.readValue(values, new TypeReference<Map<String,Map<String,String>>>(){});
-							StringBuilder request = new StringBuilder();
-							request.append("insert into test (name, age) values");
-							for(Map<String,String> m: map.values()) request.append("('"+m.get("name")+"','"+m.get("age")+"'),");
-							request.deleteCharAt(request.length()-1);
-							request.append(";");
-
-							output.println("Successfully inserted "+c.createStatement().executeUpdate(request.toString())+" rows.");
-	                    break;
-						case "delete":
-							output.println("Successfully deleted "+c.createStatement().executeUpdate("delete from test")+" rows.");
-	                    break;
-						case "update":
-							StringBuilder requestUpdate = new StringBuilder();
-							requestUpdate.append("update test set ");
-							Map<String, String> mapUpdate = mapper.readValue(values, new TypeReference<Map<String, String>>(){});
-							requestUpdate.append(mapUpdate.get("set") + " = '" + mapUpdate.get(mapUpdate.get("set"))+ "' where id = " + mapUpdate.get("id") + ";");
-							output.println("Successfully inserted "+c.createStatement().executeUpdate(requestUpdate.toString())+" rows.");
+					case "update":
+						int newAge = Integer.valueOf(map.get("toto").get("age"))+1;
+						output.println(
+								"Successfully updated "
+										+ c.createStatement()
+												.executeUpdate("update test set age=" + newAge
+														+ " where name='" + map.get("toto").get("name") + "'")
+										+ " rows.");
+						break;
+					case "delete":
+						output.println("Successfully deleted " + c.createStatement().executeUpdate("delete from test")
+								+ " rows.");
+						break;
+					default:
+						output.println("Invalid request type.");
 						break;
 					}
 				} catch (IOException e) {
@@ -81,7 +87,7 @@ public class ClientRequestManager {
 		};
 		self.start();
 	}
-	
+
 	public Thread getSelf() {
 		return self;
 	}
