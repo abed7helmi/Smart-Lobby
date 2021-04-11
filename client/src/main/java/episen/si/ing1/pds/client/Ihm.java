@@ -21,18 +21,19 @@ public class Ihm extends JFrame implements ActionListener {
     private JPanel title, registeredCompany;
 
 
-    public Ihm(String name, Socket s) {
-        socket = s;
+    public Ihm(String name) {
+        /*socket = s;
 
         try {
             output = new PrintWriter(socket.getOutputStream(), true);
             input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        }*/
 
         setTitle(name);
-        firstPage();
+        //firstPage();
+        doReservation();
 
         setVisible(true);
         setLocationRelativeTo(null);
@@ -41,7 +42,9 @@ public class Ihm extends JFrame implements ActionListener {
 
     public void actionPerformed(ActionEvent e){
         Object source = e.getSource();
-        if(source == entry){
+
+
+        /*if(source == entry){
             String data = "select * from company where company_name = '"+ companyName.getText()+"'";
             output.println("select=" + companyName.getText());
             try{
@@ -59,7 +62,6 @@ public class Ihm extends JFrame implements ActionListener {
             }catch (IOException a) {
                 a.printStackTrace();
             }
-
         } else if(source == entryUnregistered) {
             System.out.println(unregisteredCompanyName.getText());
             output.println("insert=" + unregisteredCompanyName.getText());
@@ -75,7 +77,7 @@ public class Ihm extends JFrame implements ActionListener {
             }catch (IOException a) {
                 a.printStackTrace();
             }
-        }
+        }*/
     }
 
     public void firstPage(){
@@ -89,7 +91,7 @@ public class Ihm extends JFrame implements ActionListener {
         gc.gridy = 0;
 
         title = new JPanel(new BorderLayout());
-        JLabel l1 = new JLabel("Nom de vore entreprise :");
+        JLabel l1 = new JLabel("Choix de l'entreprise :");
         l1.setForeground(new Color(255,255,255));
         l1.setFont(new Font(l1.getFont().getName() , l1.getFont().getStyle(), 20));
         l1.setPreferredSize(new Dimension( 100, 100));
@@ -131,5 +133,71 @@ public class Ihm extends JFrame implements ActionListener {
 
         getContentPane().add(title, BorderLayout.NORTH);
         getContentPane().add(registeredCompany, BorderLayout.CENTER);
+    }
+
+
+    public void doReservation(){
+        setSize(1200, 800);
+
+        JPanel pageBody = new JPanel();
+
+
+
+        Dimension dim = new Dimension(400, 50);
+
+        JPanel menu = new JPanel();
+        menu.setLayout(new javax.swing.BoxLayout(menu, javax.swing.BoxLayout.Y_AXIS));
+        Box box = Box.createVerticalBox();
+
+        menu.add(box);
+        box.add(Box.createVerticalStrut(100));
+
+
+        JPanel test = new JPanel();
+        test.setPreferredSize(new Dimension(250,400));
+        test.setBackground(Color.CYAN);
+        JButton realize = new JButton("Realiser une location");
+        realize.addActionListener(this);
+        realize.setPreferredSize(dim);
+        realize.setBackground(Color.CYAN);
+        test.add(realize);
+
+
+
+
+        JButton consult = new JButton("Consulter une location");
+        consult.addActionListener(this);
+        consult.setPreferredSize(dim);
+        consult.setBackground(Color.CYAN);
+        test.add(consult);
+
+        JButton staff = new JButton("Personnel");
+        staff.addActionListener(this);
+        staff.setPreferredSize(dim);
+        staff.setBackground(Color.CYAN);
+        test.add(staff);
+
+        box.add(test);
+        box.add(Box.createGlue());
+
+        JPanel test1 = new JPanel();
+        test1.setBackground(Color.RED);
+        test1.setPreferredSize(new Dimension(250,50));
+        JButton disconnect = new JButton("Deconnecter");
+        disconnect.addActionListener(this);
+        disconnect.setPreferredSize(dim);
+        disconnect.setBackground(Color.CYAN);
+        test1.add(disconnect);
+        box.add(test1);
+
+
+        menu.setBackground(Color.CYAN);
+        menu.setPreferredSize(new Dimension(250, 800));
+        pageBody.setBackground(Color.WHITE);
+
+
+        getContentPane().add(menu, BorderLayout.WEST);
+        getContentPane().add(pageBody, BorderLayout.CENTER);
+
     }
 }
