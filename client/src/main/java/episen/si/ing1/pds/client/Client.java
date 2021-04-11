@@ -35,9 +35,8 @@ public class Client {
     private static ClientConfig config;
 	
 	public static void main(String[] args) {
-		Ihm window = new Ihm("Smart Lobby");
 
-		/*try {
+		try {
 			final Options options = new Options();
 			final Option requesttype = Option.builder().longOpt("requesttype").hasArg().argName("requesttype").build();
 			options.addOption(requesttype);
@@ -57,12 +56,12 @@ public class Client {
 			PrintWriter output = new PrintWriter(socket.getOutputStream(), true);
 			BufferedReader input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
-			//Ihm window = new Ihm("Smart Lobby",socket);
+			Ihm window = new Ihm("Smart Lobby",socket);
 			
 			//String requestType = commandLine.getOptionValue("requesttype");
 			
 			
-			episenClientFileLocation = System.getenv(episenClientJson);
+			//episenClientFileLocation = System.getenv(episenClientJson);
 			
 			//String data = Files.readString(Path.of(episenClientFileLocation));
 
@@ -77,6 +76,6 @@ public class Client {
 			e.printStackTrace();
 		} catch (ParseException e) {
 			e.printStackTrace();
-		}*/
+		}
 	}
 }

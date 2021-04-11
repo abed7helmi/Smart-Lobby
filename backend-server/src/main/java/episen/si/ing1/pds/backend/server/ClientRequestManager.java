@@ -35,16 +35,23 @@ public class ClientRequestManager {
 			@Override
 			public void run() {
 				try {
+
+
 					String clientInput = input.readLine();
+					logger.debug(clientInput);
 					String requestType = clientInput.split("=")[0];
 					String values = clientInput.split("=")[1];
+
+					firstPage(requestType, values);
+
+					/*
 					ObjectMapper mapper = new ObjectMapper(new JsonFactory());
 					Map<String, Map<String, String>> map = mapper.readValue(values,
 							new TypeReference<Map<String, Map<String, String>>>() {
 							});
 
 					System.out.println(map.toString());
-					/*
+
 					switch (requestType) {
 					case "insert":
 						StringBuilder request = new StringBuilder();
@@ -81,11 +88,9 @@ public class ClientRequestManager {
 						output.println("Invalid request type.");
 						break;
 					}*/
-				} catch (IOException e) {
+				} catch (Exception e) {
 					e.printStackTrace();
-				} /* catch (SQLException e) {
-					e.printStackTrace();
-				}*/
+				}
 			}
 		};
 		self.start();
@@ -93,5 +98,21 @@ public class ClientRequestManager {
 
 	public Thread getSelf() {
 		return self;
+	}
+
+	public void firstPage(String requestType, String values) {
+		logger.debug(requestType+"//" + values);
+		try {
+			if(requestType.equals("select")) {
+				logger.debug("toto");
+				ResultSet result = c.createStatement().executeQuery("select company_name from company where company_name = '"+ values +"';");
+				if(result.next()) output.println(true);
+				else
+					output.println(false);
+
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }

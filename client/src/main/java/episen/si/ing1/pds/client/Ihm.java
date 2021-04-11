@@ -22,15 +22,15 @@ public class Ihm extends JFrame implements ActionListener {
     private JPanel title, registeredCompany;
 
 
-    public Ihm(String name) {
-        /*socket = s;
+    public Ihm(String name, Socket s) {
+        socket = s;
 
         try {
             output = new PrintWriter(socket.getOutputStream(), true);
             input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         } catch (Exception e) {
             e.printStackTrace();
-        }*/
+        }
 
         setTitle(name);
         firstPage();
@@ -43,15 +43,25 @@ public class Ihm extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent e){
         Object source = e.getSource();
         if(source == entry){
-            //System.out.println(companyName.getText());
-            //String data = "select * from company where company_name = '"+ companyName.getText()+"'";
-            //System.out.println("data :" + data);
-            //if(companyName.getText() == "Renault") System.out.println("Reussi");
-            this.remove(title);
-            this.remove(registeredCompany);
-            this.repaint();
-            this.setSize(800,800);
-            this.setLocationRelativeTo(null);
+            String data = "select * from company where company_name = '"+ companyName.getText()+"'";
+            output.println("select=" + companyName.getText());
+            try{
+                boolean test = Boolean.parseBoolean(input.readLine());
+                if(test) {
+                    System.out.println("Reussi");
+                    this.remove(title);
+                    this.remove(registeredCompany);
+                    this.repaint();
+                    this.setSize(800,800);
+                    this.setLocationRelativeTo(null);
+                } else
+                    JOptionPane.showMessageDialog(null, "Le nom renseigné n'existe pas","",
+                            JOptionPane.ERROR_MESSAGE);
+
+            }catch (IOException a) {
+                a.printStackTrace();
+            }
+
         } else if(source == entryUnregistered) {
             System.out.println(unregisteredCompanyName.getText());
             output.println("insert" + companyName.getText());
