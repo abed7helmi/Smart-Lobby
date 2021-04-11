@@ -143,52 +143,40 @@ public class Ihm extends JFrame implements ActionListener {
 
 
 
-        Dimension dim = new Dimension(400, 50);
+        Dimension dim = new Dimension(2500, 50);
 
         JPanel menu = new JPanel();
-        menu.setLayout(new javax.swing.BoxLayout(menu, javax.swing.BoxLayout.Y_AXIS));
-        Box box = Box.createVerticalBox();
+        menu.setLayout(new BoxLayout(menu, BoxLayout.Y_AXIS));
+        menu.add(Box.createVerticalStrut(100));
 
-        menu.add(box);
-        box.add(Box.createVerticalStrut(100));
-
-
-        JPanel test = new JPanel();
-        test.setPreferredSize(new Dimension(250,400));
-        test.setBackground(Color.CYAN);
         JButton realize = new JButton("Realiser une location");
         realize.addActionListener(this);
-        realize.setPreferredSize(dim);
+        realize.setMaximumSize(dim);
         realize.setBackground(Color.CYAN);
-        test.add(realize);
-
-
-
 
         JButton consult = new JButton("Consulter une location");
         consult.addActionListener(this);
-        consult.setPreferredSize(dim);
+        consult.setMaximumSize(dim);
         consult.setBackground(Color.CYAN);
-        test.add(consult);
+
 
         JButton staff = new JButton("Personnel");
         staff.addActionListener(this);
-        staff.setPreferredSize(dim);
+        staff.setMaximumSize(dim);
         staff.setBackground(Color.CYAN);
-        test.add(staff);
 
-        box.add(test);
-        box.add(Box.createGlue());
 
-        JPanel test1 = new JPanel();
-        test1.setBackground(Color.RED);
-        test1.setPreferredSize(new Dimension(250,50));
         JButton disconnect = new JButton("Deconnecter");
         disconnect.addActionListener(this);
-        disconnect.setPreferredSize(dim);
+        disconnect.setMaximumSize(dim);
         disconnect.setBackground(Color.CYAN);
-        test1.add(disconnect);
-        box.add(test1);
+
+        menu.add(realize);
+        menu.add(consult);
+        menu.add(staff);
+        menu.add(Box.createGlue());
+        menu.add(disconnect);
+
 
 
         menu.setBackground(Color.CYAN);
