@@ -1,7 +1,6 @@
 package episen.si.ing1.pds.client;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -48,14 +47,13 @@ public class Ihm extends JFrame implements ActionListener {
             try{
                 boolean test = Boolean.parseBoolean(input.readLine());
                 if(test) {
-                    System.out.println("Reussi");
                     this.remove(title);
                     this.remove(registeredCompany);
                     this.repaint();
                     this.setSize(800,800);
                     this.setLocationRelativeTo(null);
                 } else
-                    JOptionPane.showMessageDialog(null, "Le nom renseigné n'existe pas","",
+                    JOptionPane.showMessageDialog(null, "Le nom renseigne n'existe pas","",
                             JOptionPane.ERROR_MESSAGE);
 
             }catch (IOException a) {
@@ -64,7 +62,19 @@ public class Ihm extends JFrame implements ActionListener {
 
         } else if(source == entryUnregistered) {
             System.out.println(unregisteredCompanyName.getText());
-            output.println("insert" + companyName.getText());
+            output.println("insert=" + unregisteredCompanyName.getText());
+            try{
+                System.out.println(input.readLine());
+                JOptionPane.showMessageDialog(null, "Bienvenue !!","",
+                    JOptionPane.INFORMATION_MESSAGE);
+                this.remove(title);
+                this.remove(registeredCompany);
+                this.repaint();
+                this.setSize(800,800);
+                this.setLocationRelativeTo(null);
+            }catch (IOException a) {
+                a.printStackTrace();
+            }
         }
     }
 
@@ -83,7 +93,7 @@ public class Ihm extends JFrame implements ActionListener {
         l1.setForeground(new Color(255,255,255));
         l1.setFont(new Font(l1.getFont().getName() , l1.getFont().getStyle(), 20));
         l1.setPreferredSize(new Dimension( 100, 100));
-        title.setBackground(Color.BLACK);
+        title.setBackground(Color.CYAN);
         title.add(l1);
 
         JLabel l2 = new JLabel("Deja inscrite : ");

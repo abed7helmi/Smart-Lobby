@@ -109,7 +109,12 @@ public class ClientRequestManager {
 				if(result.next()) output.println(true);
 				else
 					output.println(false);
-
+			} else if(requestType.equals("insert")){
+				StringBuilder request = new StringBuilder();
+				request.append("insert into company (company_name) values ('"+ values +"');");
+				logger.debug(request.toString());
+				output.println("Successfully inserted " + c.createStatement().executeUpdate(request.toString())
+						+ " rows.");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
