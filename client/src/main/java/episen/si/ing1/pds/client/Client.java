@@ -22,6 +22,8 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
+import javax.swing.*;
+
 public class Client {
 
 	private final static Logger logger = LoggerFactory.getLogger(Client.class.getName());
@@ -33,7 +35,9 @@ public class Client {
     private static ClientConfig config;
 	
 	public static void main(String[] args) {
-		try {
+		Ihm window = new Ihm("Smart Lobby");
+
+		/*try {
 			final Options options = new Options();
 			final Option requesttype = Option.builder().longOpt("requesttype").hasArg().argName("requesttype").build();
 			options.addOption(requesttype);
@@ -49,23 +53,30 @@ public class Client {
             config = mapper.readValue(new File(episenClientConfig), ClientConfig.class);
 
             Socket socket = new Socket(config.getIpAddress(), config.getPort());
-			
+
 			PrintWriter output = new PrintWriter(socket.getOutputStream(), true);
 			BufferedReader input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+
+			//Ihm window = new Ihm("Smart Lobby",socket);
 			
-			String requestType = commandLine.getOptionValue("requesttype");
+			//String requestType = commandLine.getOptionValue("requesttype");
 			
 			
 			episenClientFileLocation = System.getenv(episenClientJson);
 			
-			String data = Files.readString(Path.of(episenClientFileLocation));
-			output.println(requestType+"="+data);
-			logger.info(input.readLine());
+			//String data = Files.readString(Path.of(episenClientFileLocation));
+
+
+			//output.println(requestType+"="+data);
+			//logger.info(input.readLine());
+
+
+
 			
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (ParseException e) {
 			e.printStackTrace();
-		}
+		}*/
 	}
 }

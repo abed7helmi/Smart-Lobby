@@ -42,6 +42,9 @@ public class ClientRequestManager {
 					Map<String, Map<String, String>> map = mapper.readValue(values,
 							new TypeReference<Map<String, Map<String, String>>>() {
 							});
+
+					System.out.println(map.toString());
+					/*
 					switch (requestType) {
 					case "insert":
 						StringBuilder request = new StringBuilder();
@@ -77,12 +80,12 @@ public class ClientRequestManager {
 					default:
 						output.println("Invalid request type.");
 						break;
-					}
+					}*/
 				} catch (IOException e) {
 					e.printStackTrace();
-				} catch (SQLException e) {
+				} /* catch (SQLException e) {
 					e.printStackTrace();
-				}
+				}*/
 			}
 		};
 		self.start();
