@@ -141,8 +141,6 @@ public class Ihm extends JFrame implements ActionListener {
 
         JPanel pageBody = new JPanel();
 
-        Dimension dim = new Dimension(250, 100);
-
         JPanel menu = new JPanel();
         menu.setLayout(new BoxLayout(menu, BoxLayout.Y_AXIS));
         menu.add(Box.createVerticalStrut(100));
@@ -169,9 +167,9 @@ public class Ihm extends JFrame implements ActionListener {
         staff.setMaximumSize(new Dimension(Integer.MAX_VALUE, 75));
         staff.setBackground(Color.CYAN);
 
-        JPanel p1 = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        p1.setMaximumSize(new Dimension(Integer.MAX_VALUE, 100));
-        p1.setBackground(Color.CYAN);
+        JPanel underMenu = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        underMenu.setMaximumSize(new Dimension(Integer.MAX_VALUE, 100));
+        underMenu.setBackground(Color.CYAN);
 
         JButton disconnect = new JButton("Deconnecter");
         disconnect.addActionListener(this);
@@ -188,15 +186,15 @@ public class Ihm extends JFrame implements ActionListener {
         refresh.addActionListener(this);
         refresh.setBackground(Color.CYAN);
 
-        p1.add(disconnect);
-        p1.add(home);
-        p1.add(refresh);
+        underMenu.add(disconnect);
+        underMenu.add(home);
+        underMenu.add(refresh);
 
         menu.add(realize);
         menu.add(consult);
         menu.add(staff);
         menu.add(Box.createGlue());
-        menu.add(p1);
+        menu.add(underMenu);
 
         menu.setBackground(Color.CYAN);
         menu.setPreferredSize(new Dimension(250, 800));
