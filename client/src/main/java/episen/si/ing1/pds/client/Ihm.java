@@ -21,19 +21,16 @@ public class Ihm extends JFrame implements ActionListener {
     private JPanel title, registeredCompany;
 
 
-    public Ihm(String name) {
-        /*socket = s;
-
+    public Ihm(String name,Socket s) {
+        socket = s;
         try {
             output = new PrintWriter(socket.getOutputStream(), true);
             input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         } catch (Exception e) {
             e.printStackTrace();
-        }*/
-
+        }
         setTitle(name);
-        //firstPage();
-        doReservation();
+        firstPage();
 
         setVisible(true);
         setLocationRelativeTo(null);
@@ -42,10 +39,7 @@ public class Ihm extends JFrame implements ActionListener {
 
     public void actionPerformed(ActionEvent e){
         Object source = e.getSource();
-
-
-        /*if(source == entry){
-            String data = "select * from company where company_name = '"+ companyName.getText()+"'";
+        if(source == entry){
             output.println("select=" + companyName.getText());
             try{
                 boolean test = Boolean.parseBoolean(input.readLine());
@@ -77,7 +71,7 @@ public class Ihm extends JFrame implements ActionListener {
             }catch (IOException a) {
                 a.printStackTrace();
             }
-        }*/
+        }
     }
 
     public void firstPage(){
@@ -136,7 +130,7 @@ public class Ihm extends JFrame implements ActionListener {
     }
 
 
-    public void doReservation(){
+    public void menu(){
         setSize(1200, 800);
 
         JPanel pageBody = new JPanel();
@@ -202,6 +196,5 @@ public class Ihm extends JFrame implements ActionListener {
 
         getContentPane().add(menu, BorderLayout.WEST);
         getContentPane().add(pageBody, BorderLayout.CENTER);
-
     }
 }
