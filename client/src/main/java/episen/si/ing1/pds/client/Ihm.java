@@ -141,8 +141,6 @@ public class Ihm extends JFrame implements ActionListener {
 
         JPanel pageBody = new JPanel();
 
-
-
         Dimension dim = new Dimension(250, 100);
 
         JPanel menu = new JPanel();
@@ -171,8 +169,6 @@ public class Ihm extends JFrame implements ActionListener {
         staff.setMaximumSize(new Dimension(Integer.MAX_VALUE, 75));
         staff.setBackground(Color.CYAN);
 
-
-
         JPanel p1 = new JPanel(new FlowLayout(FlowLayout.LEFT));
         p1.setMaximumSize(new Dimension(Integer.MAX_VALUE, 100));
         p1.setBackground(Color.CYAN);
@@ -196,22 +192,15 @@ public class Ihm extends JFrame implements ActionListener {
         p1.add(home);
         p1.add(refresh);
 
-
-
         menu.add(realize);
         menu.add(consult);
         menu.add(staff);
         menu.add(Box.createGlue());
         menu.add(p1);
 
-
-
-
-
         menu.setBackground(Color.CYAN);
         menu.setPreferredSize(new Dimension(250, 800));
         pageBody.setBackground(Color.WHITE);
-
 
         getContentPane().add(menu, BorderLayout.WEST);
         getContentPane().add(pageBody, BorderLayout.CENTER);
