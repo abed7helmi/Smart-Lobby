@@ -143,7 +143,7 @@ public class Ihm extends JFrame implements ActionListener {
 
 
 
-        Dimension dim = new Dimension(2500, 50);
+        Dimension dim = new Dimension(250, 100);
 
         JPanel menu = new JPanel();
         menu.setLayout(new BoxLayout(menu, BoxLayout.Y_AXIS));
@@ -151,31 +151,60 @@ public class Ihm extends JFrame implements ActionListener {
 
         JButton realize = new JButton("Realiser une location");
         realize.addActionListener(this);
-        realize.setMaximumSize(dim);
+        realize.setMinimumSize(new Dimension(Integer.MAX_VALUE, 75));
+        realize.setPreferredSize(new Dimension(Integer.MAX_VALUE, 75));
+        realize.setMaximumSize(new Dimension(Integer.MAX_VALUE, 75));
         realize.setBackground(Color.CYAN);
 
         JButton consult = new JButton("Consulter une location");
         consult.addActionListener(this);
-        consult.setMaximumSize(dim);
+        consult.setMinimumSize(new Dimension(Integer.MAX_VALUE, 75));
+        consult.setPreferredSize(new Dimension(Integer.MAX_VALUE, 75));
+        consult.setMaximumSize(new Dimension(Integer.MAX_VALUE, 75));
         consult.setBackground(Color.CYAN);
 
 
         JButton staff = new JButton("Personnel");
         staff.addActionListener(this);
-        staff.setMaximumSize(dim);
+        staff.setMinimumSize(new Dimension(Integer.MAX_VALUE, 75));
+        staff.setPreferredSize(new Dimension(Integer.MAX_VALUE, 75));
+        staff.setMaximumSize(new Dimension(Integer.MAX_VALUE, 75));
         staff.setBackground(Color.CYAN);
 
 
+
+        JPanel p1 = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        p1.setMaximumSize(new Dimension(Integer.MAX_VALUE, 100));
+        p1.setBackground(Color.CYAN);
+
         JButton disconnect = new JButton("Deconnecter");
         disconnect.addActionListener(this);
-        disconnect.setMaximumSize(dim);
+        disconnect.setMaximumSize(new Dimension(100, 100));
         disconnect.setBackground(Color.CYAN);
+
+        ImageIcon iconHome = new ImageIcon(new ImageIcon("C:\\Users\\cedri\\Bureau\\pds\\image\\maison.png").getImage().getScaledInstance(18,18,Image.SCALE_DEFAULT));
+        JButton home = new JButton(iconHome);
+        home.addActionListener(this);
+        home.setBackground(Color.CYAN);
+
+        ImageIcon iconRefresh = new ImageIcon(new ImageIcon("C:\\Users\\cedri\\Bureau\\pds\\image\\actualiser.png").getImage().getScaledInstance(18,18,Image.SCALE_DEFAULT));
+        JButton refresh = new JButton(iconRefresh);
+        refresh.addActionListener(this);
+        refresh.setBackground(Color.CYAN);
+
+        p1.add(disconnect);
+        p1.add(home);
+        p1.add(refresh);
+
+
 
         menu.add(realize);
         menu.add(consult);
         menu.add(staff);
         menu.add(Box.createGlue());
-        menu.add(disconnect);
+        menu.add(p1);
+
+
 
 
 
