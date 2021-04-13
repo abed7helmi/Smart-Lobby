@@ -21,16 +21,17 @@ public class Ihm extends JFrame implements ActionListener {
     private JPanel title, registeredCompany;
 
 
-    public Ihm(String name,Socket s) {
-        socket = s;
+    public Ihm(String name) {
+        /*socket = s;
         try {
             output = new PrintWriter(socket.getOutputStream(), true);
             input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        }*/
         setTitle(name);
-        firstPage();
+        //firstPage();
+        realizeLocation();
 
         setVisible(true);
         setLocationRelativeTo(null);
@@ -129,11 +130,88 @@ public class Ihm extends JFrame implements ActionListener {
         getContentPane().add(registeredCompany, BorderLayout.CENTER);
     }
 
-
-    public void menu(){
+    public void realizeLocation(){
         setSize(1200, 800);
-
         JPanel pageBody = new JPanel();
+        pageBody.setLayout(new BorderLayout());
+        JPanel menu = menu();
+
+        JPanel titlePage = new JPanel();
+        Dimension dimTitle = new Dimension(950, 150);
+        titlePage.setMaximumSize(dimTitle);
+        titlePage.setPreferredSize(dimTitle);
+        titlePage.setMinimumSize(dimTitle);
+        titlePage.setBackground(Color.RED);
+        pageBody.add(titlePage, BorderLayout.NORTH);
+
+
+        JPanel rentalAdvancement = rentalAdvancement();
+
+
+
+        pageBody.add(rentalAdvancement, BorderLayout.CENTER);
+
+        JPanel choice = new JPanel();
+        Dimension dimChoice = new Dimension(950, 550);
+        choice.setMaximumSize(dimChoice);
+        choice.setPreferredSize(dimChoice);
+        choice.setMinimumSize(dimChoice);
+        choice.setBackground(Color.GREEN);
+        pageBody.add(choice, BorderLayout.SOUTH);
+
+
+
+
+
+        pageBody.setBackground(Color.WHITE);
+        getContentPane().add(menu, BorderLayout.WEST);
+        getContentPane().add(pageBody, BorderLayout.CENTER);
+    }
+
+    public JLabel fleche(){
+        ImageIcon iconAdvancement = new ImageIcon(new ImageIcon("C:\\Users\\cedri\\Bureau\\pds\\image\\flecheAdvancement.png").getImage().getScaledInstance(50,30,Image.SCALE_DEFAULT));
+        JLabel flecheAdvancement = new JLabel(iconAdvancement,JLabel.CENTER);
+        return flecheAdvancement;
+    }
+    public JPanel rentalAdvancement(){
+        JPanel rentalAdvancement = new JPanel();
+        rentalAdvancement.setLayout(new FlowLayout(FlowLayout.LEFT, 30, 15));
+        Dimension dimAdvancement = new Dimension(950, 100);
+        rentalAdvancement.setMaximumSize(dimAdvancement);
+        rentalAdvancement.setPreferredSize(dimAdvancement);
+        rentalAdvancement.setMinimumSize(dimAdvancement);
+        rentalAdvancement.setBackground(Color.WHITE);
+
+        JTextField criteria= new JTextField("Criteres", 5);
+        criteria.setEditable(false);
+        criteria.setOpaque(false);
+        criteria.setBorder(BorderFactory.createEmptyBorder(10,20,10,20));
+        JTextField choiceField = new JTextField("Choix",5);
+        choiceField.setEditable(false);
+        choiceField.setOpaque(false);
+        choiceField.setBorder(BorderFactory.createEmptyBorder(10,20,10,20));
+        JTextField equipment = new JTextField("Equipements/Capteurs",15);
+        equipment.setEditable(false);
+        equipment.setOpaque(false);
+        equipment.setBorder(BorderFactory.createEmptyBorder(10,20,10,20));
+        JTextField bill = new JTextField("Facture", 5);
+        bill.setEditable(false);
+        bill.setOpaque(false);
+        bill.setBorder(BorderFactory.createEmptyBorder(10,20,10,20));
+
+        rentalAdvancement.add(criteria);
+        rentalAdvancement.add(fleche());
+        rentalAdvancement.add(choiceField);
+        rentalAdvancement.add(fleche());
+        rentalAdvancement.add(equipment);
+        rentalAdvancement.add(fleche());
+        rentalAdvancement.add(bill);
+
+        return rentalAdvancement;
+    }
+
+
+    public JPanel menu(){
 
         JPanel menu = new JPanel();
         menu.setLayout(new BoxLayout(menu, BoxLayout.Y_AXIS));
@@ -192,9 +270,7 @@ public class Ihm extends JFrame implements ActionListener {
 
         menu.setBackground(Color.CYAN);
         menu.setPreferredSize(new Dimension(250, 800));
-        pageBody.setBackground(Color.WHITE);
 
-        getContentPane().add(menu, BorderLayout.WEST);
-        getContentPane().add(pageBody, BorderLayout.CENTER);
+        return menu;
     }
 }
