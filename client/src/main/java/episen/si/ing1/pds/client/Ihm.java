@@ -144,15 +144,42 @@ public class Ihm extends JFrame implements ActionListener {
         pageBody.add(rentalAdvancement, BorderLayout.CENTER);
 
         JPanel choice = new JPanel();
+        choice.setLayout(null);
         Dimension dimChoice = new Dimension(950, 600);
         choice.setMaximumSize(dimChoice);
         choice.setPreferredSize(dimChoice);
         choice.setMinimumSize(dimChoice);
         choice.setBackground(Color.WHITE);
-        choice.setBorder(BorderFactory.createMatteBorder(2,0,0,0, Color.BLACK));
+        choice.setBorder(BorderFactory.createEmptyBorder(20,20,20,20));
+
+        JTextField startDate = new JTextField("Veuillez indiquer la date de debut : (YYYY-MM-DD) ");
+        startDate.setEditable(false);
+        startDate.setBackground(Color.WHITE);
+        startDate.setBounds(20, 20, 275, 20);
+        startDate.setBorder(BorderFactory.createLineBorder(Color.WHITE));
+        JTextField endDate = new JTextField("Veuillez indiquer la date de fin : (YYYY-MM-DD)");
+        endDate.setEditable(false);
+        endDate.setBackground(Color.WHITE);
+        endDate.setBounds(20, 50, 275, 20);
+        endDate.setBorder(BorderFactory.createLineBorder(Color.WHITE));
+
+        JTextField valueStartDate = new JTextField(" ");
+        valueStartDate.setBounds(350, 20, 100, 20);
+        JTextField valueEndDate = new JTextField(" ");
+        valueEndDate.setBounds(350, 50, 100, 20);
+
+
+
+        choice.add(startDate);
+        choice.add(valueStartDate);
+        choice.add(endDate);
+        choice.add(valueEndDate);
+
+
+
+
+
         pageBody.add(choice, BorderLayout.SOUTH);
-
-
         pageBody.setBackground(Color.WHITE);
         getContentPane().add(menu, BorderLayout.WEST);
         getContentPane().add(pageBody, BorderLayout.CENTER);
@@ -202,6 +229,7 @@ public class Ihm extends JFrame implements ActionListener {
         rentalAdvancement.setPreferredSize(dimAdvancement);
         rentalAdvancement.setMinimumSize(dimAdvancement);
         rentalAdvancement.setBackground(Color.WHITE);
+        rentalAdvancement.setBorder(BorderFactory.createMatteBorder(0,0,2,0, Color.BLACK));
 
         JTextField criteria= new JTextField("Criteres", 5);
         criteria.setEditable(false);
@@ -211,7 +239,7 @@ public class Ihm extends JFrame implements ActionListener {
         choiceField.setEditable(false);
         choiceField.setOpaque(false);
         choiceField.setBorder(BorderFactory.createEmptyBorder(10,2,10,0));
-        JTextField equipment = new JTextField("Equipements/Capteurs",12);
+        JTextField equipment = new JTextField("Equipements/Capteurs",15);
         equipment.setEditable(false);
         equipment.setOpaque(false);
         equipment.setBorder(BorderFactory.createEmptyBorder(10,2,10,0));
