@@ -135,37 +135,58 @@ public class Ihm extends JFrame implements ActionListener {
         JPanel pageBody = new JPanel();
         pageBody.setLayout(new BorderLayout());
         JPanel menu = menu();
+        JPanel title = title();
 
-        JPanel titlePage = new JPanel();
-        Dimension dimTitle = new Dimension(950, 150);
-        titlePage.setMaximumSize(dimTitle);
-        titlePage.setPreferredSize(dimTitle);
-        titlePage.setMinimumSize(dimTitle);
-        titlePage.setBackground(Color.RED);
-        pageBody.add(titlePage, BorderLayout.NORTH);
-
+        pageBody.add(title, BorderLayout.NORTH);
 
         JPanel rentalAdvancement = rentalAdvancement();
-
-
 
         pageBody.add(rentalAdvancement, BorderLayout.CENTER);
 
         JPanel choice = new JPanel();
-        Dimension dimChoice = new Dimension(950, 550);
+        Dimension dimChoice = new Dimension(950, 600);
         choice.setMaximumSize(dimChoice);
         choice.setPreferredSize(dimChoice);
         choice.setMinimumSize(dimChoice);
-        choice.setBackground(Color.GREEN);
+        choice.setBackground(Color.WHITE);
+        choice.setBorder(BorderFactory.createMatteBorder(2,0,0,0, Color.BLACK));
         pageBody.add(choice, BorderLayout.SOUTH);
-
-
-
 
 
         pageBody.setBackground(Color.WHITE);
         getContentPane().add(menu, BorderLayout.WEST);
         getContentPane().add(pageBody, BorderLayout.CENTER);
+    }
+    public JPanel title(){
+        JPanel titlePage = new JPanel();
+        titlePage.setLayout(null);
+        Dimension dimTitle = new Dimension(950, 100);
+        titlePage.setMaximumSize(dimTitle);
+        titlePage.setPreferredSize(dimTitle);
+        titlePage.setMinimumSize(dimTitle);
+        titlePage.setBackground(Color.WHITE);
+
+
+        ImageIcon iconBack = new ImageIcon(new ImageIcon("C:\\Users\\cedri\\Bureau\\pds\\image\\flecheGauche.png").getImage().getScaledInstance(75,75,Image.SCALE_DEFAULT));
+        JButton flecheBack = new JButton(iconBack);
+        flecheBack.setBackground(Color.white);
+        flecheBack.setBorder(BorderFactory.createLineBorder(Color.WHITE));
+        flecheBack.setBounds(0, 0, 75, 75);
+
+
+        JTextField title = new JTextField("Realisation d'une location : ", 50);
+        title.setFont(new Font("Serif", Font.BOLD, 35));
+        title.setHorizontalAlignment(JTextField.RIGHT);
+        title.setBackground(Color.WHITE);
+        title.setBorder(BorderFactory.createLineBorder(Color.WHITE));
+        title.setBorder(BorderFactory.createMatteBorder(0,1, 1, 0, Color.RED));
+        title.setEditable(false);
+        title.setBounds(500, 0, 420, 75);
+
+        titlePage.add(flecheBack);
+        titlePage.add(title);
+
+        return titlePage;
     }
 
     public JLabel fleche(){
@@ -176,7 +197,7 @@ public class Ihm extends JFrame implements ActionListener {
     public JPanel rentalAdvancement(){
         JPanel rentalAdvancement = new JPanel();
         rentalAdvancement.setLayout(new FlowLayout(FlowLayout.LEFT, 30, 15));
-        Dimension dimAdvancement = new Dimension(950, 100);
+        Dimension dimAdvancement = new Dimension(950, 70);
         rentalAdvancement.setMaximumSize(dimAdvancement);
         rentalAdvancement.setPreferredSize(dimAdvancement);
         rentalAdvancement.setMinimumSize(dimAdvancement);
@@ -185,19 +206,19 @@ public class Ihm extends JFrame implements ActionListener {
         JTextField criteria= new JTextField("Criteres", 5);
         criteria.setEditable(false);
         criteria.setOpaque(false);
-        criteria.setBorder(BorderFactory.createEmptyBorder(10,20,10,20));
+        criteria.setBorder(BorderFactory.createEmptyBorder(10,20,10,0));
         JTextField choiceField = new JTextField("Choix",5);
         choiceField.setEditable(false);
         choiceField.setOpaque(false);
-        choiceField.setBorder(BorderFactory.createEmptyBorder(10,20,10,20));
-        JTextField equipment = new JTextField("Equipements/Capteurs",15);
+        choiceField.setBorder(BorderFactory.createEmptyBorder(10,2,10,0));
+        JTextField equipment = new JTextField("Equipements/Capteurs",12);
         equipment.setEditable(false);
         equipment.setOpaque(false);
-        equipment.setBorder(BorderFactory.createEmptyBorder(10,20,10,20));
+        equipment.setBorder(BorderFactory.createEmptyBorder(10,2,10,0));
         JTextField bill = new JTextField("Facture", 5);
         bill.setEditable(false);
         bill.setOpaque(false);
-        bill.setBorder(BorderFactory.createEmptyBorder(10,20,10,20));
+        bill.setBorder(BorderFactory.createEmptyBorder(10,2,10,0));
 
         rentalAdvancement.add(criteria);
         rentalAdvancement.add(fleche());
