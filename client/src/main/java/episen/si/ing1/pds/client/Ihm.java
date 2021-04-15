@@ -133,33 +133,45 @@ public class Ihm extends JFrame implements ActionListener {
     }
 
     public void realizeReservation(){
+        String page = "criteres";
         setSize(1200, 800);
         JPanel pageBody = new JPanel();
         pageBody.setLayout(new BorderLayout());
         JPanel menu = menu();
-        JPanel title = title();
+        JPanel title = titleReservation();
 
         pageBody.add(title, BorderLayout.NORTH);
 
-        JPanel rentalAdvancement = rentalAdvancement();
+        JPanel rentalAdvancement = rentalAdvancement(page);
 
         pageBody.add(rentalAdvancement, BorderLayout.CENTER);
 
+        JPanel choice = reservationCritere();
+
+
+        //button continue and return
+        buttonReturnContinue(choice, page, pageBody);
+
+        pageBody.add(choice, BorderLayout.SOUTH);
+        pageBody.setBackground(Color.WHITE);
+        getContentPane().add(menu, BorderLayout.WEST);
+        getContentPane().add(pageBody, BorderLayout.CENTER);
+    }
+
+    public JPanel reservationCritere(){
         JPanel choice = new JPanel();
         choice.setLayout(null);
         Dimension dimChoice = new Dimension(950, 600);
-        choice.setMaximumSize(dimChoice);
-        choice.setPreferredSize(dimChoice);
-        choice.setMinimumSize(dimChoice);
+        sizeComposant(dimChoice, choice);
         choice.setBackground(Color.WHITE);
         choice.setBorder(BorderFactory.createEmptyBorder(20,20,20,20));
 
         //label of date
         JTextField startDate = new JTextField("Veuillez indiquer la date de debut : (YYYY-MM-DD) ");
-        startDate = styleJTextField(startDate, 20, 80, 275, 20);
+        startDate = styleJTextFieldReservation(startDate, 20, 80, 275, 20);
 
         JTextField endDate = new JTextField("Veuillez indiquer la date de fin : (YYYY-MM-DD)");
-        endDate = styleJTextField(endDate,20, 110, 275, 20);
+        endDate = styleJTextFieldReservation(endDate,20, 110, 275, 20);
 
         JTextField valueStartDate = new JTextField(" ");
         valueStartDate.setBounds(350, 80, 100, 20);
@@ -168,7 +180,7 @@ public class Ihm extends JFrame implements ActionListener {
         valueEndDate.setBounds(350, 110, 100, 20);
 
         JLabel dateLabel = new JLabel("Date : ");
-        dateLabel = styleJLabel(dateLabel, 20, 20,250,50);
+        dateLabel = styleJLabelReservation(dateLabel, 20, 20,250,50);
 
         choice.add(dateLabel);
         choice.add(startDate);
@@ -178,18 +190,18 @@ public class Ihm extends JFrame implements ActionListener {
 
         //label of room
         JLabel roomLabel = new JLabel("Les salles : ");;
-        roomLabel = styleJLabel(roomLabel,20, 140,250,50);
+        roomLabel = styleJLabelReservation(roomLabel,20, 140,250,50);
 
 
         JTextField openSpace = new JTextField("Open-space : ");
-        openSpace = styleJTextField(openSpace,20, 200, 100, 20);
+        openSpace = styleJTextFieldReservation(openSpace,20, 200, 100, 20);
 
         JCheckBox checkBoxOpenSpace = new JCheckBox();
-        checkBoxOpenSpace = styleJCheckBox(checkBoxOpenSpace, 120, 200, 20, 20);
+        checkBoxOpenSpace = styleJCheckBoxReservation(checkBoxOpenSpace, 120, 200, 20, 20);
         checkBoxOpenSpace.addItemListener(new ItemListener() {
             public void itemStateChanged(ItemEvent e) {
                 JTextField quantityOpenSpace = new JTextField("- nombre d'open-space : ");
-                quantityOpenSpace = styleJTextField(quantityOpenSpace,400, 200, 175, 20);
+                quantityOpenSpace = styleJTextFieldReservation(quantityOpenSpace,400, 200, 175, 20);
 
                 JTextField valueOpenSpace = new JTextField(" ", 20);
                 valueOpenSpace.setBackground(Color.WHITE);
@@ -200,14 +212,14 @@ public class Ihm extends JFrame implements ActionListener {
         });
 
         JTextField meetingRoom = new JTextField("Salle de reunion : ");
-        meetingRoom = styleJTextField(meetingRoom, 20, 230, 100, 20);
+        meetingRoom = styleJTextFieldReservation(meetingRoom, 20, 230, 100, 20);
 
         JCheckBox checkBoxMeetingRoom = new JCheckBox();
-        checkBoxMeetingRoom = styleJCheckBox(checkBoxMeetingRoom, 120, 230, 20, 20);
+        checkBoxMeetingRoom = styleJCheckBoxReservation(checkBoxMeetingRoom, 120, 230, 20, 20);
         checkBoxMeetingRoom.addItemListener(new ItemListener() {
             public void itemStateChanged(ItemEvent e) {
                 JTextField quantityMeetingRoom = new JTextField("- nombre de salle de réunion : ");
-                quantityMeetingRoom = styleJTextField(quantityMeetingRoom,400, 230, 175, 20);
+                quantityMeetingRoom = styleJTextFieldReservation(quantityMeetingRoom,400, 230, 175, 20);
 
                 JTextField valueMeetingRoom = new JTextField(" ", 20);
                 valueMeetingRoom.setBackground(Color.WHITE);
@@ -219,15 +231,15 @@ public class Ihm extends JFrame implements ActionListener {
         });
 
         JTextField singleOffice = new JTextField("Bureau individuel : ");
-        singleOffice = styleJTextField(singleOffice, 200, 200, 100, 20);
+        singleOffice = styleJTextFieldReservation(singleOffice, 200, 200, 100, 20);
 
 
         JCheckBox checkBoxSingleOffice = new JCheckBox();
-        checkBoxSingleOffice = styleJCheckBox(checkBoxSingleOffice,300, 200, 20, 20);
+        checkBoxSingleOffice = styleJCheckBoxReservation(checkBoxSingleOffice,300, 200, 20, 20);
         checkBoxSingleOffice.addItemListener(new ItemListener() {
             public void itemStateChanged(ItemEvent e) {
                 JTextField quantitySingleOffice = new JTextField("- nombre de bureau individuel : ");
-                quantitySingleOffice = styleJTextField(quantitySingleOffice,650, 200, 175, 20);
+                quantitySingleOffice = styleJTextFieldReservation(quantitySingleOffice,650, 200, 175, 20);
 
                 JTextField valueSingleOffice= new JTextField(" ", 20);
                 valueSingleOffice.setBackground(Color.WHITE);
@@ -239,15 +251,15 @@ public class Ihm extends JFrame implements ActionListener {
         });
 
         JTextField closedOffice = new JTextField("Bureau ferme : ");
-        closedOffice = styleJTextField(closedOffice, 200, 230, 100, 20);
+        closedOffice = styleJTextFieldReservation(closedOffice, 200, 230, 100, 20);
 
 
         JCheckBox checkBoxClosedOffice = new JCheckBox();
-        checkBoxClosedOffice = styleJCheckBox(checkBoxClosedOffice,300, 230, 20, 20);
+        checkBoxClosedOffice = styleJCheckBoxReservation(checkBoxClosedOffice,300, 230, 20, 20);
         checkBoxClosedOffice.addItemListener(new ItemListener() {
             public void itemStateChanged(ItemEvent e) {
                 JTextField quantityBoxClosedOffice = new JTextField("- nombre de bureau individuel : ");
-                quantityBoxClosedOffice = styleJTextField(quantityBoxClosedOffice,650, 230, 175, 20);
+                quantityBoxClosedOffice = styleJTextFieldReservation(quantityBoxClosedOffice,650, 230, 175, 20);
 
                 JTextField valueBoxClosedOffice = new JTextField(" ", 20);
                 valueBoxClosedOffice.setBackground(Color.WHITE);
@@ -270,10 +282,10 @@ public class Ihm extends JFrame implements ActionListener {
 
         //surface
         JLabel surfaceLabel = new JLabel("La surface voulue :");
-        surfaceLabel = styleJLabel(surfaceLabel,20, 260,250,50);
+        surfaceLabel = styleJLabelReservation(surfaceLabel,20, 260,250,50);
 
         JTextField surfaceTextField = new JTextField("Veuillez indiquer une surface en metre carre : ");
-        surfaceTextField = styleJTextField(surfaceTextField, 20, 320, 275, 20);
+        surfaceTextField = styleJTextFieldReservation(surfaceTextField, 20, 320, 275, 20);
 
         JTextField valueSurface = new JTextField(" ");
         valueSurface.setBounds(310, 320, 50, 20);
@@ -284,28 +296,28 @@ public class Ihm extends JFrame implements ActionListener {
 
         //location
         JLabel locationLabel = new JLabel("Situation geographique :");
-        locationLabel = styleJLabel(locationLabel,20, 350,250,50);
+        locationLabel = styleJLabelReservation(locationLabel,20, 350,250,50);
 
         JTextField locationTextField = new JTextField("Veuillez indiquer un ou plusieurs lieux geographiques : ");
-        locationTextField = styleJTextField(locationTextField, 20, 410, 300, 20);
+        locationTextField = styleJTextFieldReservation(locationTextField, 20, 410, 300, 20);
 
         JCheckBox locationNorth = new JCheckBox("Nord de la ville");
-        locationNorth = styleJCheckBox(locationNorth,20, 440, 150, 20);
+        locationNorth = styleJCheckBoxReservation(locationNorth,20, 440, 150, 20);
 
         JCheckBox locationSouth = new JCheckBox("Sud de la ville");
-        locationSouth = styleJCheckBox(locationSouth,20, 470, 150, 20);
+        locationSouth = styleJCheckBoxReservation(locationSouth,20, 470, 150, 20);
 
         JCheckBox locationEast = new JCheckBox("Est de la ville");
-        locationEast = styleJCheckBox(locationEast,180, 440, 150, 20);
+        locationEast = styleJCheckBoxReservation(locationEast,180, 440, 150, 20);
 
         JCheckBox locationWest = new JCheckBox("Ouest de la ville");
-        locationWest = styleJCheckBox(locationWest,180, 470, 150, 20);
+        locationWest = styleJCheckBoxReservation(locationWest,180, 470, 150, 20);
 
         JCheckBox locationCenter = new JCheckBox("Centre de la ville");
-        locationCenter = styleJCheckBox(locationCenter,340, 440, 150, 20);
+        locationCenter = styleJCheckBoxReservation(locationCenter,340, 440, 150, 20);
 
         JCheckBox locationAnyway = new JCheckBox("Peu importe");
-        locationAnyway = styleJCheckBox(locationAnyway,340, 470, 150, 20);
+        locationAnyway = styleJCheckBoxReservation(locationAnyway,340, 470, 150, 20);
 
         choice.add(locationLabel);
         choice.add(locationTextField);
@@ -316,41 +328,42 @@ public class Ihm extends JFrame implements ActionListener {
         choice.add(locationWest);
         choice.add(locationEast);
 
-
-
-
-        buttonReturnContinue(choice);
-
-        pageBody.add(choice, BorderLayout.SOUTH);
-        pageBody.setBackground(Color.WHITE);
-        getContentPane().add(menu, BorderLayout.WEST);
-        getContentPane().add(pageBody, BorderLayout.CENTER);
+        return choice;
     }
-    public void buttonReturnContinue(JPanel p){
+    public void buttonReturnContinue(JPanel choice, String page, JPanel pageBody){
         JButton buttonContinue = new JButton("Continuer");
         JButton buttonReturn = new JButton("Retourner");
         buttonContinue.setBounds(780, 500, 100, 50);
+        buttonContinue.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("test");
+                pageBody.remove(choice);
+                pageBody.repaint();
+            }
+        });
+        buttonReturn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                
+            }
+        });
         buttonReturn.setBounds(660, 500, 100, 50);
-        p.add(buttonContinue);
-        p.add(buttonReturn);
-
+        choice.add(buttonContinue);
+        choice.add(buttonReturn);
     }
-    public JPanel title(){
+    public JPanel titleReservation(){
         JPanel titlePage = new JPanel();
         titlePage.setLayout(null);
         Dimension dimTitle = new Dimension(950, 100);
-        titlePage.setMaximumSize(dimTitle);
-        titlePage.setPreferredSize(dimTitle);
-        titlePage.setMinimumSize(dimTitle);
+        sizeComposant(dimTitle, titlePage);
         titlePage.setBackground(Color.WHITE);
-
 
         ImageIcon iconBack = new ImageIcon(new ImageIcon("C:\\Users\\cedri\\Bureau\\pds\\image\\flecheGauche.png").getImage().getScaledInstance(75,75,Image.SCALE_DEFAULT));
         JButton flecheBack = new JButton(iconBack);
         flecheBack.setBackground(Color.white);
         flecheBack.setBorder(BorderFactory.createLineBorder(Color.WHITE));
         flecheBack.setBounds(0, 0, 75, 75);
-
 
         JTextField title = new JTextField("Realisation d'une location : ", 50);
         title.setFont(new Font("Serif", Font.BOLD, 35));
@@ -366,23 +379,21 @@ public class Ihm extends JFrame implements ActionListener {
 
         return titlePage;
     }
-    public JLabel styleJLabel(JLabel l, int x, int y, int w, int h){
-        l.setMaximumSize(new Dimension(200, 50));
-        l.setPreferredSize(new Dimension(200, 50));
-        l.setMinimumSize(new Dimension(200, 50));
+    public JLabel styleJLabelReservation(JLabel l, int x, int y, int w, int h){
+        sizeComposant(new Dimension(200, 200) ,l);
         l.setBorder(BorderFactory.createMatteBorder(0,0, 1, 0, Color.black));
         l.setBounds(x,y,w,h);
         l.setFont(new Font("Serif", Font.BOLD, 20));
         return l;
     }
-    public JTextField styleJTextField(JTextField t, int x, int y, int w, int h) {
+    public JTextField styleJTextFieldReservation(JTextField t, int x, int y, int w, int h) {
         t.setEditable(false);
         t.setBackground(Color.WHITE);
         t.setBorder(BorderFactory.createLineBorder(Color.WHITE));
         t.setBounds(x, y, w, h);
         return t;
     }
-    public JCheckBox styleJCheckBox(JCheckBox c, int x, int y, int w, int h){
+    public JCheckBox styleJCheckBoxReservation(JCheckBox c, int x, int y, int w, int h){
         c.setBackground(Color.WHITE);
         c.setBounds(x, y, w, h);
         return c;
@@ -393,19 +404,19 @@ public class Ihm extends JFrame implements ActionListener {
         JLabel flecheAdvancement = new JLabel(iconAdvancement,JLabel.CENTER);
         return flecheAdvancement;
     }
-    public JPanel rentalAdvancement(){
+    public JPanel rentalAdvancement(String page){
         JPanel rentalAdvancement = new JPanel();
         rentalAdvancement.setLayout(new FlowLayout(FlowLayout.LEFT, 30, 15));
         Dimension dimAdvancement = new Dimension(950, 70);
-        rentalAdvancement.setMaximumSize(dimAdvancement);
-        rentalAdvancement.setPreferredSize(dimAdvancement);
-        rentalAdvancement.setMinimumSize(dimAdvancement);
+        sizeComposant(dimAdvancement, rentalAdvancement);
         rentalAdvancement.setBackground(Color.WHITE);
         rentalAdvancement.setBorder(BorderFactory.createMatteBorder(0,0,2,0, Color.BLACK));
 
         JTextField criteria= new JTextField("Criteres", 5);
         criteria.setEditable(false);
         criteria.setOpaque(false);
+        if(page.equals("criteres")) criteria.setForeground(Color.RED);
+
         criteria.setBorder(BorderFactory.createEmptyBorder(10,20,10,0));
         JTextField choiceField = new JTextField("Choix",5);
         choiceField.setEditable(false);
@@ -431,7 +442,6 @@ public class Ihm extends JFrame implements ActionListener {
         return rentalAdvancement;
     }
 
-
     public JPanel menu(){
 
         JPanel menu = new JPanel();
@@ -440,24 +450,17 @@ public class Ihm extends JFrame implements ActionListener {
 
         JButton realize = new JButton("Realiser une location");
         realize.addActionListener(this);
-        realize.setMinimumSize(new Dimension(Integer.MAX_VALUE, 75));
-        realize.setPreferredSize(new Dimension(Integer.MAX_VALUE, 75));
-        realize.setMaximumSize(new Dimension(Integer.MAX_VALUE, 75));
+        sizeComposant(new Dimension(Integer.MAX_VALUE, 75), realize);
         realize.setBackground(Color.CYAN);
 
         JButton consult = new JButton("Consulter une location");
         consult.addActionListener(this);
-        consult.setMinimumSize(new Dimension(Integer.MAX_VALUE, 75));
-        consult.setPreferredSize(new Dimension(Integer.MAX_VALUE, 75));
-        consult.setMaximumSize(new Dimension(Integer.MAX_VALUE, 75));
+        sizeComposant(new Dimension(Integer.MAX_VALUE, 75), consult);
         consult.setBackground(Color.CYAN);
-
 
         JButton staff = new JButton("Personnel");
         staff.addActionListener(this);
-        staff.setMinimumSize(new Dimension(Integer.MAX_VALUE, 75));
-        staff.setPreferredSize(new Dimension(Integer.MAX_VALUE, 75));
-        staff.setMaximumSize(new Dimension(Integer.MAX_VALUE, 75));
+        sizeComposant(new Dimension(Integer.MAX_VALUE, 75), staff);
         staff.setBackground(Color.CYAN);
 
         JPanel underMenu = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -493,5 +496,11 @@ public class Ihm extends JFrame implements ActionListener {
         menu.setPreferredSize(new Dimension(250, 800));
 
         return menu;
+    }
+
+    public void sizeComposant(Dimension dim, Component c){
+        c.setPreferredSize(dim);
+        c.setMaximumSize(dim);
+        c.setMinimumSize(dim);
     }
 }
