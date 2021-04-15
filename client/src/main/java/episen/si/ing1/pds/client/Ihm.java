@@ -156,10 +156,10 @@ public class Ihm extends JFrame implements ActionListener {
 
         //label of date
         JTextField startDate = new JTextField("Veuillez indiquer la date de debut : (YYYY-MM-DD) ");
-        startDate = styleJtextField(startDate, 20, 80, 275, 20);
+        startDate = styleJTextField(startDate, 20, 80, 275, 20);
 
         JTextField endDate = new JTextField("Veuillez indiquer la date de fin : (YYYY-MM-DD)");
-        endDate = styleJtextField(endDate,20, 110, 275, 20);
+        endDate = styleJTextField(endDate,20, 110, 275, 20);
 
         JTextField valueStartDate = new JTextField(" ");
         valueStartDate.setBounds(350, 80, 100, 20);
@@ -168,12 +168,7 @@ public class Ihm extends JFrame implements ActionListener {
         valueEndDate.setBounds(350, 110, 100, 20);
 
         JLabel dateLabel = new JLabel("Date : ");
-        dateLabel.setMaximumSize(new Dimension(100, 50));
-        dateLabel.setPreferredSize(new Dimension(100, 50));
-        dateLabel.setMinimumSize(new Dimension(100, 50));
-        dateLabel.setBorder(BorderFactory.createMatteBorder(0,0, 1, 0, Color.black));
-        dateLabel.setBounds(20, 20,100,50);
-        dateLabel.setFont(new Font("Serif", Font.BOLD, 20));
+        dateLabel = styleJLabel(dateLabel, 20, 20,250,50);
 
         choice.add(dateLabel);
         choice.add(startDate);
@@ -182,55 +177,86 @@ public class Ihm extends JFrame implements ActionListener {
         choice.add(valueEndDate);
 
         //label of room
-        JLabel roomLabel = new JLabel("Les salles : ");
-        roomLabel.setMaximumSize(new Dimension(100, 50));
-        roomLabel.setPreferredSize(new Dimension(100, 50));
-        roomLabel.setMinimumSize(new Dimension(100, 50));
-        roomLabel.setBorder(BorderFactory.createMatteBorder(0,0, 1, 0, Color.black));
-        roomLabel.setBounds(20, 140,100,50);
-        roomLabel.setFont(new Font("Serif", Font.BOLD, 20));
+        JLabel roomLabel = new JLabel("Les salles : ");;
+        roomLabel = styleJLabel(roomLabel,20, 140,250,50);
+
 
         JTextField openSpace = new JTextField("Open-space : ");
-        openSpace = styleJtextField(openSpace,20, 200, 100, 20);
+        openSpace = styleJTextField(openSpace,20, 200, 100, 20);
 
         JCheckBox checkBoxOpenSpace = new JCheckBox();
-        checkBoxOpenSpace.setBounds(120, 200, 20, 20);
-        checkBoxOpenSpace.setBackground(Color.WHITE);
+        checkBoxOpenSpace = styleJCheckBox(checkBoxOpenSpace, 120, 200, 20, 20);
         checkBoxOpenSpace.addItemListener(new ItemListener() {
             public void itemStateChanged(ItemEvent e) {
                 JTextField quantityOpenSpace = new JTextField("- nombre d'open-space : ");
-                quantityOpenSpace = styleJtextField(quantityOpenSpace,400, 200, 150, 20);
+                quantityOpenSpace = styleJTextField(quantityOpenSpace,400, 200, 175, 20);
 
                 JTextField valueOpenSpace = new JTextField(" ", 20);
                 valueOpenSpace.setBackground(Color.WHITE);
-                valueOpenSpace.setBounds(550, 200, 50, 20);
+                valueOpenSpace.setBounds(575, 200, 50, 20);
                 choice.add(quantityOpenSpace);
                 choice.add(valueOpenSpace);
             }
         });
 
         JTextField meetingRoom = new JTextField("Salle de reunion : ");
-        meetingRoom = styleJtextField(meetingRoom, 20, 230, 100, 20);
+        meetingRoom = styleJTextField(meetingRoom, 20, 230, 100, 20);
 
         JCheckBox checkBoxMeetingRoom = new JCheckBox();
-        checkBoxMeetingRoom.setBounds(120, 230, 20, 20);
-        checkBoxMeetingRoom.setBackground(Color.WHITE);
+        checkBoxMeetingRoom = styleJCheckBox(checkBoxMeetingRoom, 120, 230, 20, 20);
+        checkBoxMeetingRoom.addItemListener(new ItemListener() {
+            public void itemStateChanged(ItemEvent e) {
+                JTextField quantityMeetingRoom = new JTextField("- nombre de salle de réunion : ");
+                quantityMeetingRoom = styleJTextField(quantityMeetingRoom,400, 230, 175, 20);
+
+                JTextField valueMeetingRoom = new JTextField(" ", 20);
+                valueMeetingRoom.setBackground(Color.WHITE);
+                valueMeetingRoom.setBounds(575, 230, 50, 20);
+
+                choice.add(quantityMeetingRoom);
+                choice.add(valueMeetingRoom);
+            }
+        });
 
         JTextField singleOffice = new JTextField("Bureau individuel : ");
-        singleOffice = styleJtextField(singleOffice, 200, 200, 100, 20);
+        singleOffice = styleJTextField(singleOffice, 200, 200, 100, 20);
 
 
         JCheckBox checkBoxSingleOffice = new JCheckBox();
-        checkBoxSingleOffice.setBounds(300, 200, 20, 20);
-        checkBoxSingleOffice.setBackground(Color.WHITE);
+        checkBoxSingleOffice = styleJCheckBox(checkBoxSingleOffice,300, 200, 20, 20);
+        checkBoxSingleOffice.addItemListener(new ItemListener() {
+            public void itemStateChanged(ItemEvent e) {
+                JTextField quantitySingleOffice = new JTextField("- nombre de bureau individuel : ");
+                quantitySingleOffice = styleJTextField(quantitySingleOffice,650, 200, 175, 20);
+
+                JTextField valueSingleOffice= new JTextField(" ", 20);
+                valueSingleOffice.setBackground(Color.WHITE);
+                valueSingleOffice.setBounds(825, 200, 50, 20);
+
+                choice.add(quantitySingleOffice);
+                choice.add(valueSingleOffice);
+            }
+        });
 
         JTextField closedOffice = new JTextField("Bureau ferme : ");
-        closedOffice = styleJtextField(closedOffice, 200, 230, 100, 20);
+        closedOffice = styleJTextField(closedOffice, 200, 230, 100, 20);
 
 
         JCheckBox checkBoxClosedOffice = new JCheckBox();
-        checkBoxClosedOffice.setBounds(300, 230, 20, 20);
-        checkBoxClosedOffice.setBackground(Color.WHITE);
+        checkBoxClosedOffice = styleJCheckBox(checkBoxClosedOffice,300, 230, 20, 20);
+        checkBoxClosedOffice.addItemListener(new ItemListener() {
+            public void itemStateChanged(ItemEvent e) {
+                JTextField quantityBoxClosedOffice = new JTextField("- nombre de bureau individuel : ");
+                quantityBoxClosedOffice = styleJTextField(quantityBoxClosedOffice,650, 230, 175, 20);
+
+                JTextField valueBoxClosedOffice = new JTextField(" ", 20);
+                valueBoxClosedOffice.setBackground(Color.WHITE);
+                valueBoxClosedOffice.setBounds(825, 230, 50, 20);
+
+                choice.add(quantityBoxClosedOffice);
+                choice.add(valueBoxClosedOffice);
+            }
+        });
 
         choice.add(roomLabel);
         choice.add(openSpace);
@@ -242,12 +268,72 @@ public class Ihm extends JFrame implements ActionListener {
         choice.add(closedOffice);
         choice.add(checkBoxClosedOffice);
 
+        //surface
+        JLabel surfaceLabel = new JLabel("La surface voulue :");
+        surfaceLabel = styleJLabel(surfaceLabel,20, 260,250,50);
 
+        JTextField surfaceTextField = new JTextField("Veuillez indiquer une surface en metre carre : ");
+        surfaceTextField = styleJTextField(surfaceTextField, 20, 320, 275, 20);
+
+        JTextField valueSurface = new JTextField(" ");
+        valueSurface.setBounds(310, 320, 50, 20);
+
+        choice.add(surfaceTextField);
+        choice.add(valueSurface);
+        choice.add(surfaceLabel);
+
+        //location
+        JLabel locationLabel = new JLabel("Situation geographique :");
+        locationLabel = styleJLabel(locationLabel,20, 350,250,50);
+
+        JTextField locationTextField = new JTextField("Veuillez indiquer un ou plusieurs lieux geographiques : ");
+        locationTextField = styleJTextField(locationTextField, 20, 410, 300, 20);
+
+        JCheckBox locationNorth = new JCheckBox("Nord de la ville");
+        locationNorth = styleJCheckBox(locationNorth,20, 440, 150, 20);
+
+        JCheckBox locationSouth = new JCheckBox("Sud de la ville");
+        locationSouth = styleJCheckBox(locationSouth,20, 470, 150, 20);
+
+        JCheckBox locationEast = new JCheckBox("Est de la ville");
+        locationEast = styleJCheckBox(locationEast,180, 440, 150, 20);
+
+        JCheckBox locationWest = new JCheckBox("Ouest de la ville");
+        locationWest = styleJCheckBox(locationWest,180, 470, 150, 20);
+
+        JCheckBox locationCenter = new JCheckBox("Centre de la ville");
+        locationCenter = styleJCheckBox(locationCenter,340, 440, 150, 20);
+
+        JCheckBox locationAnyway = new JCheckBox("Peu importe");
+        locationAnyway = styleJCheckBox(locationAnyway,340, 470, 150, 20);
+
+        choice.add(locationLabel);
+        choice.add(locationTextField);
+        choice.add(locationAnyway);
+        choice.add(locationCenter);
+        choice.add(locationNorth);
+        choice.add(locationSouth);
+        choice.add(locationWest);
+        choice.add(locationEast);
+
+
+
+
+        buttonReturnContinue(choice);
 
         pageBody.add(choice, BorderLayout.SOUTH);
         pageBody.setBackground(Color.WHITE);
         getContentPane().add(menu, BorderLayout.WEST);
         getContentPane().add(pageBody, BorderLayout.CENTER);
+    }
+    public void buttonReturnContinue(JPanel p){
+        JButton buttonContinue = new JButton("Continuer");
+        JButton buttonReturn = new JButton("Retourner");
+        buttonContinue.setBounds(780, 500, 100, 50);
+        buttonReturn.setBounds(660, 500, 100, 50);
+        p.add(buttonContinue);
+        p.add(buttonReturn);
+
     }
     public JPanel title(){
         JPanel titlePage = new JPanel();
@@ -280,12 +366,26 @@ public class Ihm extends JFrame implements ActionListener {
 
         return titlePage;
     }
-    public JTextField styleJtextField(JTextField t, int x, int y, int w, int h) {
+    public JLabel styleJLabel(JLabel l, int x, int y, int w, int h){
+        l.setMaximumSize(new Dimension(200, 50));
+        l.setPreferredSize(new Dimension(200, 50));
+        l.setMinimumSize(new Dimension(200, 50));
+        l.setBorder(BorderFactory.createMatteBorder(0,0, 1, 0, Color.black));
+        l.setBounds(x,y,w,h);
+        l.setFont(new Font("Serif", Font.BOLD, 20));
+        return l;
+    }
+    public JTextField styleJTextField(JTextField t, int x, int y, int w, int h) {
         t.setEditable(false);
         t.setBackground(Color.WHITE);
         t.setBorder(BorderFactory.createLineBorder(Color.WHITE));
         t.setBounds(x, y, w, h);
         return t;
+    }
+    public JCheckBox styleJCheckBox(JCheckBox c, int x, int y, int w, int h){
+        c.setBackground(Color.WHITE);
+        c.setBounds(x, y, w, h);
+        return c;
     }
 
     public JLabel fleche(){
