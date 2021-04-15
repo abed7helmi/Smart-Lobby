@@ -33,7 +33,7 @@ public class Ihm extends JFrame implements ActionListener {
         }*/
         setTitle(name);
         //firstPage();
-        realizeLocation();
+        realizeReservation();
 
         setVisible(true);
         setLocationRelativeTo(null);
@@ -132,7 +132,7 @@ public class Ihm extends JFrame implements ActionListener {
         getContentPane().add(registeredCompany, BorderLayout.CENTER);
     }
 
-    public void realizeLocation(){
+    public void realizeReservation(){
         setSize(1200, 800);
         JPanel pageBody = new JPanel();
         pageBody.setLayout(new BorderLayout());
@@ -156,18 +156,14 @@ public class Ihm extends JFrame implements ActionListener {
 
         //label of date
         JTextField startDate = new JTextField("Veuillez indiquer la date de debut : (YYYY-MM-DD) ");
-        startDate.setEditable(false);
-        startDate.setBackground(Color.WHITE);
-        startDate.setBounds(20, 80, 275, 20);
-        startDate.setBorder(BorderFactory.createLineBorder(Color.WHITE));
+        startDate = styleJtextField(startDate, 20, 80, 275, 20);
+
         JTextField endDate = new JTextField("Veuillez indiquer la date de fin : (YYYY-MM-DD)");
-        endDate.setEditable(false);
-        endDate.setBackground(Color.WHITE);
-        endDate.setBounds(20, 110, 275, 20);
-        endDate.setBorder(BorderFactory.createLineBorder(Color.WHITE));
+        endDate = styleJtextField(endDate,20, 110, 275, 20);
 
         JTextField valueStartDate = new JTextField(" ");
         valueStartDate.setBounds(350, 80, 100, 20);
+
         JTextField valueEndDate = new JTextField(" ");
         valueEndDate.setBounds(350, 110, 100, 20);
 
@@ -195,10 +191,7 @@ public class Ihm extends JFrame implements ActionListener {
         roomLabel.setFont(new Font("Serif", Font.BOLD, 20));
 
         JTextField openSpace = new JTextField("Open-space : ");
-        openSpace.setEditable(false);
-        openSpace.setBackground(Color.WHITE);
-        openSpace.setBounds(20, 200, 100, 20);
-        openSpace.setBorder(BorderFactory.createLineBorder(Color.WHITE));
+        openSpace = styleJtextField(openSpace,20, 200, 100, 20);
 
         JCheckBox checkBoxOpenSpace = new JCheckBox();
         checkBoxOpenSpace.setBounds(120, 200, 20, 20);
@@ -206,10 +199,7 @@ public class Ihm extends JFrame implements ActionListener {
         checkBoxOpenSpace.addItemListener(new ItemListener() {
             public void itemStateChanged(ItemEvent e) {
                 JTextField quantityOpenSpace = new JTextField("- nombre d'open-space : ");
-                quantityOpenSpace.setEditable(false);
-                quantityOpenSpace.setBackground(Color.WHITE);
-                quantityOpenSpace.setBounds(400, 200, 150, 20);
-                quantityOpenSpace.setBorder(BorderFactory.createLineBorder(Color.WHITE));
+                quantityOpenSpace = styleJtextField(quantityOpenSpace,400, 200, 150, 20);
 
                 JTextField valueOpenSpace = new JTextField(" ", 20);
                 valueOpenSpace.setBackground(Color.WHITE);
@@ -220,30 +210,23 @@ public class Ihm extends JFrame implements ActionListener {
         });
 
         JTextField meetingRoom = new JTextField("Salle de reunion : ");
-        meetingRoom.setEditable(false);
-        meetingRoom.setBackground(Color.WHITE);
-        meetingRoom.setBounds(20, 230, 100, 20);
-        meetingRoom.setBorder(BorderFactory.createLineBorder(Color.WHITE));
+        meetingRoom = styleJtextField(meetingRoom, 20, 230, 100, 20);
 
         JCheckBox checkBoxMeetingRoom = new JCheckBox();
         checkBoxMeetingRoom.setBounds(120, 230, 20, 20);
         checkBoxMeetingRoom.setBackground(Color.WHITE);
 
         JTextField singleOffice = new JTextField("Bureau individuel : ");
-        singleOffice.setEditable(false);
-        singleOffice.setBackground(Color.WHITE);
-        singleOffice.setBounds(200, 200, 100, 20);
-        singleOffice.setBorder(BorderFactory.createLineBorder(Color.WHITE));
+        singleOffice = styleJtextField(singleOffice, 200, 200, 100, 20);
+
 
         JCheckBox checkBoxSingleOffice = new JCheckBox();
         checkBoxSingleOffice.setBounds(300, 200, 20, 20);
         checkBoxSingleOffice.setBackground(Color.WHITE);
 
         JTextField closedOffice = new JTextField("Bureau ferme : ");
-        closedOffice.setEditable(false);
-        closedOffice.setBackground(Color.WHITE);
-        closedOffice.setBounds(200, 230, 100, 20);
-        closedOffice.setBorder(BorderFactory.createLineBorder(Color.WHITE));
+        closedOffice = styleJtextField(closedOffice, 200, 230, 100, 20);
+
 
         JCheckBox checkBoxClosedOffice = new JCheckBox();
         checkBoxClosedOffice.setBounds(300, 230, 20, 20);
@@ -296,6 +279,13 @@ public class Ihm extends JFrame implements ActionListener {
         titlePage.add(title);
 
         return titlePage;
+    }
+    public JTextField styleJtextField(JTextField t, int x, int y, int w, int h) {
+        t.setEditable(false);
+        t.setBackground(Color.WHITE);
+        t.setBorder(BorderFactory.createLineBorder(Color.WHITE));
+        t.setBounds(x, y, w, h);
+        return t;
     }
 
     public JLabel fleche(){
