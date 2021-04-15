@@ -2,8 +2,10 @@ package episen.si.ing1.pds.client;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -152,30 +154,110 @@ public class Ihm extends JFrame implements ActionListener {
         choice.setBackground(Color.WHITE);
         choice.setBorder(BorderFactory.createEmptyBorder(20,20,20,20));
 
+        //label of date
         JTextField startDate = new JTextField("Veuillez indiquer la date de debut : (YYYY-MM-DD) ");
         startDate.setEditable(false);
         startDate.setBackground(Color.WHITE);
-        startDate.setBounds(20, 20, 275, 20);
+        startDate.setBounds(20, 80, 275, 20);
         startDate.setBorder(BorderFactory.createLineBorder(Color.WHITE));
         JTextField endDate = new JTextField("Veuillez indiquer la date de fin : (YYYY-MM-DD)");
         endDate.setEditable(false);
         endDate.setBackground(Color.WHITE);
-        endDate.setBounds(20, 50, 275, 20);
+        endDate.setBounds(20, 110, 275, 20);
         endDate.setBorder(BorderFactory.createLineBorder(Color.WHITE));
 
         JTextField valueStartDate = new JTextField(" ");
-        valueStartDate.setBounds(350, 20, 100, 20);
+        valueStartDate.setBounds(350, 80, 100, 20);
         JTextField valueEndDate = new JTextField(" ");
-        valueEndDate.setBounds(350, 50, 100, 20);
+        valueEndDate.setBounds(350, 110, 100, 20);
 
+        JLabel dateLabel = new JLabel("Date : ");
+        dateLabel.setMaximumSize(new Dimension(100, 50));
+        dateLabel.setPreferredSize(new Dimension(100, 50));
+        dateLabel.setMinimumSize(new Dimension(100, 50));
+        dateLabel.setBorder(BorderFactory.createMatteBorder(0,0, 1, 0, Color.black));
+        dateLabel.setBounds(20, 20,100,50);
+        dateLabel.setFont(new Font("Serif", Font.BOLD, 20));
 
-
+        choice.add(dateLabel);
         choice.add(startDate);
         choice.add(valueStartDate);
         choice.add(endDate);
         choice.add(valueEndDate);
 
+        //label of room
+        JLabel roomLabel = new JLabel("Les salles : ");
+        roomLabel.setMaximumSize(new Dimension(100, 50));
+        roomLabel.setPreferredSize(new Dimension(100, 50));
+        roomLabel.setMinimumSize(new Dimension(100, 50));
+        roomLabel.setBorder(BorderFactory.createMatteBorder(0,0, 1, 0, Color.black));
+        roomLabel.setBounds(20, 140,100,50);
+        roomLabel.setFont(new Font("Serif", Font.BOLD, 20));
 
+        JTextField openSpace = new JTextField("Open-space : ");
+        openSpace.setEditable(false);
+        openSpace.setBackground(Color.WHITE);
+        openSpace.setBounds(20, 200, 100, 20);
+        openSpace.setBorder(BorderFactory.createLineBorder(Color.WHITE));
+
+        JCheckBox checkBoxOpenSpace = new JCheckBox();
+        checkBoxOpenSpace.setBounds(120, 200, 20, 20);
+        checkBoxOpenSpace.setBackground(Color.WHITE);
+        checkBoxOpenSpace.addItemListener(new ItemListener() {
+            public void itemStateChanged(ItemEvent e) {
+                JTextField quantityOpenSpace = new JTextField("- nombre d'open-space : ");
+                quantityOpenSpace.setEditable(false);
+                quantityOpenSpace.setBackground(Color.WHITE);
+                quantityOpenSpace.setBounds(400, 200, 150, 20);
+                quantityOpenSpace.setBorder(BorderFactory.createLineBorder(Color.WHITE));
+
+                JTextField valueOpenSpace = new JTextField(" ", 20);
+                valueOpenSpace.setBackground(Color.WHITE);
+                valueOpenSpace.setBounds(550, 200, 50, 20);
+                choice.add(quantityOpenSpace);
+                choice.add(valueOpenSpace);
+            }
+        });
+
+        JTextField meetingRoom = new JTextField("Salle de reunion : ");
+        meetingRoom.setEditable(false);
+        meetingRoom.setBackground(Color.WHITE);
+        meetingRoom.setBounds(20, 230, 100, 20);
+        meetingRoom.setBorder(BorderFactory.createLineBorder(Color.WHITE));
+
+        JCheckBox checkBoxMeetingRoom = new JCheckBox();
+        checkBoxMeetingRoom.setBounds(120, 230, 20, 20);
+        checkBoxMeetingRoom.setBackground(Color.WHITE);
+
+        JTextField singleOffice = new JTextField("Bureau individuel : ");
+        singleOffice.setEditable(false);
+        singleOffice.setBackground(Color.WHITE);
+        singleOffice.setBounds(200, 200, 100, 20);
+        singleOffice.setBorder(BorderFactory.createLineBorder(Color.WHITE));
+
+        JCheckBox checkBoxSingleOffice = new JCheckBox();
+        checkBoxSingleOffice.setBounds(300, 200, 20, 20);
+        checkBoxSingleOffice.setBackground(Color.WHITE);
+
+        JTextField closedOffice = new JTextField("Bureau ferme : ");
+        closedOffice.setEditable(false);
+        closedOffice.setBackground(Color.WHITE);
+        closedOffice.setBounds(200, 230, 100, 20);
+        closedOffice.setBorder(BorderFactory.createLineBorder(Color.WHITE));
+
+        JCheckBox checkBoxClosedOffice = new JCheckBox();
+        checkBoxClosedOffice.setBounds(300, 230, 20, 20);
+        checkBoxClosedOffice.setBackground(Color.WHITE);
+
+        choice.add(roomLabel);
+        choice.add(openSpace);
+        choice.add(checkBoxOpenSpace);
+        choice.add(meetingRoom);
+        choice.add(checkBoxMeetingRoom);
+        choice.add(singleOffice);
+        choice.add(checkBoxSingleOffice);
+        choice.add(closedOffice);
+        choice.add(checkBoxClosedOffice);
 
 
 
