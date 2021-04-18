@@ -3,101 +3,71 @@ package episen.si.ing1.pds.client;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Reservation extends JFrame{
-    private boolean verifInput = false;
-    private Map input = new HashMap();
+public class ChoiceCriteria{
+    private Map<String, String> input = new HashMap<>();
+    private final String page = "criteria";
+    private JButton buttonContinue = new JButton("Continuer");
+    private JPanel pageBody = new JPanel();
+    private JFrame frame;
 
+    public ChoiceCriteria(JFrame f)  {
+        input.clear();
+        frame = f;
+    }
 
     public void realizeReservation(){
-        String page = "criteres";
-        setSize(1200, 800);
-        JPanel pageBody = new JPanel();
+        frame.setSize(1200, 800);
         pageBody.setLayout(new BorderLayout());
         Menu menu = new Menu();
         TitleReservation title = new TitleReservation();
 
         pageBody.add(title.titleReservation(), BorderLayout.NORTH);
-
         RentalAdvancement rentalAdvancement = new RentalAdvancement(page);
+        JPanel advancement = rentalAdvancement.rentalAdvancement();
+        pageBody.add(advancement, BorderLayout.CENTER);
 
-        pageBody.add(rentalAdvancement.rentalAdvancement(), BorderLayout.CENTER);
-
-        JPanel choice = reservationCritere(pageBody);
-
-        //button continue and return
-        //buttonReturnContinue(choice, page, pageBody);
-
-        pageBody.add(choice, BorderLayout.SOUTH);
-        pageBody.setBackground(Color.WHITE);
-        getContentPane().add(menu.menu(), BorderLayout.WEST);
-        getContentPane().add(pageBody, BorderLayout.CENTER);
-
-        setVisible(true);
-        setLocationRelativeTo(null);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    }
-
-    /*public void buttonReturnContinue(JPanel choice, String page, JPanel pageBody){
-        JButton buttonContinue = new JButton("Continuer");
+        JPanel choice = reservationCritere();
         buttonContinue.setEnabled(false);
-        JButton buttonReturn = new JButton("Retourner");
         buttonContinue.setBounds(780, 500, 100, 50);
         buttonContinue.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if((input.containsKey("start_date") && input.containsKey("end_date") && input.containsKey("start_date") && input.containsKey("numberEmployee"))
-                    && (input.containsKey("numberOpenSpace") || input.containsKey("numberMeetingRoom") ||
-                        input.containsKey("numberSingleBox")|| input.containsKey("numberBoxClosedOffice"))){
-
+                if(input.containsKey("numberMeetingRoom") && Integer.parseInt(input.get("numberMeetingRoom")) == 1
+                        && !(input.containsKey("numberOpenSpace")) && !(input.containsKey("numberSingleOffice"))
+                        && !(input.containsKey("numberBoxClosedOffice")) && Integer.parseInt(input.get("numberEmployee")) > 10){
+                    String message = "Vous avez choisi une salle de reunion pour un nombre important de collaborateurs, ainsi, on réserve aussi un open-space pour votre confort";
+                    JOptionPane.showMessageDialog(null, message, null, JOptionPane.WARNING_MESSAGE);
+                    input.put("numberOpenSpace", 1+"");
                 }
-                System.out.println("test");
-                pageBody.remove(choice);
+                choice.setVisible(false);
+                advancement.setVisible(false);
                 pageBody.repaint();
-
+                changePage();
             }
         });
-        buttonReturn.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-
-            }
-        });
-        buttonReturn.setBounds(660, 500, 100, 50);
         choice.add(buttonContinue);
-        choice.add(buttonReturn);
-    }*/
+        pageBody.add(choice, BorderLayout.SOUTH);
+        pageBody.setBackground(Color.WHITE);
+        frame.getContentPane().add(menu.menu(), BorderLayout.WEST);
+        frame.getContentPane().add(pageBody, BorderLayout.CENTER);
 
-    public JPanel reservationCritere(JPanel pageBody){
+        frame.repaint();
+    }
+
+    public JPanel reservationCritere(){
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         JPanel choice = new JPanel();
         choice.setLayout(null);
         Dimension dimChoice = new Dimension(950, 600);
         sizeComposant(dimChoice, choice);
         choice.setBackground(Color.WHITE);
         choice.setBorder(BorderFactory.createEmptyBorder(20,20,20,20));
-
-        JButton buttonContinue = new JButton("Continuer");
-        buttonContinue.setEnabled(false);
-        JButton buttonReturn = new JButton("Retourner");
-        buttonContinue.setBounds(780, 500, 100, 50);
-        buttonContinue.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                System.out.println("test");
-                pageBody.remove(choice);
-                pageBody.repaint();
-                System.out.println(input);
-            }
-        });
-        buttonReturn.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {}
-        });
-        buttonReturn.setBounds(660, 500, 100, 50);
-        choice.add(buttonContinue);
-        choice.add(buttonReturn);
 
         //label of date
         JTextField startDate = new JTextField("Veuillez indiquer la date de debut : (YYYY-MM-DD) ");
@@ -108,6 +78,7 @@ public class Reservation extends JFrame{
 
         JTextField valueStartDate = new JTextField(" ");
         valueStartDate.setBounds(350, 80, 100, 20);
+        JTextField messageErrorStartDate = styleJTextFieldError(choice ,470, 80, 170, 20);
         valueStartDate.addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {}
@@ -115,17 +86,32 @@ public class Reservation extends JFrame{
             public void focusLost(FocusEvent e) {
                 Object source = e.getSource();
                 String m = (((JTextField)source).getText()).trim();
-                if(m.matches("[0-9]{4}-[0-9]{2}-[0-9]{2}")) {
-                    input.put("start_date", ((JTextField)source).getText());
-                    System.out.println(input);
-                    if(verifMap()) buttonContinue.setEnabled(true);
+                if(m.matches("[0-9]{4}-[0-1]{1}[0-9]{1}-[0-3]{1}[0-9]{1}")) {
+                    try {
+                        Date today1 = dateFormat.parse(dateFormat.format(new Date()));
+                        Date date1 = dateFormat.parse(m);
+                        if(today1.equals(date1) || today1.before(date1)){
+                            if(input.containsKey("start_date"))input.replace("start_date", ((JTextField)source).getText().trim());
+                            else input.put("start_date", ((JTextField)source).getText().trim());
+                            ((JTextField)choice.getComponentAt(470, 80)).setText(" ");
+                            if(verifMap()) buttonContinue.setEnabled(true);
+                            System.out.println(input);
+                        } else {
+                            messageErrorStartDate.setText("Veuillez rentrer une date valide");
+                            messageErrorStartDate.setForeground(Color.red);
+                        }
+                    } catch(Exception a) {a.printStackTrace();}
+                }else {
+                    messageErrorStartDate.setText("Veuillez respecter le format");
+                    messageErrorStartDate.setForeground(Color.red);
+
                 }
-                else styleJTextFieldError(choice, "Veuillez respecte le format" ,470, 80, 170, 20);
             }
         });
 
         JTextField valueEndDate = new JTextField(" ");
         valueEndDate.setBounds(350, 110, 100, 20);
+        JTextField messageErrorEndDate = styleJTextFieldError(choice ,470, 80, 170, 20);
         valueEndDate.addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {}
@@ -133,15 +119,27 @@ public class Reservation extends JFrame{
             public void focusLost(FocusEvent e) {
                 Object source = e.getSource();
                 String m = (((JTextField)source).getText()).trim();
-                if(m.matches("[0-9]{4}-[0-9]{2}-[0-9]{2}")) {
-                    input.put("end_date", ((JTextField)source).getText());
-                    System.out.println(input);
-                    if(verifMap()) buttonContinue.setEnabled(true);
+                if(m.matches("[0-9]{4}-[0-1]{1}[0-9]{1}-[0-1]{1}[0-9]{1}")) {
+                    try {
+                        Date today1 = dateFormat.parse(dateFormat.format(new Date()));
+                        Date date1 = dateFormat.parse(m);
+                        if(today1.equals(date1) || today1.before(date1)){
+                            if(input.containsKey("end_date"))input.replace("end_date", ((JTextField)source).getText().trim());
+                            else input.put("end_date", ((JTextField)source).getText().trim());
+                            messageErrorEndDate.setText(" ");
+                            if(verifMap()) buttonContinue.setEnabled(true);
+                            System.out.println(input);
+                        } else {
+                            messageErrorEndDate.setText("Veuillez rentrer une date valide");
+                            messageErrorEndDate.setForeground(Color.red);
+                        }
+                    } catch(Exception a) {a.printStackTrace();}
+                }else {
+                    messageErrorEndDate.setText("Veuillez respecter le format");
+                    messageErrorEndDate.setForeground(Color.red);
                 }
-                else styleJTextFieldError(choice, "Veuillez respecter le format",470, 110, 170, 20);
             }
         });
-
 
         JLabel dateLabel = new JLabel("Date : ");
         dateLabel = styleJLabelReservation(dateLabel, 20, 20,250,50);
@@ -153,7 +151,7 @@ public class Reservation extends JFrame{
         choice.add(valueEndDate);
 
         //label of room
-        JLabel roomLabel = new JLabel("Les salles : ");;
+        JLabel roomLabel = new JLabel("Les salles : ");
         roomLabel = styleJLabelReservation(roomLabel,20, 140,250,50);
 
 
@@ -165,11 +163,12 @@ public class Reservation extends JFrame{
         checkBoxOpenSpace.addItemListener(new ItemListener() {
             public void itemStateChanged(ItemEvent e) {
                 JTextField quantityOpenSpace = new JTextField("- nombre d'open-space : ");
-                quantityOpenSpace = styleJTextFieldReservation(quantityOpenSpace,400, 200, 175, 20);
+                quantityOpenSpace = styleJTextFieldReservation(quantityOpenSpace,380, 200, 175, 20);
 
                 JTextField valueOpenSpace = new JTextField(" ", 20);
                 valueOpenSpace.setBackground(Color.WHITE);
-                valueOpenSpace.setBounds(575, 200, 50, 20);
+                valueOpenSpace.setBounds(555, 200, 30, 20);
+                JTextField messageErrorOpenSpace = styleJTextFieldError(choice,585, 200, 20, 20);
                 valueOpenSpace.addFocusListener(new FocusListener() {
                     @Override
                     public void focusGained(FocusEvent e) {}
@@ -178,11 +177,14 @@ public class Reservation extends JFrame{
                         Object source = e.getSource();
                         String m = (((JTextField)source).getText()).trim();
                         if(m.matches("\\d+")) {
-                            input.put("numberOpenSpace", ((JTextField)source).getText());
-                            System.out.println(input);
+                            if(input.containsKey("numberOpenSpace"))input.replace("numberOpenSpace", ((JTextField)source).getText().trim());
+                            else input.put("numberOpenSpace", ((JTextField)source).getText().trim());
+                            messageErrorOpenSpace.setText(" ");
                             if(verifMap()) buttonContinue.setEnabled(true);
+                        }else {
+                            messageErrorOpenSpace.setText("X");
+                            messageErrorOpenSpace.setForeground(Color.red);
                         }
-                        else styleJTextFieldError(choice, "Veuillez saisir un nombre positif" ,400, 250, 200, 20);
                     }
                 });
                 choice.add(quantityOpenSpace);
@@ -198,11 +200,12 @@ public class Reservation extends JFrame{
         checkBoxMeetingRoom.addItemListener(new ItemListener() {
             public void itemStateChanged(ItemEvent e) {
                 JTextField quantityMeetingRoom = new JTextField("- nombre de salle de reunion : ");
-                quantityMeetingRoom = styleJTextFieldReservation(quantityMeetingRoom,400, 230, 175, 20);
+                quantityMeetingRoom = styleJTextFieldReservation(quantityMeetingRoom,380, 230, 175, 20);
 
                 JTextField valueMeetingRoom = new JTextField(" ", 20);
                 valueMeetingRoom.setBackground(Color.WHITE);
-                valueMeetingRoom.setBounds(575, 230, 50, 20);
+                valueMeetingRoom.setBounds(555, 230, 30, 20);
+                JTextField messageErrorOpenSpace = styleJTextFieldError(choice,585, 230, 20, 20);
                 valueMeetingRoom.addFocusListener(new FocusListener() {
                     @Override
                     public void focusGained(FocusEvent e) {}
@@ -211,14 +214,16 @@ public class Reservation extends JFrame{
                         Object source = e.getSource();
                         String m = (((JTextField)source).getText()).trim();
                         if(m.matches("\\d+")) {
-                            input.put("numberMeetingRoom", ((JTextField)source).getText());
-                            System.out.println(input);
+                            if(input.containsKey("numberMeetingRoom"))input.replace("numberMeetingRoom",((JTextField)source).getText().trim());
+                            else input.put("numberMeetingRoom",((JTextField)source).getText().trim());
+                            messageErrorOpenSpace.setText(" ");
                             if(verifMap()) buttonContinue.setEnabled(true);
+                        }else {
+                            messageErrorOpenSpace.setText("X");
+                            messageErrorOpenSpace.setForeground(Color.RED);
                         }
-                        else styleJTextFieldError(choice, "Veuillez saisir un nombre positif" ,400, 250, 200, 20);
                     }
                 });
-
                 choice.add(quantityMeetingRoom);
                 choice.add(valueMeetingRoom);
             }
@@ -233,11 +238,12 @@ public class Reservation extends JFrame{
         checkBoxSingleOffice.addItemListener(new ItemListener() {
             public void itemStateChanged(ItemEvent e) {
                 JTextField quantitySingleOffice = new JTextField("- nombre de bureau individuel : ");
-                quantitySingleOffice = styleJTextFieldReservation(quantitySingleOffice,650, 200, 175, 20);
+                quantitySingleOffice = styleJTextFieldReservation(quantitySingleOffice,620, 200, 175, 20);
 
                 JTextField valueSingleOffice= new JTextField(" ", 20);
                 valueSingleOffice.setBackground(Color.WHITE);
-                valueSingleOffice.setBounds(825, 200, 50, 20);
+                valueSingleOffice.setBounds(795, 200, 30, 20);
+                JTextField messageErrorSingleoffice = styleJTextFieldError(choice, 825, 200, 20, 20);
                 valueSingleOffice.addFocusListener(new FocusListener() {
                     @Override
                     public void focusGained(FocusEvent e) {}
@@ -246,14 +252,16 @@ public class Reservation extends JFrame{
                         Object source = e.getSource();
                         String m = (((JTextField)source).getText()).trim();
                         if(m.matches("\\d+")) {
-                            input.put("numberSingleOffice", ((JTextField)source).getText());
-                            System.out.println(input);
+                            if(input.containsKey("numberSingleOffice"))input.replace("numberSingleOffice",((JTextField)source).getText().trim());
+                            else input.put("numberSingleOffice",((JTextField)source).getText().trim());
+                            messageErrorSingleoffice.setText(" ");
                             if(verifMap()) buttonContinue.setEnabled(true);
+                        }else {
+                            messageErrorSingleoffice.setText("X");
+                            messageErrorSingleoffice.setForeground(Color.red);
                         }
-                        else styleJTextFieldError(choice, "Veuillez saisir un nombre positif" ,400, 250, 200, 20);
                     }
                 });
-
                 choice.add(quantitySingleOffice);
                 choice.add(valueSingleOffice);
             }
@@ -266,12 +274,13 @@ public class Reservation extends JFrame{
         checkBoxClosedOffice = styleJCheckBoxReservation(checkBoxClosedOffice,300, 230, 20, 20);
         checkBoxClosedOffice.addItemListener(new ItemListener() {
             public void itemStateChanged(ItemEvent e) {
-                JTextField quantityBoxClosedOffice = new JTextField("- nombre de bureau individuel : ");
-                quantityBoxClosedOffice = styleJTextFieldReservation(quantityBoxClosedOffice,650, 230, 175, 20);
+                JTextField quantityBoxClosedOffice = new JTextField("- nombre de bureau ferme : ");
+                quantityBoxClosedOffice = styleJTextFieldReservation(quantityBoxClosedOffice,620, 230, 175, 20);
 
                 JTextField valueBoxClosedOffice = new JTextField(" ", 20);
                 valueBoxClosedOffice.setBackground(Color.WHITE);
-                valueBoxClosedOffice.setBounds(825, 230, 50, 20);
+                valueBoxClosedOffice.setBounds(795, 230, 30, 20);
+                JTextField messageErrorClosedOffice = styleJTextFieldError(choice, 825, 230, 20, 20);
                 valueBoxClosedOffice.addFocusListener(new FocusListener() {
                     @Override
                     public void focusGained(FocusEvent e) {}
@@ -280,14 +289,16 @@ public class Reservation extends JFrame{
                         Object source = e.getSource();
                         String m = (((JTextField)source).getText()).trim();
                         if(m.matches("\\d+")) {
-                            input.put("numberBoxClosedOffice", ((JTextField)source).getText());
-                            System.out.println(input);
+                            if(input.containsKey("numberBoxClosedOffice"))input.replace("numberBoxClosedOffice",((JTextField)source).getText().trim());
+                            else input.put("numberBoxClosedOffice",((JTextField)source).getText().trim());
+                            messageErrorClosedOffice.setText(" ");
                             if(verifMap()) buttonContinue.setEnabled(true);
+                        }else {
+                            messageErrorClosedOffice.setText("X");
+                            messageErrorClosedOffice.setForeground(Color.red);
                         }
-                        else styleJTextFieldError(choice, "Veuillez saisir un nombre positif" ,400, 250, 200, 20);
                     }
                 });
-
                 choice.add(quantityBoxClosedOffice);
                 choice.add(valueBoxClosedOffice);
             }
@@ -312,6 +323,7 @@ public class Reservation extends JFrame{
 
         JTextField valueEmployee = new JTextField(" ");
         valueEmployee.setBounds(370, 320, 50, 20);
+        JTextField messageErrorEmployee = styleJTextFieldError(choice, 420, 320, 20, 20);
         valueEmployee.addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {}
@@ -320,11 +332,14 @@ public class Reservation extends JFrame{
                 Object source = e.getSource();
                 String m = (((JTextField)source).getText()).trim();
                 if(m.matches("\\d+")) {
-                    input.put("numberEmployee", ((JTextField)source).getText());
-                    System.out.println(input);
+                    if(input.containsKey("numberEmployee"))input.replace("numberEmployee",((JTextField)source).getText().trim());
+                    else input.put("numberEmployee",((JTextField)source).getText().trim());
+                    messageErrorEmployee.setText(" ");
                     if(verifMap()) buttonContinue.setEnabled(true);
+                }else{
+                    messageErrorEmployee.setText("X");
+                    messageErrorEmployee.setForeground(Color.RED);
                 }
-                else styleJTextFieldError(choice, "Veuillez saisir un nombre positif" ,400, 250, 200, 20);
             }
         });
 
@@ -383,14 +398,15 @@ public class Reservation extends JFrame{
         t.setBounds(x, y, w, h);
         return t;
     }
-    public void styleJTextFieldError(JPanel choice, String message, int x, int y, int w, int h) {
-        JTextField t = new JTextField(message);
+    public JTextField styleJTextFieldError(JPanel choice, int x, int y, int w, int h) {
+        JTextField t = new JTextField();
         t.setEditable(false);
         t.setBackground(Color.WHITE);
         t.setForeground(Color.RED);
         t.setBorder(BorderFactory.createLineBorder(Color.WHITE));
         t.setBounds(x, y, w, h);
         choice.add(t);
+        return t;
     }
     public JCheckBox styleJCheckBoxReservation(JCheckBox c, int x, int y, int w, int h){
         c.setBackground(Color.WHITE);
@@ -405,11 +421,16 @@ public class Reservation extends JFrame{
     }
 
     public boolean verifMap(){
+        System.out.println(input);
         if((input.containsKey("start_date") && input.containsKey("end_date") && input.containsKey("numberEmployee"))
                 && ( (input.containsKey("numberOpenSpace") || input.containsKey("numberMeetingRoom") ||
-                input.containsKey("numberSingleBox")|| input.containsKey("numberBoxClosedOffice"))))
+                input.containsKey("numberSingleOffice")|| input.containsKey("numberBoxClosedOffice"))))
             return true;
         else return false;
     }
 
+    public void changePage(){
+        Choice selectChoice = new Choice(input, frame);
+        selectChoice.choice(pageBody);
+    }
 }

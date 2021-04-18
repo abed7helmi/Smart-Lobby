@@ -18,8 +18,6 @@ public class RentalAdvancement {
 
     private String page;
 
-
-
     public JPanel rentalAdvancement(){
         JPanel rentalAdvancement = new JPanel();
         rentalAdvancement.setLayout(new FlowLayout(FlowLayout.LEFT, 30, 15));
@@ -31,7 +29,7 @@ public class RentalAdvancement {
         JTextField criteria= new JTextField("Criteres", 5);
         criteria.setEditable(false);
         criteria.setOpaque(false);
-        if(page.equals("criteres")) criteria.setForeground(Color.RED);
+
 
         criteria.setBorder(BorderFactory.createEmptyBorder(10,20,10,0));
         JTextField choiceField = new JTextField("Choix",5);
@@ -46,6 +44,21 @@ public class RentalAdvancement {
         bill.setEditable(false);
         bill.setOpaque(false);
         bill.setBorder(BorderFactory.createEmptyBorder(10,2,10,0));
+
+        if(page.equals("criteria")) criteria.setForeground(Color.RED);
+        else if(page.equals("choice")) {
+            criteria.setForeground(Color.GREEN);
+            choiceField.setForeground(Color.RED);
+        } else if(page.equals("device")){
+            criteria.setForeground(Color.GREEN);
+            choiceField.setForeground(Color.GREEN);
+            equipment.setForeground(Color.RED);
+        } else if(page.equals("bill")){
+            criteria.setForeground(Color.GREEN);
+            choiceField.setForeground(Color.GREEN);
+            equipment.setForeground(Color.GREEN);
+            bill.setForeground(Color.RED);
+        }
 
         rentalAdvancement.add(criteria);
         rentalAdvancement.add(fleche());
