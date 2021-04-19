@@ -104,14 +104,13 @@ public class ChoiceCriteria{
                 }else {
                     messageErrorStartDate.setText("Veuillez respecter le format");
                     messageErrorStartDate.setForeground(Color.red);
-
                 }
             }
         });
 
         JTextField valueEndDate = new JTextField(" ");
         valueEndDate.setBounds(350, 110, 100, 20);
-        JTextField messageErrorEndDate = styleJTextFieldError(choice ,470, 80, 170, 20);
+        JTextField messageErrorEndDate = styleJTextFieldError(choice ,470, 110, 170, 20);
         valueEndDate.addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {}

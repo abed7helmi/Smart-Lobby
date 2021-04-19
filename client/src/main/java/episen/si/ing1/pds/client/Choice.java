@@ -1,12 +1,9 @@
 package episen.si.ing1.pds.client;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,6 +14,7 @@ public class Choice{
     private JButton buttonContinue = new JButton("Continuer");
     private JButton buttonReturn = new JButton("Retour");
     private JTextField selected = new JTextField("Vous avez choisi : ");
+    private JPanel pageBody;
 
     //keep for link with the previous page
     public Choice(Map<String, String> input,JFrame f) {
@@ -24,20 +22,23 @@ public class Choice{
         this.frame = f;
     }
 
-
-    public void choice(JPanel pageBody){
+    public void choice(JPanel pb){
+        this.pageBody = pb;
         pageBody.setBackground(Color.WHITE);
+        JPanel view = view();
         buttonContinue.setEnabled(false);
         buttonContinue.setBounds(780, 10, 100, 50);
         buttonContinue.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.out.println("vous avez choisi  ca"+ (selected.getText().split(":")[1]).trim());
+                String order = (selected.getText().split(":")[1]).trim();
+                view.setVisible(false);
+                changePage(order);
             }
         });
         buttonReturn.setEnabled(true);
         buttonReturn.setBounds(670, 10, 100, 50);
-        JPanel view = view();
         view.add(buttonContinue);
         view.add(buttonReturn);
         RentalAdvancement rentalAdvancement = new RentalAdvancement(page);
@@ -121,8 +122,6 @@ public class Choice{
         return view;
     }
 
-
-
     public JPanel proposal(){
         JPanel proposal = new JPanel();
         proposal.setLayout(null);
@@ -164,5 +163,10 @@ public class Choice{
         t.setBorder(BorderFactory.createLineBorder(c2));
         t.setBounds(x, y, w, h);
         return t;
+    }
+
+    public void changePage(String order){
+        ViewWithPlan viewPlan = new ViewWithPlan(frame, input , order);
+        viewPlan.viewWithPlan(pageBody);
     }
 }
