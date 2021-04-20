@@ -31,21 +31,22 @@ public class Client {
 	private static final String episenClientJson = "CLIENT_JSON";
 	private static String episenClientFileLocation;
 	private static final String configClient = "CONFIG_CLIENT";
-    private static String episenClientConfig;
-    private static ClientConfig config;
-	
+	private static String episenClientConfig;
+	private static ClientConfig config;
+
 	public static void main(String[] args) {
-		try {
+		Ihm window = new Ihm("Smart Lobby");
+		/*try {
 			final Options options = new Options();
 			final Option requesttype = Option.builder().longOpt("requesttype").hasArg().argName("requesttype").build();
 			options.addOption(requesttype);
-			
+
 			final CommandLineParser clp = new DefaultParser();
 			final CommandLine commandLine = clp.parse(options, args);
-			
+
 			Properties props = new Properties();
 			props.load(Thread.currentThread().getContextClassLoader().getResourceAsStream("connection.properties"));
-			
+
 			episenClientConfig = System.getenv(configClient);
             final ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
             config = mapper.readValue(new File(episenClientConfig), ClientConfig.class);
@@ -56,11 +57,11 @@ public class Client {
 			BufferedReader input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
 			Ihm window = new Ihm("Smart Lobby",socket);
-			
+
 			String requestType = commandLine.getOptionValue("requesttype");
 
 			episenClientFileLocation = System.getenv(episenClientJson);
-			
+
 			//String data = Files.readString(Path.of(episenClientFileLocation));
 
 
@@ -69,11 +70,11 @@ public class Client {
 
 
 
-			
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (ParseException e) {
 			e.printStackTrace();
-		}
+		}*/
 	}
 }
