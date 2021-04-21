@@ -14,6 +14,14 @@ public class ChoiceCriteria{
     private JButton buttonContinue = new JButton("Continuer");
     private JPanel pageBody = new JPanel();
     private JFrame frame;
+    private JCheckBox checkBoxOpenSpace = new JCheckBox();
+    private JCheckBox checkBoxMeetingRoom = new JCheckBox();
+    private JCheckBox checkBoxClosedOffice = new JCheckBox();
+    private JCheckBox checkBoxSingleOffice = new JCheckBox();
+    private JTextField valueOpenSpace = new JTextField();
+    private JTextField valueClosedOffice = new JTextField();
+    private JTextField valueMeetingRoom = new JTextField();
+    private JTextField valueSingleOffice = new JTextField();
 
     public ChoiceCriteria(JFrame f)  {
         input.clear();
@@ -37,13 +45,45 @@ public class ChoiceCriteria{
         buttonContinue.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(input.containsKey("numberMeetingRoom") && Integer.parseInt(input.get("numberMeetingRoom")) == 1
-                        && !(input.containsKey("numberOpenSpace")) && !(input.containsKey("numberSingleOffice"))
-                        && !(input.containsKey("numberBoxClosedOffice")) && Integer.parseInt(input.get("numberEmployee")) > 10){
-                    String message = "Vous avez choisi une salle de reunion pour un nombre important de collaborateurs, ainsi, on réserve aussi un open-space pour votre confort";
-                    JOptionPane.showMessageDialog(null, message, null, JOptionPane.WARNING_MESSAGE);
-                    input.put("numberOpenSpace", 1+"");
+                System.out.println(input+"avant modif");
+                boolean verifOpenSpace = input.containsKey("numberOpenSpace");
+                boolean verifClosedOffice = input.containsKey("numberClosedOffice");
+                boolean verifSingleOffice = input.containsKey("numberSingleOffice");
+                boolean verifMeetingRoom = input.containsKey("numberMeetingRoom");
+                String sauvOpenSpace = "", sauvClosedOffice = "";
+                if(!verifOpenSpace) input.put("numberOpenSapce", "0");
+                else {
+                    sauvOpenSpace = input.get("numberOpenSpace");
                 }
+                if(!verifClosedOffice) input.put("numberClosedOffice", "0");
+                else {
+                    sauvClosedOffice = input.get("numberClosedOffice");
+                }
+                if(!verifSingleOffice) input.put("numberSingleOffice", "0");
+
+
+                int nbrEmployee = Integer.parseInt(input.get("numberEmployee"));
+                int somme = (Integer.parseInt(input.get("numberOpenSpace")) * 50) + (Integer.parseInt(input.get("numberClosedOffice")) * 20)
+                        + (Integer.parseInt(input.get("numberSingleOffice")));
+
+                if( somme + 50 < Integer.parseInt(input.get("numberEmployee"))) {
+                    int newValue = ((Integer.parseInt(input.get("numberEmployee")) - somme) / 50) + 1 + (Integer.parseInt(input.get("numberOpenSpace")));
+                    input.replace("numberOpenSpace", newValue+"");
+                } else if(  somme + 20 < Integer.parseInt(input.get("numberEmployee"))) {
+                    input.replace("numberOpenSpace", Integer.parseInt(input.get("numberOpenSpace")) + 1+"" );
+                } else {
+                    int newValue = ((Integer.parseInt(input.get("numberEmployee")) - somme) / 20) + 1 +  (Integer.parseInt(input.get("numberClosedOffice")));
+                    input.replace("numberClosedOffice", newValue+"");
+                }
+                System.out.println(input+"apres modif");
+                int result = JOptionPane.showConfirmDialog(null, "Au vue des donnees que vous avez rentre, nous avons ajuste votre demande par rapport a la capacite de chaque piece");
+                System.out.println("space "+ sauvOpenSpace);
+                if(result == JOptionPane.NO_OPTION){
+                    System.out.println("test "+ sauvOpenSpace);
+                    input.replace("numberOpenSpace", sauvOpenSpace);
+                    input.replace("numberClosedOffice", sauvClosedOffice);
+                }
+                System.out.println(input+"apres confirm");
                 choice.setVisible(false);
                 advancement.setVisible(false);
                 pageBody.repaint();
@@ -55,7 +95,6 @@ public class ChoiceCriteria{
         pageBody.setBackground(Color.WHITE);
         frame.getContentPane().add(menu.menu(), BorderLayout.WEST);
         frame.getContentPane().add(pageBody, BorderLayout.CENTER);
-
         frame.repaint();
     }
 
@@ -85,17 +124,16 @@ public class ChoiceCriteria{
             @Override
             public void focusLost(FocusEvent e) {
                 Object source = e.getSource();
-                String m = (((JTextField)source).getText()).trim();
-                if(m.matches("[0-9]{4}-[0-1]{1}[0-9]{1}-[0-3]{1}[0-9]{1}")) {
+                String startDate = (((JTextField)source).getText()).trim();
+                if(startDate.matches("[0-9]{4}-[0-1]{1}[0-9]{1}-[0-3]{1}[0-9]{1}")) {
                     try {
                         Date today1 = dateFormat.parse(dateFormat.format(new Date()));
-                        Date date1 = dateFormat.parse(m);
+                        Date date1 = dateFormat.parse(startDate);
                         if(today1.equals(date1) || today1.before(date1)){
                             if(input.containsKey("start_date"))input.replace("start_date", ((JTextField)source).getText().trim());
                             else input.put("start_date", ((JTextField)source).getText().trim());
                             ((JTextField)choice.getComponentAt(470, 80)).setText(" ");
                             if(verifMap()) buttonContinue.setEnabled(true);
-                            System.out.println(input);
                         } else {
                             messageErrorStartDate.setText("Veuillez rentrer une date valide");
                             messageErrorStartDate.setForeground(Color.red);
@@ -121,13 +159,15 @@ public class ChoiceCriteria{
                 if(m.matches("[0-9]{4}-[0-1]{1}[0-9]{1}-[0-1]{1}[0-9]{1}")) {
                     try {
                         Date today1 = dateFormat.parse(dateFormat.format(new Date()));
-                        Date date1 = dateFormat.parse(m);
-                        if(today1.equals(date1) || today1.before(date1)){
+                        Date dateEnd = dateFormat.parse(m);
+                        if(input.containsKey("start_date") && dateEnd.before(dateFormat.parse(input.get("start_date"))) ){
+                            messageErrorEndDate.setText("Erreur par rapport a l'autre date");
+                            messageErrorEndDate.setForeground(Color.red);
+                        } else if(today1.equals(dateEnd) || today1.before(dateEnd)){
                             if(input.containsKey("end_date"))input.replace("end_date", ((JTextField)source).getText().trim());
                             else input.put("end_date", ((JTextField)source).getText().trim());
                             messageErrorEndDate.setText(" ");
                             if(verifMap()) buttonContinue.setEnabled(true);
-                            System.out.println(input);
                         } else {
                             messageErrorEndDate.setText("Veuillez rentrer une date valide");
                             messageErrorEndDate.setForeground(Color.red);
@@ -149,25 +189,68 @@ public class ChoiceCriteria{
         choice.add(endDate);
         choice.add(valueEndDate);
 
+        //number of employee
+        JButton buttonValidate = new JButton("Faire une proposition");
+        JLabel nbEmployee = new JLabel("Nombre de collaborateur :");
+        nbEmployee = styleJLabelReservation(nbEmployee,20, 140,250,50);
+
+        JTextField nbEmployeeTextField = new JTextField("Veuillez indiquer un nombre de collaborateurs au maximun : ");
+        nbEmployeeTextField = styleJTextFieldReservation(nbEmployeeTextField, 20, 200, 350, 20);
+
+        JTextField valueEmployee = new JTextField(" ");
+        valueEmployee.setBounds(370, 200, 50, 20);
+        JTextField messageErrorEmployee = styleJTextFieldError(choice, 420, 200, 20, 20);
+        valueEmployee.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {}
+            @Override
+            public void focusLost(FocusEvent e) {
+                Object source = e.getSource();
+                String m = (((JTextField)source).getText()).trim();
+                if(m.matches("\\d+") && (Integer.parseInt(m) > 0)) {
+                    if(input.containsKey("numberEmployee"))input.replace("numberEmployee",((JTextField)source).getText().trim());
+                    else input.put("numberEmployee",((JTextField)source).getText().trim());
+                    messageErrorEmployee.setText(" ");
+                    if(verifMap()) buttonContinue.setEnabled(true);
+                    buttonValidate.setEnabled(true);
+
+                    valueOpenSpace.setText("");
+                    valueMeetingRoom.setText("");
+                    valueClosedOffice.setText("");
+                    valueSingleOffice.setText("");
+                }else{
+                    messageErrorEmployee.setText("X");
+                    messageErrorEmployee.setForeground(Color.RED);
+                }
+            }
+        });
+
+        choice.add(nbEmployeeTextField);
+        choice.add(valueEmployee);
+        choice.add(nbEmployee);
+
         //label of room
         JLabel roomLabel = new JLabel("Les salles : ");
-        roomLabel = styleJLabelReservation(roomLabel,20, 140,250,50);
-
+        roomLabel = styleJLabelReservation(roomLabel,20, 230,250,50);
 
         JTextField openSpace = new JTextField("Open-space : ");
-        openSpace = styleJTextFieldReservation(openSpace,20, 200, 100, 20);
+        openSpace = styleJTextFieldReservation(openSpace,20, 290, 100, 20);
 
-        JCheckBox checkBoxOpenSpace = new JCheckBox();
-        checkBoxOpenSpace = styleJCheckBoxReservation(checkBoxOpenSpace, 120, 200, 20, 20);
+        checkBoxOpenSpace = styleJCheckBoxReservation(checkBoxOpenSpace, 120, 290, 20, 20);
+
+        JTextField quantityOpenSpace = new JTextField("- nombre d'open-space : ");
+        quantityOpenSpace = styleJTextFieldReservation(quantityOpenSpace,380, 290, 175, 20);
+
+        valueOpenSpace.setText("");
+        valueOpenSpace.setBackground(Color.white);
+        valueOpenSpace.setBounds(555, 290, 30, 20);
+        choice.add(quantityOpenSpace);
+        choice.add(valueOpenSpace);
+        choice.repaint();
+
         checkBoxOpenSpace.addItemListener(new ItemListener() {
             public void itemStateChanged(ItemEvent e) {
-                JTextField quantityOpenSpace = new JTextField("- nombre d'open-space : ");
-                quantityOpenSpace = styleJTextFieldReservation(quantityOpenSpace,380, 200, 175, 20);
-
-                JTextField valueOpenSpace = new JTextField(" ", 20);
-                valueOpenSpace.setBackground(Color.WHITE);
-                valueOpenSpace.setBounds(555, 200, 30, 20);
-                JTextField messageErrorOpenSpace = styleJTextFieldError(choice,585, 200, 20, 20);
+                JTextField messageErrorOpenSpace = styleJTextFieldError(choice,585, 290, 20, 20);
                 valueOpenSpace.addFocusListener(new FocusListener() {
                     @Override
                     public void focusGained(FocusEvent e) {}
@@ -186,25 +269,27 @@ public class ChoiceCriteria{
                         }
                     }
                 });
-                choice.add(quantityOpenSpace);
-                choice.add(valueOpenSpace);
             }
         });
 
         JTextField meetingRoom = new JTextField("Salle de reunion : ");
-        meetingRoom = styleJTextFieldReservation(meetingRoom, 20, 230, 100, 20);
+        meetingRoom = styleJTextFieldReservation(meetingRoom, 20, 320, 100, 20);
 
-        JCheckBox checkBoxMeetingRoom = new JCheckBox();
-        checkBoxMeetingRoom = styleJCheckBoxReservation(checkBoxMeetingRoom, 120, 230, 20, 20);
+        checkBoxMeetingRoom = styleJCheckBoxReservation(checkBoxMeetingRoom, 120, 320, 20, 20);
+
+        JTextField quantityMeetingRoom = new JTextField("- nombre de salle de reunion : ");
+        quantityMeetingRoom = styleJTextFieldReservation(quantityMeetingRoom,380, 320, 175, 20);
+
+        valueMeetingRoom.setText("");
+        valueMeetingRoom.setBackground(Color.white );
+        valueMeetingRoom.setBounds(555, 320, 30, 20);
+        choice.add(valueMeetingRoom);
+        choice.add(quantityMeetingRoom);
+        choice.repaint();
+
         checkBoxMeetingRoom.addItemListener(new ItemListener() {
             public void itemStateChanged(ItemEvent e) {
-                JTextField quantityMeetingRoom = new JTextField("- nombre de salle de reunion : ");
-                quantityMeetingRoom = styleJTextFieldReservation(quantityMeetingRoom,380, 230, 175, 20);
-
-                JTextField valueMeetingRoom = new JTextField(" ", 20);
-                valueMeetingRoom.setBackground(Color.WHITE);
-                valueMeetingRoom.setBounds(555, 230, 30, 20);
-                JTextField messageErrorOpenSpace = styleJTextFieldError(choice,585, 230, 20, 20);
+                JTextField messageErrorOpenSpace = styleJTextFieldError(choice,585, 320, 20, 20);
                 valueMeetingRoom.addFocusListener(new FocusListener() {
                     @Override
                     public void focusGained(FocusEvent e) {}
@@ -223,26 +308,27 @@ public class ChoiceCriteria{
                         }
                     }
                 });
-                choice.add(quantityMeetingRoom);
-                choice.add(valueMeetingRoom);
             }
         });
 
         JTextField singleOffice = new JTextField("Bureau individuel : ");
-        singleOffice = styleJTextFieldReservation(singleOffice, 200, 200, 100, 20);
+        singleOffice = styleJTextFieldReservation(singleOffice, 200, 290, 100, 20);
 
+        checkBoxSingleOffice = styleJCheckBoxReservation(checkBoxSingleOffice,300, 290, 20, 20);
 
-        JCheckBox checkBoxSingleOffice = new JCheckBox();
-        checkBoxSingleOffice = styleJCheckBoxReservation(checkBoxSingleOffice,300, 200, 20, 20);
+        JTextField quantitySingleOffice = new JTextField("- nombre de bureau individuel : ");
+        quantitySingleOffice = styleJTextFieldReservation(quantitySingleOffice,620, 320, 175, 20);
+
+        valueSingleOffice.setText("");
+        valueSingleOffice.setBackground(Color.white);
+        valueSingleOffice.setBounds(795, 320, 30, 20);
+        choice.add(quantitySingleOffice);
+        choice.add(valueSingleOffice);
+        choice.repaint();
+
         checkBoxSingleOffice.addItemListener(new ItemListener() {
             public void itemStateChanged(ItemEvent e) {
-                JTextField quantitySingleOffice = new JTextField("- nombre de bureau individuel : ");
-                quantitySingleOffice = styleJTextFieldReservation(quantitySingleOffice,620, 200, 175, 20);
-
-                JTextField valueSingleOffice= new JTextField(" ", 20);
-                valueSingleOffice.setBackground(Color.WHITE);
-                valueSingleOffice.setBounds(795, 200, 30, 20);
-                JTextField messageErrorSingleoffice = styleJTextFieldError(choice, 825, 200, 20, 20);
+                JTextField messageErrorSingleoffice = styleJTextFieldError(choice, 825, 320, 20, 20);
                 valueSingleOffice.addFocusListener(new FocusListener() {
                     @Override
                     public void focusGained(FocusEvent e) {}
@@ -261,26 +347,28 @@ public class ChoiceCriteria{
                         }
                     }
                 });
-                choice.add(quantitySingleOffice);
-                choice.add(valueSingleOffice);
             }
         });
 
         JTextField closedOffice = new JTextField("Bureau ferme : ");
-        closedOffice = styleJTextFieldReservation(closedOffice, 200, 230, 100, 20);
+        closedOffice = styleJTextFieldReservation(closedOffice, 200, 320, 100, 20);
 
-        JCheckBox checkBoxClosedOffice = new JCheckBox();
-        checkBoxClosedOffice = styleJCheckBoxReservation(checkBoxClosedOffice,300, 230, 20, 20);
+        checkBoxClosedOffice = styleJCheckBoxReservation(checkBoxClosedOffice,300, 320, 20, 20);
+
+        JTextField quantityClosedOffice = new JTextField("- nombre de bureau ferme : ");
+        quantityClosedOffice = styleJTextFieldReservation(quantityClosedOffice,620, 290, 175, 20);
+
+        valueClosedOffice.setText("");
+        valueClosedOffice.setBackground(Color.white);
+        valueClosedOffice.setBounds(795, 290, 30, 20);
+        choice.add(quantityClosedOffice);
+        choice.add(valueClosedOffice);
+        choice.repaint();
+
         checkBoxClosedOffice.addItemListener(new ItemListener() {
             public void itemStateChanged(ItemEvent e) {
-                JTextField quantityBoxClosedOffice = new JTextField("- nombre de bureau ferme : ");
-                quantityBoxClosedOffice = styleJTextFieldReservation(quantityBoxClosedOffice,620, 230, 175, 20);
-
-                JTextField valueBoxClosedOffice = new JTextField(" ", 20);
-                valueBoxClosedOffice.setBackground(Color.WHITE);
-                valueBoxClosedOffice.setBounds(795, 230, 30, 20);
-                JTextField messageErrorClosedOffice = styleJTextFieldError(choice, 825, 230, 20, 20);
-                valueBoxClosedOffice.addFocusListener(new FocusListener() {
+                JTextField messageErrorClosedOffice = styleJTextFieldError(choice, 825, 290, 20, 20);
+                valueClosedOffice.addFocusListener(new FocusListener() {
                     @Override
                     public void focusGained(FocusEvent e) {}
                     @Override
@@ -288,8 +376,8 @@ public class ChoiceCriteria{
                         Object source = e.getSource();
                         String m = (((JTextField)source).getText()).trim();
                         if(m.matches("\\d+")) {
-                            if(input.containsKey("numberBoxClosedOffice"))input.replace("numberBoxClosedOffice",((JTextField)source).getText().trim());
-                            else input.put("numberBoxClosedOffice",((JTextField)source).getText().trim());
+                            if(input.containsKey("numberClosedOffice"))input.replace("numberClosedOffice",((JTextField)source).getText().trim());
+                            else input.put("numberClosedOffice",((JTextField)source).getText().trim());
                             messageErrorClosedOffice.setText(" ");
                             if(verifMap()) buttonContinue.setEnabled(true);
                         }else {
@@ -298,8 +386,40 @@ public class ChoiceCriteria{
                         }
                     }
                 });
-                choice.add(quantityBoxClosedOffice);
-                choice.add(valueBoxClosedOffice);
+            }
+        });
+
+        buttonValidate.setBounds(75, 350, 175,50);
+        buttonValidate.setEnabled(false);
+        buttonValidate.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int nbrOpenSpace, nbrClosedOffice;
+                if(checkBoxOpenSpace.isSelected() && checkBoxClosedOffice.isSelected()){
+                    nbrOpenSpace = (Integer.parseInt(input.get("numberEmployee")) / 50);
+                    if( nbrOpenSpace % 20 == 0) nbrClosedOffice = nbrOpenSpace / 20;
+                    else nbrClosedOffice = ( (Integer.parseInt(input.get("numberEmployee")) - (50 * nbrOpenSpace))/ 20) + 1;
+                    valueClosedOffice.setText(nbrClosedOffice+"");
+                    valueOpenSpace.setText(nbrOpenSpace+"");
+                }else if( (checkBoxClosedOffice.isSelected())) {
+                    if( (Integer.parseInt(input.get("numberEmployee")) % 20) == 0) nbrClosedOffice = (Integer.parseInt(input.get("numberEmployee")) / 20);
+                    else nbrClosedOffice = (Integer.parseInt(input.get("numberEmployee")) / 20) + 1;
+                    valueClosedOffice.setText(nbrClosedOffice+"");
+                } else if( (checkBoxOpenSpace.isSelected())) {
+                    if( (Integer.parseInt(input.get("numberEmployee")) % 50) == 0) nbrOpenSpace = (Integer.parseInt(input.get("numberEmployee")) / 50);
+                    else nbrOpenSpace = (Integer.parseInt(input.get("numberEmployee")) / 50) + 1;
+                    valueOpenSpace.setText(nbrOpenSpace+"");
+                } else if( !(checkBoxClosedOffice.isSelected()) && !(checkBoxOpenSpace.isSelected())) {
+                    if(Integer.parseInt(input.get("numberEmployee")) >= 50){
+                        if( (Integer.parseInt(input.get("numberEmployee")) % 50) == 0) nbrOpenSpace = (Integer.parseInt(input.get("numberEmployee")) / 50);
+                        else nbrOpenSpace = (Integer.parseInt(input.get("numberEmployee")) / 50) + 1;
+                        valueOpenSpace.setText(nbrOpenSpace+"");
+                    } else {
+                        if( (Integer.parseInt(input.get("numberEmployee")) % 20) == 0) nbrClosedOffice = (Integer.parseInt(input.get("numberEmployee")) / 20);
+                        else nbrClosedOffice = (Integer.parseInt(input.get("numberEmployee")) / 20) + 1;
+                        valueClosedOffice.setText(nbrClosedOffice+"");
+                    }
+                }
             }
         });
 
@@ -312,64 +432,67 @@ public class ChoiceCriteria{
         choice.add(checkBoxSingleOffice);
         choice.add(closedOffice);
         choice.add(checkBoxClosedOffice);
-
-        //number of employee
-        JLabel nbEmployee = new JLabel("Nombre de collaborateur :");
-        nbEmployee = styleJLabelReservation(nbEmployee,20, 260,250,50);
-
-        JTextField nbEmployeeTextField = new JTextField("Veuillez indiquer un nombre de collaborateurs au maximun : ");
-        nbEmployeeTextField = styleJTextFieldReservation(nbEmployeeTextField, 20, 320, 350, 20);
-
-        JTextField valueEmployee = new JTextField(" ");
-        valueEmployee.setBounds(370, 320, 50, 20);
-        JTextField messageErrorEmployee = styleJTextFieldError(choice, 420, 320, 20, 20);
-        valueEmployee.addFocusListener(new FocusListener() {
-            @Override
-            public void focusGained(FocusEvent e) {}
-            @Override
-            public void focusLost(FocusEvent e) {
-                Object source = e.getSource();
-                String m = (((JTextField)source).getText()).trim();
-                if(m.matches("\\d+")) {
-                    if(input.containsKey("numberEmployee"))input.replace("numberEmployee",((JTextField)source).getText().trim());
-                    else input.put("numberEmployee",((JTextField)source).getText().trim());
-                    messageErrorEmployee.setText(" ");
-                    if(verifMap()) buttonContinue.setEnabled(true);
-                }else{
-                    messageErrorEmployee.setText("X");
-                    messageErrorEmployee.setForeground(Color.RED);
-                }
-            }
-        });
-
-        choice.add(nbEmployeeTextField);
-        choice.add(valueEmployee);
-        choice.add(nbEmployee);
+        choice.add(buttonValidate);
 
         //location
         JLabel locationLabel = new JLabel("Situation geographique :");
-        locationLabel = styleJLabelReservation(locationLabel,20, 350,250,50);
+        locationLabel = styleJLabelReservation(locationLabel,20, 420,250,50);
 
         JTextField locationTextField = new JTextField("Veuillez indiquer un ou plusieurs lieux geographiques : ");
-        locationTextField = styleJTextFieldReservation(locationTextField, 20, 410, 300, 20);
+        locationTextField = styleJTextFieldReservation(locationTextField, 20, 480, 300, 20);
 
         JCheckBox locationNorth = new JCheckBox("Nord de la ville");
-        locationNorth = styleJCheckBoxReservation(locationNorth,20, 440, 150, 20);
+        locationNorth = styleJCheckBoxReservation(locationNorth,20, 510, 150, 20);
+        locationNorth.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if(input.containsKey("north"))input.remove("north");
+                else input.put("north", "yes");
+            }
+        });
 
         JCheckBox locationSouth = new JCheckBox("Sud de la ville");
-        locationSouth = styleJCheckBoxReservation(locationSouth,20, 470, 150, 20);
+        locationSouth = styleJCheckBoxReservation(locationSouth,20, 540, 150, 20);
+        locationSouth.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if(input.containsKey("south"))input.remove("south");
+                else input.put("south", "yes");
+            }
+        });
 
         JCheckBox locationEast = new JCheckBox("Est de la ville");
-        locationEast = styleJCheckBoxReservation(locationEast,180, 440, 150, 20);
+        locationEast = styleJCheckBoxReservation(locationEast,180, 510, 150, 20);
+        locationEast.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if(input.containsKey("east"))input.remove("east");
+                else input.put("east", "yes");
+            }
+        });
 
         JCheckBox locationWest = new JCheckBox("Ouest de la ville");
-        locationWest = styleJCheckBoxReservation(locationWest,180, 470, 150, 20);
+        locationWest = styleJCheckBoxReservation(locationWest,180, 540, 150, 20);
+        locationWest.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if(input.containsKey("west"))input.remove("west");
+                else input.put("west", "yes");
+            }
+        });
 
         JCheckBox locationCenter = new JCheckBox("Centre de la ville");
-        locationCenter = styleJCheckBoxReservation(locationCenter,340, 440, 150, 20);
+        locationCenter = styleJCheckBoxReservation(locationCenter,340, 510, 150, 20);
+        locationCenter.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if(input.containsKey("center"))input.remove("center");
+                else input.put("center", "yes");
+            }
+        });
 
         JCheckBox locationAnyway = new JCheckBox("Peu importe");
-        locationAnyway = styleJCheckBoxReservation(locationAnyway,340, 470, 150, 20);
+        locationAnyway = styleJCheckBoxReservation(locationAnyway,340, 540, 150, 20);
 
         choice.add(locationLabel);
         choice.add(locationTextField);
@@ -420,7 +543,6 @@ public class ChoiceCriteria{
     }
 
     public boolean verifMap(){
-        System.out.println(input);
         if((input.containsKey("start_date") && input.containsKey("end_date") && input.containsKey("numberEmployee"))
                 && ( (input.containsKey("numberOpenSpace") || input.containsKey("numberMeetingRoom") ||
                 input.containsKey("numberSingleOffice")|| input.containsKey("numberBoxClosedOffice"))))
