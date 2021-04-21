@@ -20,9 +20,13 @@ public class ChoiceDevice {
     private JButton buttonValidate = new JButton("Valider");
     private JPanel pageBody;
     private final String page = "device";
+    private JTextField sentenceEquipment = new JTextField("- Veuillez selectionner les equipements.");
+    private String[] listeEquipment = {"ordinateur fixe","fenetre", "television connecte"};
+    private JTextField sentenceSensor = new JTextField("- Veuillez selectionner les capteurs.");
+    private String[] listeSensor = {"capteur de temperature","capteur de luminosite", "capteur de mouvement"};
 
 
-    public void choice(JPanel pb, JPanel oldView){
+    public void choice(JPanel pb, JPanel oldView, JButton room){
         this.pageBody = pb;
         pageBody.setBackground(Color.CYAN);
         JPanel view = view();
@@ -33,11 +37,13 @@ public class ChoiceDevice {
             @Override
             public void actionPerformed(ActionEvent e) {
                 view.setVisible(false);
+                room.setBackground(Color.green);
                 ViewWithPlan backViewPlan = new ViewWithPlan(frame, input);
-                backViewPlan.back(oldView,pb);
+                backViewPlan.back(oldView,pb,room);
             }
         });
         view.add(buttonValidate);
+        view.setVisible(true);
         RentalAdvancement rentalAdvancement = new RentalAdvancement(page);
         JPanel advancement = rentalAdvancement.rentalAdvancement();
         pageBody.add(advancement, BorderLayout.CENTER);
@@ -57,50 +63,55 @@ public class ChoiceDevice {
         view.add(titleEquipment);
 
         JTextField choiceEquipment = new JTextField("- Souhaitez-vous des equipements ? ");
-        choiceEquipment = styleJTextFieldReservation(choiceEquipment, 50, 160, 200, 20,Color.white, Color.white);
+        choiceEquipment = styleJTextFieldReservation(choiceEquipment, 50, 160, 195, 20,Color.white, Color.white);
         view.add(choiceEquipment);
 
-        JCheckBox checkEquipment2 = new JCheckBox("Non ");
-        checkEquipment2.setBackground(Color.white);
-        checkEquipment2.setBounds(365, 160,80,20);
-        checkEquipment2.addItemListener(new ItemListener() {
+        ButtonGroup groupEquipment = new ButtonGroup();
+        JRadioButton rYesEquipment = new JRadioButton("Oui ");
+        rYesEquipment.setVisible(true);
+        rYesEquipment.setBackground(Color.white);
+        rYesEquipment.setBounds(275, 160, 80,20);
+        sentenceEquipment = styleJTextFieldReservation(sentenceEquipment, 50, 200, 250, 20, Color.white, Color.white);
+        sentenceEquipment.setVisible(false);
+        JList listeE = new JList(listeEquipment);
+        view.add(sentenceEquipment);
+        view.add(listeE);
+        rYesEquipment.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
-                if(e.getStateChange() == 1) {
-                    if(input.containsKey("config_equipement_salle1"))input.replace("config_equipement_salle1", "non");
-                    else input.put("config_equipement_salle1","non");
+                if(input.containsKey("config_equipement_salle1"))input.replace("config_equipement_salle1", "oui");
+                else input.put("config_equipement_salle1","oui");
 
-                    if(verifMap()) buttonValidate.setEnabled(true);
-                    System.out.println(input);
-                } else {
-                    input.remove("config_equipement_salle1");
-                }
-            }
-        });
-        view.add(checkEquipment2);
-
-        JCheckBox checkBoxEquipment = new JCheckBox("Oui ");
-        checkBoxEquipment.setBounds(275, 160, 80,20);
-        checkBoxEquipment.setBackground(Color.white);
-        checkBoxEquipment.addItemListener(new ItemListener() {
-            @Override
-            public void itemStateChanged(ItemEvent e) {
-                System.out.println("selected");
-                JTextField sentenceEquipment = new JTextField("- Veuillez selectionner les equipements.");
-                sentenceEquipment = styleJTextFieldReservation(sentenceEquipment, 50, 200, 250, 20, Color.white, Color.white);
-
-                String[] listeEquipment = {"ordinateur fixe","fenetre", "television connecte"};
-                JList listeE = new JList(listeEquipment);
                 listeE.setBounds(50, 250, 350, 300);
                 listeE.setBackground(Color.red);
+                sentenceEquipment.setVisible(true);
                 listeE.setVisible(true);
-                view.add(sentenceEquipment);
-                view.add(listeE);
                 view.repaint();
-                frame.repaint();
             }
         });
-        view.add(checkBoxEquipment);
+        groupEquipment.add(rYesEquipment);
+        view.add(rYesEquipment);
+
+        JRadioButton rNonEquipment = new JRadioButton("Non ");
+        rNonEquipment.setVisible(true);
+        rNonEquipment.setBackground(Color.white);
+        rNonEquipment.setBounds(365, 160,80,20);
+        rNonEquipment.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(input.containsKey("config_equipement_salle1"))input.replace("config_equipement_salle1", "non");
+                else input.put("config_equipement_salle1","non");
+
+                if(verifMap()) buttonValidate.setEnabled(true);
+                System.out.println(input);
+                sentenceEquipment.setVisible(false);
+                listeE.setVisible(false);
+                view.repaint();
+            }
+        });
+        groupEquipment.add(rNonEquipment);
+        view.add(rNonEquipment);
+
 
         JTextField titleSensor = new JTextField("Choisissez les capteurs :");
         titleSensor = styleJTextFieldReservation(titleSensor, 450,100,350, 50, Color.white, Color.white);
@@ -108,51 +119,54 @@ public class ChoiceDevice {
         view.add(titleSensor);
 
         JTextField choiceSensor = new JTextField("- Souhaitez-vous des capteurs ? ");
-        choiceSensor = styleJTextFieldReservation(choiceSensor, 450, 160, 200, 20,Color.white, Color.white);
+        choiceSensor = styleJTextFieldReservation(choiceSensor, 450, 160, 175, 20,Color.white, Color.white);
         view.add(choiceSensor);
 
-        JCheckBox checkBoxSenSor2 = new JCheckBox("Non ");
-        checkBoxSenSor2.setBackground(Color.white);
-        checkBoxSenSor2.setBounds(760, 160,80,20);
-        checkBoxSenSor2.addItemListener(new ItemListener() {
+
+        ButtonGroup groupSensor = new ButtonGroup();
+        JRadioButton rYesSensor = new JRadioButton("Oui");
+        rYesSensor.setBounds(675, 160, 80,20);
+        rYesSensor.setVisible(true);
+        rYesSensor.setBackground(Color.white);
+        sentenceSensor = styleJTextFieldReservation(sentenceSensor, 450, 200, 250, 20, Color.white, Color.white);
+        sentenceSensor.setVisible(false);
+        JList listeS = new JList(listeSensor);
+        view.add(sentenceSensor);
+        view.add(listeS);
+        rYesSensor.addActionListener(new ActionListener() {
             @Override
-            public void itemStateChanged(ItemEvent e) {
-                if(e.getStateChange() == 1) {
-                    if(input.containsKey("config_capteur_salle1"))input.replace("config_capteur_salle1", "non");
-                    else input.put("config_capteur_salle1","non");
+            public void actionPerformed(ActionEvent e) {
+                if(input.containsKey("config_capteur_salle1"))input.replace("config_capteur_salle1", "oui");
+                else input.put("config_capteur_salle1","oui");
 
-                    if(verifMap()) buttonValidate.setEnabled(true);
-                    System.out.println(input);
-                } else {
-                    input.remove("config_capteur_salle1");
-                    System.out.println(input);
-                }
-            }
-        });
-        view.add(checkBoxSenSor2);
-
-        JCheckBox checkBoxSensor = new JCheckBox("Oui ");
-        checkBoxSensor.setBackground(Color.white);
-        checkBoxSensor.setBounds(675, 160, 80,20);
-        checkBoxSensor.addItemListener(new ItemListener() {
-            @Override
-            public void itemStateChanged(ItemEvent e) {
-                System.out.println("selected");
-                JTextField sentenceSensor = new JTextField("- Veuillez selectionner les capteurs.");
-                sentenceSensor = styleJTextFieldReservation(sentenceSensor, 450, 200, 250, 20, Color.white, Color.white);
-
-                String[] listeSensor = {"capteur de temperature","capteur de luminosite", "capteur de mouvement"};
-                JList listeS = new JList(listeSensor);
                 listeS.setBackground(Color.red);
                 listeS.setBounds(450, 250, 350, 300);
                 listeS.setVisible(true);
-                view.add(sentenceSensor);
-                view.add(listeS);
+                sentenceSensor.setVisible(true);
                 view.repaint();
-                frame.repaint();
             }
         });
-        view.add(checkBoxSensor);
+        groupSensor.add(rYesSensor);
+        view.add(rYesSensor);
+
+        JRadioButton rNoSensor = new JRadioButton("Non ");
+        rNoSensor.setVisible(true);
+        rNoSensor.setBackground(Color.white);
+        rNoSensor.setBounds(760, 160,80,20);
+        rNoSensor.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(input.containsKey("config_capteur_salle1"))input.replace("config_capteur_salle1", "non");
+                else input.put("config_capteur_salle1","non");
+
+                if(verifMap()) buttonValidate.setEnabled(true);
+                sentenceSensor.setVisible(false);
+                listeS.setVisible(false);
+                view.repaint();
+            }
+        });
+        groupSensor.add(rNoSensor);
+        view.add(rNoSensor);
 
         return view;
     }

@@ -46,12 +46,13 @@ public class ChoiceCriteria{
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.out.println(input+"avant modif");
+                boolean changeValue = false;
                 boolean verifOpenSpace = input.containsKey("numberOpenSpace");
                 boolean verifClosedOffice = input.containsKey("numberClosedOffice");
                 boolean verifSingleOffice = input.containsKey("numberSingleOffice");
                 boolean verifMeetingRoom = input.containsKey("numberMeetingRoom");
                 String sauvOpenSpace = "", sauvClosedOffice = "";
-                if(!verifOpenSpace) input.put("numberOpenSapce", "0");
+                if(!verifOpenSpace) input.put("numberOpenSpace", "0");
                 else {
                     sauvOpenSpace = input.get("numberOpenSpace");
                 }
@@ -69,19 +70,24 @@ public class ChoiceCriteria{
                 if( somme + 50 < Integer.parseInt(input.get("numberEmployee"))) {
                     int newValue = ((Integer.parseInt(input.get("numberEmployee")) - somme) / 50) + 1 + (Integer.parseInt(input.get("numberOpenSpace")));
                     input.replace("numberOpenSpace", newValue+"");
+                    changeValue = true;
                 } else if(  somme + 20 < Integer.parseInt(input.get("numberEmployee"))) {
                     input.replace("numberOpenSpace", Integer.parseInt(input.get("numberOpenSpace")) + 1+"" );
-                } else {
+                    changeValue = true;
+                } else if( somme < Integer.parseInt(input.get("numberEmployee"))){
                     int newValue = ((Integer.parseInt(input.get("numberEmployee")) - somme) / 20) + 1 +  (Integer.parseInt(input.get("numberClosedOffice")));
                     input.replace("numberClosedOffice", newValue+"");
+                    changeValue = true;
                 }
                 System.out.println(input+"apres modif");
-                int result = JOptionPane.showConfirmDialog(null, "Au vue des donnees que vous avez rentre, nous avons ajuste votre demande par rapport a la capacite de chaque piece");
-                System.out.println("space "+ sauvOpenSpace);
-                if(result == JOptionPane.NO_OPTION){
-                    System.out.println("test "+ sauvOpenSpace);
-                    input.replace("numberOpenSpace", sauvOpenSpace);
-                    input.replace("numberClosedOffice", sauvClosedOffice);
+                if(changeValue){
+                    int result = JOptionPane.showConfirmDialog(null, "Au vue des donnees que vous avez rentre, nous avons ajuste votre demande par rapport a la capacite de chaque piece");
+                    System.out.println("space "+ sauvOpenSpace);
+                    if(result == JOptionPane.NO_OPTION){
+                        System.out.println("test "+ sauvOpenSpace);
+                        input.replace("numberOpenSpace", sauvOpenSpace);
+                        input.replace("numberClosedOffice", sauvClosedOffice);
+                    }
                 }
                 System.out.println(input+"apres confirm");
                 choice.setVisible(false);
@@ -401,24 +407,52 @@ public class ChoiceCriteria{
                     else nbrClosedOffice = ( (Integer.parseInt(input.get("numberEmployee")) - (50 * nbrOpenSpace))/ 20) + 1;
                     valueClosedOffice.setText(nbrClosedOffice+"");
                     valueOpenSpace.setText(nbrOpenSpace+"");
+
+                    if(input.containsKey("numberClosedOffice"))input.replace("numberClosedOffice",nbrClosedOffice+"");
+                    else input.put("numberClosedOffice",nbrClosedOffice+"");
+
+                    if(input.containsKey("numberOpenSpace"))input.replace("numberOpenSpace", nbrOpenSpace+"");
+                    else input.put("numberOpenSpace", nbrOpenSpace+"");
+
+                    if(verifMap()) buttonContinue.setEnabled(true);
+
                 }else if( (checkBoxClosedOffice.isSelected())) {
                     if( (Integer.parseInt(input.get("numberEmployee")) % 20) == 0) nbrClosedOffice = (Integer.parseInt(input.get("numberEmployee")) / 20);
                     else nbrClosedOffice = (Integer.parseInt(input.get("numberEmployee")) / 20) + 1;
                     valueClosedOffice.setText(nbrClosedOffice+"");
+
+                    if(input.containsKey("numberClosedOffice"))input.replace("numberClosedOffice",nbrClosedOffice+"");
+                    else input.put("numberClosedOffice",nbrClosedOffice+"");
+
+                    if(verifMap()) buttonContinue.setEnabled(true);
+
                 } else if( (checkBoxOpenSpace.isSelected())) {
                     if( (Integer.parseInt(input.get("numberEmployee")) % 50) == 0) nbrOpenSpace = (Integer.parseInt(input.get("numberEmployee")) / 50);
                     else nbrOpenSpace = (Integer.parseInt(input.get("numberEmployee")) / 50) + 1;
                     valueOpenSpace.setText(nbrOpenSpace+"");
+
+                    if(input.containsKey("numberOpenSpace"))input.replace("numberOpenSpace", nbrOpenSpace+"");
+                    else input.put("numberOpenSpace", nbrOpenSpace+"");
+
+                    if(verifMap()) buttonContinue.setEnabled(true);
                 } else if( !(checkBoxClosedOffice.isSelected()) && !(checkBoxOpenSpace.isSelected())) {
                     if(Integer.parseInt(input.get("numberEmployee")) >= 50){
                         if( (Integer.parseInt(input.get("numberEmployee")) % 50) == 0) nbrOpenSpace = (Integer.parseInt(input.get("numberEmployee")) / 50);
                         else nbrOpenSpace = (Integer.parseInt(input.get("numberEmployee")) / 50) + 1;
                         valueOpenSpace.setText(nbrOpenSpace+"");
+
+                        if(input.containsKey("numberOpenSpace"))input.replace("numberOpenSpace", nbrOpenSpace+"");
+                        else input.put("numberOpenSpace", nbrOpenSpace+"");
                     } else {
                         if( (Integer.parseInt(input.get("numberEmployee")) % 20) == 0) nbrClosedOffice = (Integer.parseInt(input.get("numberEmployee")) / 20);
                         else nbrClosedOffice = (Integer.parseInt(input.get("numberEmployee")) / 20) + 1;
                         valueClosedOffice.setText(nbrClosedOffice+"");
+
+                        if(input.containsKey("numberClosedOffice"))input.replace("numberClosedOffice",nbrClosedOffice+"");
+                        else input.put("numberClosedOffice",nbrClosedOffice+"");
                     }
+                    if(verifMap()) buttonContinue.setEnabled(true);
+                    System.out.println(input);
                 }
             }
         });
@@ -545,7 +579,7 @@ public class ChoiceCriteria{
     public boolean verifMap(){
         if((input.containsKey("start_date") && input.containsKey("end_date") && input.containsKey("numberEmployee"))
                 && ( (input.containsKey("numberOpenSpace") || input.containsKey("numberMeetingRoom") ||
-                input.containsKey("numberSingleOffice")|| input.containsKey("numberBoxClosedOffice"))))
+                input.containsKey("numberSingleOffice")|| input.containsKey("numberClosedOffice"))))
             return true;
         else return false;
     }

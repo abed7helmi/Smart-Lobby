@@ -2,14 +2,15 @@ package episen.si.ing1.pds.client;
 
 
 import javax.swing.*;
-import javax.swing.border.Border;
+
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.time.chrono.JapaneseChronology;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
 
 public class ViewWithPlan {
     private final JFrame frame;
@@ -18,16 +19,14 @@ public class ViewWithPlan {
     private final JButton buttonReturn = new JButton("Retour");
     private JPanel pageBody;
     private String order;
-    private JButton[] listeButton;
-    //private JTextField information;
-    private String numberFloor;
+    private String floorNumber;
+    private JPanel configButton = new JPanel();
+
 
     public ViewWithPlan(JFrame frame, Map<String, String> input){
         this.frame = frame;
         this.input = input;
     }
-
-
     public ViewWithPlan(JFrame frame, Map<String, String> input, String o) {
         this.frame = frame;
         this.input = input;
@@ -47,6 +46,7 @@ public class ViewWithPlan {
         pageBody.add(view, BorderLayout.SOUTH);
         pageBody.repaint();
         frame.repaint();
+
     }
 
     public JPanel view(){
@@ -60,16 +60,6 @@ public class ViewWithPlan {
         orderSelected.setFont(new Font("Serif", Font.BOLD, 20));
         view.add(orderSelected);
 
-        JTextField floorTextField = new JTextField("Vous etes sur l'etage : ");
-        floorTextField = styleJTextFieldReservation(floorTextField ,340,20 ,150 ,20,Color.white, Color.white);
-        view.add(floorTextField);
-        String[] floor = {"1","2","3"};
-        JComboBox liste = new JComboBox(floor);
-
-        liste.setEditable(true);
-        liste.setBounds(490,20, 30, 20);
-        view.add(liste);
-
         JPanel plan = new JPanel();
         plan.setLayout(new BorderLayout());
         plan.setBackground(Color.white);
@@ -81,83 +71,35 @@ public class ViewWithPlan {
         plan.add(planLabel, BorderLayout.CENTER);
         view.add(plan);
 
-        /*JTextField legend = new JTextField();
-        legend.setEditable(false);
-        legend.setBackground(Color.GREEN);
-        legend.setBounds(520, 100, 50 ,50);
-        legend.setBorder(BorderFactory.createMatteBorder(1,1, 1, 1, Color.BLACK));
-        numberFloor = (String)liste.getSelectedItem();
-        information = new JTextField("Zone proposee dans le batiment XXX et l'etage "+ numberFloor);
-        information = styleJTextFieldReservation(information, 580, 100, 330,50,Color.white, Color.white);
-        view.add(legend);
-        view.add(information);*/
-
         JPanel config = new JPanel();
-        listeButton = createButton(view);
+        createButton(view);
         view.add(config);
 
-        // modif with data
-        liste.addActionListener(new ActionListener(){
-            public void actionPerformed(ActionEvent e){
-                System.out.println("etage "+ liste.getSelectedItem());
-                if(liste.getSelectedItem().equals("2") ) {
-                    numberFloor = "2";
-                    configRoomRepaint(view, 2, listeButton);
-                } else if(liste.getSelectedItem().equals("3")){
-                    numberFloor = "3";
-                    configRoomRepaint(view,3, listeButton);
-                } else {
-                    numberFloor = "1";
-                    configRoomRepaint(view,1, listeButton);
-                }
-                //information.repaint();
-            }
-        });
         return view;
     }
-    public JButton[] createButton(JPanel view){
-        JPanel configButton = new JPanel();
-        configButton.setLayout(null);
-        configButton.setBounds(520,100,380,380);
 
-        JButton room1 = configRoom("Salle n°1 : bureau ", 20, 20, 250, 50);
-        room1.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                view.setVisible(false);
-                changePage(view);
-            }
-        });
-        JButton room2 = configRoom("Salle n°2 :  ferme", 20, room1.getY() + 60, 250, 50);
-        room2.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                view.setVisible(false);
-                changePage(view);
-            }
-        });
-        JButton room3 = configRoom("Salle n°3 : ", 20, room2.getY() + 60, 250, 50);
-        room3.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                view.setVisible(false);
-                changePage(view);
-            }
-        });
-        JButton[] listeButton = {room1, room2, room3};
-        for(int i = 0; i < listeButton.length; i++){
-            configButton.add(listeButton[i]);
-        }
+    public void createButton(JPanel view){
+
+        configButton.setLayout(null);
+        configButton.setBounds(520,100,380,480);
+
+        int x  = 20;
+        int y = 20;
+
+        JButton room1 = configRoom("Salle n 1" + " etage n 1" , x,y,150,50, configButton, view);
+        y = y + 60;
+        JButton room2 = configRoom("Salle n 2"  + " etage n 1", x,y,150,50, configButton, view);
+        y = y + 60;
+        JButton room3 = configRoom("Salle n 1"  + " etage n 2", x,y,150,50, configButton, view);
+        y = y + 60;
+        JButton room4 = configRoom("Salle n 5" + " etage n 3", x,y,150,50, configButton, view);
+        y = y + 60;
+        JButton room5 = configRoom("Salle n 5" + " etage n 4", x,y,150,50, configButton, view);
+        y = y + 60;
+        JButton room6 = configRoom("Salle n 1" + " etage n 5", x,y,150,50, configButton, view);
+        y = y + 60;
+
         view.add(configButton);
-        return listeButton;
-    }
-    public void configRoomRepaint(JPanel view, int nb, JButton[] liste){
-        for(int i = 0; i < liste.length; i++){
-            listeButton[i].setVisible(false);
-        }
-        for(int i = 0; i < nb; i++){
-            listeButton[i].setVisible(true);
-        }
         view.repaint();
     }
 
@@ -174,18 +116,28 @@ public class ViewWithPlan {
         return t;
     }
 
-    public JButton configRoom(String message, int x, int y, int w, int h){
+    public JButton configRoom(String message, int x, int y, int w, int h,JPanel configButton, JPanel view){
         JButton room = new JButton(message);
-        room.setBackground(Color.white);
+        room.setBackground(Color.red);
         room.setBounds(x,y,w,h);
+        room.setVisible(true);
+        room.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                view.setVisible(false);
+                changePage(view, room);
+            }
+        });
+        configButton.add(room);
         return room;
     }
-    public void changePage(JPanel view){
+    public void changePage(JPanel view, JButton room){
         ChoiceDevice device = new ChoiceDevice(frame, input);
-        device.choice(pageBody, view);
+        device.choice(pageBody, view, room);
     }
-    public void back(JPanel oldView, JPanel pb){
+    public void back(JPanel oldView, JPanel pb, JButton room){
         oldView.setVisible(true);
+        room.repaint();
         pb.repaint();
     }
 }
