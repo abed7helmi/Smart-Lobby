@@ -136,8 +136,7 @@ public class ChoiceCriteria{
                         Date today1 = dateFormat.parse(dateFormat.format(new Date()));
                         Date date1 = dateFormat.parse(startDate);
                         if(today1.equals(date1) || today1.before(date1)){
-                            if(input.containsKey("start_date"))input.replace("start_date", ((JTextField)source).getText().trim());
-                            else input.put("start_date", ((JTextField)source).getText().trim());
+                            input.put("start_date", ((JTextField)source).getText().trim());
                             ((JTextField)choice.getComponentAt(470, 80)).setText(" ");
                             if(verifMap()) buttonContinue.setEnabled(true);
                         } else {
@@ -170,8 +169,7 @@ public class ChoiceCriteria{
                             messageErrorEndDate.setText("Erreur par rapport a l'autre date");
                             messageErrorEndDate.setForeground(Color.red);
                         } else if(today1.equals(dateEnd) || today1.before(dateEnd)){
-                            if(input.containsKey("end_date"))input.replace("end_date", ((JTextField)source).getText().trim());
-                            else input.put("end_date", ((JTextField)source).getText().trim());
+                            input.put("end_date", ((JTextField)source).getText().trim());
                             messageErrorEndDate.setText(" ");
                             if(verifMap()) buttonContinue.setEnabled(true);
                         } else {
@@ -214,8 +212,8 @@ public class ChoiceCriteria{
                 Object source = e.getSource();
                 String m = (((JTextField)source).getText()).trim();
                 if(m.matches("\\d+") && (Integer.parseInt(m) > 0)) {
-                    if(input.containsKey("numberEmployee"))input.replace("numberEmployee",((JTextField)source).getText().trim());
-                    else input.put("numberEmployee",((JTextField)source).getText().trim());
+                    input.put("numberEmployee",((JTextField)source).getText().trim());
+                    System.out.println(input);
                     messageErrorEmployee.setText(" ");
                     if(verifMap()) buttonContinue.setEnabled(true);
                     buttonValidate.setEnabled(true);
@@ -265,8 +263,7 @@ public class ChoiceCriteria{
                         Object source = e.getSource();
                         String m = (((JTextField)source).getText()).trim();
                         if(m.matches("\\d+")) {
-                            if(input.containsKey("numberOpenSpace"))input.replace("numberOpenSpace", ((JTextField)source).getText().trim());
-                            else input.put("numberOpenSpace", ((JTextField)source).getText().trim());
+                            input.put("numberOpenSpace", ((JTextField)source).getText().trim());
                             messageErrorOpenSpace.setText(" ");
                             if(verifMap()) buttonContinue.setEnabled(true);
                         }else {
@@ -304,8 +301,7 @@ public class ChoiceCriteria{
                         Object source = e.getSource();
                         String m = (((JTextField)source).getText()).trim();
                         if(m.matches("\\d+")) {
-                            if(input.containsKey("numberMeetingRoom"))input.replace("numberMeetingRoom",((JTextField)source).getText().trim());
-                            else input.put("numberMeetingRoom",((JTextField)source).getText().trim());
+                            input.put("numberMeetingRoom",((JTextField)source).getText().trim());
                             messageErrorOpenSpace.setText(" ");
                             if(verifMap()) buttonContinue.setEnabled(true);
                         }else {
@@ -343,8 +339,7 @@ public class ChoiceCriteria{
                         Object source = e.getSource();
                         String m = (((JTextField)source).getText()).trim();
                         if(m.matches("\\d+")) {
-                            if(input.containsKey("numberSingleOffice"))input.replace("numberSingleOffice",((JTextField)source).getText().trim());
-                            else input.put("numberSingleOffice",((JTextField)source).getText().trim());
+                            input.put("numberSingleOffice",((JTextField)source).getText().trim());
                             messageErrorSingleoffice.setText(" ");
                             if(verifMap()) buttonContinue.setEnabled(true);
                         }else {
@@ -382,8 +377,7 @@ public class ChoiceCriteria{
                         Object source = e.getSource();
                         String m = (((JTextField)source).getText()).trim();
                         if(m.matches("\\d+")) {
-                            if(input.containsKey("numberClosedOffice"))input.replace("numberClosedOffice",((JTextField)source).getText().trim());
-                            else input.put("numberClosedOffice",((JTextField)source).getText().trim());
+                            input.put("numberClosedOffice",((JTextField)source).getText().trim());
                             messageErrorClosedOffice.setText(" ");
                             if(verifMap()) buttonContinue.setEnabled(true);
                         }else {
@@ -408,11 +402,8 @@ public class ChoiceCriteria{
                     valueClosedOffice.setText(nbrClosedOffice+"");
                     valueOpenSpace.setText(nbrOpenSpace+"");
 
-                    if(input.containsKey("numberClosedOffice"))input.replace("numberClosedOffice",nbrClosedOffice+"");
-                    else input.put("numberClosedOffice",nbrClosedOffice+"");
-
-                    if(input.containsKey("numberOpenSpace"))input.replace("numberOpenSpace", nbrOpenSpace+"");
-                    else input.put("numberOpenSpace", nbrOpenSpace+"");
+                    input.put("numberClosedOffice",nbrClosedOffice+"");
+                    input.put("numberOpenSpace", nbrOpenSpace+"");
 
                     if(verifMap()) buttonContinue.setEnabled(true);
 
@@ -421,8 +412,7 @@ public class ChoiceCriteria{
                     else nbrClosedOffice = (Integer.parseInt(input.get("numberEmployee")) / 20) + 1;
                     valueClosedOffice.setText(nbrClosedOffice+"");
 
-                    if(input.containsKey("numberClosedOffice"))input.replace("numberClosedOffice",nbrClosedOffice+"");
-                    else input.put("numberClosedOffice",nbrClosedOffice+"");
+                    input.put("numberClosedOffice",nbrClosedOffice+"");
 
                     if(verifMap()) buttonContinue.setEnabled(true);
 
@@ -431,8 +421,7 @@ public class ChoiceCriteria{
                     else nbrOpenSpace = (Integer.parseInt(input.get("numberEmployee")) / 50) + 1;
                     valueOpenSpace.setText(nbrOpenSpace+"");
 
-                    if(input.containsKey("numberOpenSpace"))input.replace("numberOpenSpace", nbrOpenSpace+"");
-                    else input.put("numberOpenSpace", nbrOpenSpace+"");
+                    input.put("numberOpenSpace", nbrOpenSpace+"");
 
                     if(verifMap()) buttonContinue.setEnabled(true);
                 } else if( !(checkBoxClosedOffice.isSelected()) && !(checkBoxOpenSpace.isSelected())) {
@@ -441,15 +430,13 @@ public class ChoiceCriteria{
                         else nbrOpenSpace = (Integer.parseInt(input.get("numberEmployee")) / 50) + 1;
                         valueOpenSpace.setText(nbrOpenSpace+"");
 
-                        if(input.containsKey("numberOpenSpace"))input.replace("numberOpenSpace", nbrOpenSpace+"");
-                        else input.put("numberOpenSpace", nbrOpenSpace+"");
+                        input.put("numberOpenSpace", nbrOpenSpace+"");
                     } else {
                         if( (Integer.parseInt(input.get("numberEmployee")) % 20) == 0) nbrClosedOffice = (Integer.parseInt(input.get("numberEmployee")) / 20);
                         else nbrClosedOffice = (Integer.parseInt(input.get("numberEmployee")) / 20) + 1;
                         valueClosedOffice.setText(nbrClosedOffice+"");
 
-                        if(input.containsKey("numberClosedOffice"))input.replace("numberClosedOffice",nbrClosedOffice+"");
-                        else input.put("numberClosedOffice",nbrClosedOffice+"");
+                        input.put("numberClosedOffice",nbrClosedOffice+"");
                     }
                     if(verifMap()) buttonContinue.setEnabled(true);
                     System.out.println(input);
@@ -480,8 +467,8 @@ public class ChoiceCriteria{
         locationNorth.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
-                if(input.containsKey("north"))input.remove("north");
-                else input.put("north", "yes");
+                if(input.containsKey("nord"))input.remove("nord");
+                else input.put("nord", "yes");
             }
         });
 
@@ -490,8 +477,8 @@ public class ChoiceCriteria{
         locationSouth.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
-                if(input.containsKey("south"))input.remove("south");
-                else input.put("south", "yes");
+                if(input.containsKey("sud"))input.remove("sud");
+                else input.put("sud", "yes");
             }
         });
 
@@ -500,8 +487,8 @@ public class ChoiceCriteria{
         locationEast.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
-                if(input.containsKey("east"))input.remove("east");
-                else input.put("east", "yes");
+                if(input.containsKey("est"))input.remove("est");
+                else input.put("est", "yes");
             }
         });
 
@@ -510,8 +497,8 @@ public class ChoiceCriteria{
         locationWest.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
-                if(input.containsKey("west"))input.remove("west");
-                else input.put("west", "yes");
+                if(input.containsKey("ouest"))input.remove("ouest");
+                else input.put("ouest", "yes");
             }
         });
 
@@ -520,8 +507,8 @@ public class ChoiceCriteria{
         locationCenter.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
-                if(input.containsKey("center"))input.remove("center");
-                else input.put("center", "yes");
+                if(input.containsKey("centre"))input.remove("centre");
+                else input.put("centre", "yes");
             }
         });
 

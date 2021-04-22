@@ -1,7 +1,6 @@
 package episen.si.ing1.pds.client;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -126,15 +125,7 @@ public class ChoiceDevice {
                                 @Override
                                 public void actionPerformed(ActionEvent e) {
                                     String value = quantityE.getText().trim();
-                                    if(value.matches("\\d+") && (Integer.parseInt(value) > 0)){
-                                        if(input.containsKey(text))input.replace(text,value);
-                                        else input.put(text, value);
-
-                                        messageErrorE.setText(" ");
-                                    } else {
-                                        messageErrorE.setText("X");
-                                        messageErrorE.setForeground(Color.RED);
-                                    }
+                                    verifNumber(value, input, messageErrorE, text);
                                     System.out.println(input);
                                 }
                             });
@@ -157,8 +148,7 @@ public class ChoiceDevice {
         rNonEquipment.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(input.containsKey("config_equipement_" + roomName))input.replace("config_equipement_" + roomName, "non");
-                else input.put("config_equipement_" + roomName,"non");
+                input.put("config_equipement_" + roomName,"non");
 
                 if(verifMap()) buttonValidate.setEnabled(true);
                 visibleListe(view, listeE, selectionE,quantityE, validateQuantityE, messageErrorE);
@@ -187,8 +177,7 @@ public class ChoiceDevice {
         rYesSensor.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
-                if(input.containsKey("config_capteur_"+ roomName))input.replace("config_capteur_" + roomName, "oui");
-                else input.put("config_capteur_" + roomName,"oui");
+                input.put("config_capteur_" + roomName,"oui");
 
                 listeS.setBackground(Color.white);
                 listeS.setBounds(450, 250, 350, 250);
@@ -238,8 +227,7 @@ public class ChoiceDevice {
         rNoSensor.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(input.containsKey("config_capteur_"+ roomName))input.replace("config_capteur_" + roomName, "non");
-                else input.put("config_capteur_" + roomName,"non");
+                 input.put("config_capteur_" + roomName,"non");
 
                 if(verifMap()) buttonValidate.setEnabled(true);
                 visibleListe(view, listeS, selectionS,quantityS, validateQuantityS, messageErrorS);
@@ -289,7 +277,7 @@ public class ChoiceDevice {
 
     public void verifNumber(String str, Map<String, String> input, JTextField messageError, String text){
         if(str.matches("\\d+") && (Integer.parseInt(str) > 0)){
-            if(input.containsKey(text))input.replace(text,value);
+            if(input.containsKey(text))input.replace(text,str);
             else input.put(text, str);
 
             messageError.setText(" ");
