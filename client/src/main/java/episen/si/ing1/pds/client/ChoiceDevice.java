@@ -1,6 +1,10 @@
 package episen.si.ing1.pds.client;
 
 import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.border.TitledBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -14,19 +18,28 @@ public class ChoiceDevice {
         this.frame = frame;
         this.input = input;
     }
-
-    private JFrame frame;
+    private final JFrame frame;
     private Map<String , String> input = new HashMap<>();
-    private JButton buttonValidate = new JButton("Valider");
+    private final JButton buttonValidate = new JButton("Valider");
     private JPanel pageBody;
     private final String page = "device";
-    private JTextField sentenceEquipment = new JTextField("- Veuillez selectionner les equipements.");
     private String[] listeEquipment = {"ordinateur fixe","fenetre", "television connecte"};
-    private JTextField sentenceSensor = new JTextField("- Veuillez selectionner les capteurs.");
     private String[] listeSensor = {"capteur de temperature","capteur de luminosite", "capteur de mouvement"};
+    private JTextField selectionE = new JTextField();
+    private JTextField quantityE = new JTextField();
+    private JTextField selectionS = new JTextField();
+    private JTextField quantityS = new JTextField();
+    private JButton validateQuantityE = new JButton("Valider");
+    private JButton validateQuantityS = new JButton("Valider");
+    private JTextField messageErrorE = new JTextField();
+    private JTextField messageErrorS = new JTextField();
+    private String roomName = "";
+
 
 
     public void choice(JPanel pb, JPanel oldView, JButton room, Map<JButton,String> listButton){
+        roomName = room.getText();
+
         this.pageBody = pb;
         pageBody.setBackground(Color.CYAN);
         JPanel view = view();
@@ -59,6 +72,10 @@ public class ChoiceDevice {
         sizeComposant(new Dimension(950,600), view);
         view.setLayout(null);
 
+        JTextField room = new JTextField(roomName);
+        room = styleJTextFieldReservation(room, 50,20,350, 50, Color.white, Color.white);
+        view.add(room);
+
         JTextField titleEquipment = new JTextField("Choisissez les equipements :");
         titleEquipment = styleJTextFieldReservation(titleEquipment, 50,100,350, 50, Color.white, Color.white);
         titleEquipment.setFont(new Font("Serif", Font.BOLD, 20));
@@ -73,24 +90,63 @@ public class ChoiceDevice {
         rYesEquipment.setVisible(true);
         rYesEquipment.setBackground(Color.white);
         rYesEquipment.setBounds(275, 160, 80,20);
-        sentenceEquipment = styleJTextFieldReservation(sentenceEquipment, 50, 200, 250, 20, Color.white, Color.white);
-        sentenceEquipment.setVisible(false);
         JList listeE = new JList(listeEquipment);
-        view.add(sentenceEquipment);
+
         view.add(listeE);
+
+        view.add(messageErrorE);
         rYesEquipment.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
-                if(input.containsKey("config_equipement_salle1"))input.replace("config_equipement_salle1", "oui");
-                else input.put("config_equipement_salle1","oui");
+                if(input.containsKey("config_equipement_" + roomName))input.replace("config_equipement_" + roomName, "oui");
+                else input.put("config_equipement_" + roomName,"oui");
 
-                listeE.setBounds(50, 250, 350, 300);
-                listeE.setBackground(Color.red);
-                sentenceEquipment.setVisible(true);
+                listeE.setBounds(50, 250, 350, 250);
+                listeE.setBackground(Color.white);
                 listeE.setVisible(true);
+                listeE.setBorder(new TitledBorder("Veuillez selectionner les equipements."));
+                listeE.addListSelectionListener(new ListSelectionListener() {
+                    @Override
+                    public void valueChanged(ListSelectionEvent e) {
+                        if(!e.getValueIsAdjusting()){
+                            String text = (String)listeE.getSelectedValue();
+                            selectionE.setText("Quelle quantite pour "+ text +" ?");
+                            selectionE = styleJTextFieldReservation(selectionE, 50, 500, 250, 20, Color.white, Color.white);
+                            selectionE.setVisible(true);
+
+                            quantityE.setBackground(Color.white);
+                            quantityE.setBounds(350, 505, 30,20);
+                            quantityE.setVisible(true);
+
+                            messageErrorE = styleJTextFieldError(view, quantityE.getWidth() + quantityE.getX(), 500, 20, 20);
+
+                            validateQuantityE.setBounds(50,530,100,20);
+                            validateQuantityE.setVisible(true);
+                            validateQuantityE.addActionListener(new ActionListener() {
+                                @Override
+                                public void actionPerformed(ActionEvent e) {
+                                    String value = quantityE.getText().trim();
+                                    if(value.matches("\\d+") && (Integer.parseInt(value) > 0)){
+                                        if(input.containsKey(text))input.replace(text,value);
+                                        else input.put(text, value);
+
+                                        messageErrorE.setText(" ");
+                                    } else {
+                                        messageErrorE.setText("X");
+                                        messageErrorE.setForeground(Color.RED);
+                                    }
+                                    System.out.println(input);
+                                }
+                            });
+                        }
+                    }
+                });
                 view.repaint();
             }
         });
+        view.add(validateQuantityE);
+        view.add(quantityE);
+        view.add(selectionE);
         groupEquipment.add(rYesEquipment);
         view.add(rYesEquipment);
 
@@ -101,19 +157,15 @@ public class ChoiceDevice {
         rNonEquipment.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(input.containsKey("config_equipement_salle1"))input.replace("config_equipement_salle1", "non");
-                else input.put("config_equipement_salle1","non");
+                if(input.containsKey("config_equipement_" + roomName))input.replace("config_equipement_" + roomName, "non");
+                else input.put("config_equipement_" + roomName,"non");
 
                 if(verifMap()) buttonValidate.setEnabled(true);
-                System.out.println(input);
-                sentenceEquipment.setVisible(false);
-                listeE.setVisible(false);
-                view.repaint();
+                visibleListe(view, listeE, selectionE,quantityE, validateQuantityE, messageErrorE);
             }
         });
         groupEquipment.add(rNonEquipment);
         view.add(rNonEquipment);
-
 
         JTextField titleSensor = new JTextField("Choisissez les capteurs :");
         titleSensor = styleJTextFieldReservation(titleSensor, 450,100,350, 50, Color.white, Color.white);
@@ -130,24 +182,52 @@ public class ChoiceDevice {
         rYesSensor.setBounds(675, 160, 80,20);
         rYesSensor.setVisible(true);
         rYesSensor.setBackground(Color.white);
-        sentenceSensor = styleJTextFieldReservation(sentenceSensor, 450, 200, 250, 20, Color.white, Color.white);
-        sentenceSensor.setVisible(false);
         JList listeS = new JList(listeSensor);
-        view.add(sentenceSensor);
         view.add(listeS);
-        rYesSensor.addActionListener(new ActionListener() {
+        rYesSensor.addItemListener(new ItemListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
-                if(input.containsKey("config_capteur_salle1"))input.replace("config_capteur_salle1", "oui");
-                else input.put("config_capteur_salle1","oui");
+            public void itemStateChanged(ItemEvent e) {
+                if(input.containsKey("config_capteur_"+ roomName))input.replace("config_capteur_" + roomName, "oui");
+                else input.put("config_capteur_" + roomName,"oui");
 
-                listeS.setBackground(Color.red);
-                listeS.setBounds(450, 250, 350, 300);
+                listeS.setBackground(Color.white);
+                listeS.setBounds(450, 250, 350, 250);
                 listeS.setVisible(true);
-                sentenceSensor.setVisible(true);
+                listeS.setBorder(new TitledBorder("Veuillez selectionner les capteurs."));
+                listeS.addListSelectionListener(new ListSelectionListener() {
+                    @Override
+                    public void valueChanged(ListSelectionEvent e) {
+                        if(!e.getValueIsAdjusting()){
+                            String text = (String)listeS.getSelectedValue();
+                            selectionS.setText("Quelle quantite pour "+ text +" ?");
+                            selectionS = styleJTextFieldReservation(selectionS, 450, 500, 250, 20, Color.white, Color.white);
+                            selectionS.setVisible(true);
+
+                            quantityS.setBackground(Color.white);
+                            quantityS.setBounds(750, 505, 30,20);
+                            quantityS.setVisible(true);
+
+                            messageErrorS = styleJTextFieldError(view, quantityS.getWidth() + quantityS.getX(), 500, 20, 20);
+
+                            validateQuantityS.setBounds(450,530,100,20);
+                            validateQuantityS.setVisible(true);
+                            validateQuantityS.addActionListener(new ActionListener() {
+                                @Override
+                                public void actionPerformed(ActionEvent e) {
+                                    String value = quantityS.getText().trim();
+                                    verifNumber(value, input, messageErrorS, text);
+                                    System.out.println(input);
+                                }
+                            });
+                        }
+                    }
+                });
                 view.repaint();
             }
         });
+        view.add(validateQuantityS);
+        view.add(quantityS);
+        view.add(selectionS);
         groupSensor.add(rYesSensor);
         view.add(rYesSensor);
 
@@ -158,13 +238,11 @@ public class ChoiceDevice {
         rNoSensor.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(input.containsKey("config_capteur_salle1"))input.replace("config_capteur_salle1", "non");
-                else input.put("config_capteur_salle1","non");
+                if(input.containsKey("config_capteur_"+ roomName))input.replace("config_capteur_" + roomName, "non");
+                else input.put("config_capteur_" + roomName,"non");
 
                 if(verifMap()) buttonValidate.setEnabled(true);
-                sentenceSensor.setVisible(false);
-                listeS.setVisible(false);
-                view.repaint();
+                visibleListe(view, listeS, selectionS,quantityS, validateQuantityS, messageErrorS);
             }
         });
         groupSensor.add(rNoSensor);
@@ -177,7 +255,6 @@ public class ChoiceDevice {
         c.setMaximumSize(dim);
         c.setMinimumSize(dim);
     }
-
     public JTextField styleJTextFieldReservation(JTextField t, int x, int y, int w, int h, Color c1 , Color c2) {
         t.setEditable(false);
         t.setBackground(c1);
@@ -185,12 +262,40 @@ public class ChoiceDevice {
         t.setBounds(x, y, w, h);
         return t;
     }
-
     public boolean verifMap(){
         System.out.println(input);
-        if(input.containsKey("config_capteur_salle1") && input.containsKey("config_equipement_salle1"))
+        if(input.containsKey("config_capteur_"+ roomName) && input.containsKey("config_equipement_"+ roomName))
             return true;
         else return false;
+    }
+    public JTextField styleJTextFieldError(JPanel view, int x, int y, int w, int h) {
+        JTextField t = new JTextField();
+        t.setEditable(false);
+        t.setBackground(Color.WHITE);
+        t.setForeground(Color.RED);
+        t.setBorder(BorderFactory.createLineBorder(Color.WHITE));
+        t.setBounds(x, y, w, h);
+        view.add(t);
+        return t;
+    }
+    public void visibleListe(JPanel view, JList list, JTextField selection, JTextField quantity, JButton validate, JTextField messageError){
+        list.setVisible(false);
+        selection.setVisible(false);
+        quantity.setVisible(false);
+        validate.setVisible(false);
+        messageError.setVisible(false);
+        view.repaint();
+    }
 
+    public void verifNumber(String str, Map<String, String> input, JTextField messageError, String text){
+        if(str.matches("\\d+") && (Integer.parseInt(str) > 0)){
+            if(input.containsKey(text))input.replace(text,value);
+            else input.put(text, str);
+
+            messageError.setText(" ");
+        } else {
+            messageError.setText("X");
+            messageError.setForeground(Color.RED);
+        }
     }
 }
