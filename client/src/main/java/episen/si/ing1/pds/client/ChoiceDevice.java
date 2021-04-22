@@ -26,27 +26,29 @@ public class ChoiceDevice {
     private String[] listeSensor = {"capteur de temperature","capteur de luminosite", "capteur de mouvement"};
 
 
-    public void choice(JPanel pb, JPanel oldView, JButton room){
+    public void choice(JPanel pb, JPanel oldView, JButton room, Map<JButton,String> listButton){
         this.pageBody = pb;
         pageBody.setBackground(Color.CYAN);
         JPanel view = view();
         view.setBackground(Color.white);
+        RentalAdvancement rentalAdvancement = new RentalAdvancement(page);
+        JPanel advancement = rentalAdvancement.rentalAdvancement();
+        pageBody.add(advancement, BorderLayout.CENTER);
         buttonValidate.setBounds(780, 10, 100, 50);
         buttonValidate.setEnabled(false);
         buttonValidate.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                advancement.setVisible(false);
+                listButton.replace(room, "validated");
                 view.setVisible(false);
                 room.setBackground(Color.green);
                 ViewWithPlan backViewPlan = new ViewWithPlan(frame, input);
-                backViewPlan.back(oldView,pb,room);
+                backViewPlan.back(oldView,pb,room,listButton);
             }
         });
         view.add(buttonValidate);
         view.setVisible(true);
-        RentalAdvancement rentalAdvancement = new RentalAdvancement(page);
-        JPanel advancement = rentalAdvancement.rentalAdvancement();
-        pageBody.add(advancement, BorderLayout.CENTER);
         pageBody.add(view, BorderLayout.SOUTH);
         pageBody.repaint();
         frame.repaint();
@@ -63,7 +65,7 @@ public class ChoiceDevice {
         view.add(titleEquipment);
 
         JTextField choiceEquipment = new JTextField("- Souhaitez-vous des equipements ? ");
-        choiceEquipment = styleJTextFieldReservation(choiceEquipment, 50, 160, 195, 20,Color.white, Color.white);
+        choiceEquipment = styleJTextFieldReservation(choiceEquipment, 50, 160, 200, 20,Color.white, Color.white);
         view.add(choiceEquipment);
 
         ButtonGroup groupEquipment = new ButtonGroup();

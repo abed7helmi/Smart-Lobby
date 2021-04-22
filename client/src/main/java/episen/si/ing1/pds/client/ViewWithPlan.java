@@ -13,14 +13,15 @@ import java.util.Map;
 
 
 public class ViewWithPlan {
+    private String page = "device";
     private final JFrame frame;
     private Map<String , String> input = new HashMap<>();
-    private final JButton buttonContinue = new JButton("Continuer");
     private final JButton buttonReturn = new JButton("Retour");
     private JPanel pageBody;
     private String order;
     private String floorNumber;
     private JPanel configButton = new JPanel();
+    private Map<JButton, String> listButton = new HashMap<>();
 
 
     public ViewWithPlan(JFrame frame, Map<String, String> input){
@@ -36,13 +37,14 @@ public class ViewWithPlan {
     public void viewWithPlan(JPanel pb){
         this.pageBody = pb;
         pageBody.setBackground(Color.WHITE);
-        buttonContinue.setEnabled(false);
-        buttonContinue.setBounds(780, 10, 100, 50);
+        JPanel view = view();
+        view.add(buttonReturn);
+        JPanel advancement;
+        RentalAdvancement rentalAdvancement = new RentalAdvancement(page);
+        advancement = rentalAdvancement.rentalAdvancement();
+        pageBody.add(advancement, BorderLayout.CENTER);
         buttonReturn.setEnabled(true);
         buttonReturn.setBounds(670, 10, 100, 50);
-        JPanel view = view();
-        view.add(buttonContinue);
-        view.add(buttonReturn);
         pageBody.add(view, BorderLayout.SOUTH);
         pageBody.repaint();
         frame.repaint();
@@ -125,19 +127,39 @@ public class ViewWithPlan {
             @Override
             public void actionPerformed(ActionEvent e) {
                 view.setVisible(false);
-                changePage(view, room);
+                changePage(view, room, listButton);
             }
         });
+        listButton.put(room, "unvalidated");
         configButton.add(room);
         return room;
     }
-    public void changePage(JPanel view, JButton room){
+    public void changePage(JPanel view, JButton room, Map<JButton, String> listButton){
         ChoiceDevice device = new ChoiceDevice(frame, input);
-        device.choice(pageBody, view, room);
+        device.choice(pageBody, view, room, listButton);
     }
-    public void back(JPanel oldView, JPanel pb, JButton room){
+    public void back(JPanel oldView, JPanel pb, JButton room, Map<JButton, String> list){
+        this.pageBody = pb;
+        boolean verifContinue = true;
+        for(Map.Entry map : list.entrySet()){
+            if( (map.getValue()).equals("unvalidated")) verifContinue = false;
+        }
+        if(verifContinue){
+            JButton buttonContinue = new JButton("Continuer");
+            buttonContinue.setEnabled(true);
+            buttonContinue.setBounds(780, 10, 100, 50);
+            oldView.add(buttonContinue);
+            buttonContinue.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    oldView.setVisible(false);
+                    Bill bill = new Bill(input, frame);
+                    bill.confirmation(pageBody);
+                }
+            });
+        }
         oldView.setVisible(true);
         room.repaint();
-        pb.repaint();
+        pageBody.repaint();
     }
 }

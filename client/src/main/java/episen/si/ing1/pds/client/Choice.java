@@ -26,6 +26,8 @@ public class Choice{
         this.pageBody = pb;
         pageBody.setBackground(Color.WHITE);
         JPanel view = view();
+        RentalAdvancement rentalAdvancement = new RentalAdvancement(page);
+        JPanel advancement = rentalAdvancement.rentalAdvancement();
         buttonContinue.setEnabled(false);
         buttonContinue.setBounds(780, 10, 100, 50);
         buttonContinue.addActionListener(new ActionListener() {
@@ -34,6 +36,7 @@ public class Choice{
                 System.out.println("vous avez choisi  ca"+ (selected.getText().split(":")[1]).trim());
                 String order = (selected.getText().split(":")[1]).trim();
                 view.setVisible(false);
+                advancement.setVisible(false);
                 changePage(order);
             }
         });
@@ -41,8 +44,6 @@ public class Choice{
         buttonReturn.setBounds(670, 10, 100, 50);
         view.add(buttonContinue);
         view.add(buttonReturn);
-        RentalAdvancement rentalAdvancement = new RentalAdvancement(page);
-        JPanel advancement = rentalAdvancement.rentalAdvancement();
         pageBody.add(advancement, BorderLayout.CENTER);
         pageBody.add(view, BorderLayout.SOUTH);
         pageBody.repaint();
