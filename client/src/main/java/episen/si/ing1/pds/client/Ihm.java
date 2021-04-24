@@ -132,8 +132,6 @@ public class Ihm extends JFrame{
         menu.setPreferredSize(new Dimension(250, 800));
 
         frame.add(menu , BorderLayout.WEST);
-
-
         frame.setSize(1200, 800);
         frame.setVisible(true);
         frame.setLocationRelativeTo(null);
