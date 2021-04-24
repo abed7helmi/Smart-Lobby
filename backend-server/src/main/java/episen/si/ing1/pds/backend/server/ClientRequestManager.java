@@ -8,6 +8,7 @@ import java.net.Socket;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -100,6 +101,11 @@ public class ClientRequestManager {
 			Map<String, Map<String, String>> map = mapper.readValue(values,
 					new TypeReference<Map<String, Map<String, String>>>() {
 					});
+
+			int numberOpenSpace = Integer.parseInt(map.get("requestLocation1").get("numberOpenSpace")) * 4;
+			int numberClosedOffice = Integer.parseInt(map.get("requestLocation1").get("numberClosedOffice")) *4;
+			int numberSingleOffice = Integer.parseInt(map.get("requestLocation1").get("numberSingleOffice")) * 4;
+			int numberMeetingRoom = Integer.parseInt(map.get("requestLocation1").get("numberMeetingRoom")) * 4;
 			String request = "select room_wording, floor_number, building_name, room_price as prix, room_id " +
 					"from room r " +
 					"inner join floor f on f.floor_id = r.floor_id " +
@@ -109,33 +115,66 @@ public class ClientRequestManager {
 						"from room r " +
 						"inner join floor f on f.floor_id = r.floor_id " +
 						"inner join building b on b.building_id = f.building_id " +
-						"where status = 'free' and room_type_id = 1 Limit " + Integer.parseInt(map.get("requestLocation1").get("numberOpenSpace")) + ") " +
+						"where status = 'free' and room_type_id = 1 Limit " + numberOpenSpace + ") " +
 						"or room_id in "+
 					" (select room_id "+
 						"from room r " +
 						"inner join floor f on f.floor_id = r.floor_id " +
 						"inner join building b on b.building_id = f.building_id " +
-						"where status = 'free' and room_type_id = 3 Limit " + Integer.parseInt(map.get("requestLocation1").get("numberClosedOffice")) + ") "+
+						"where status = 'free' and room_type_id = 3 Limit " + numberClosedOffice + ") "+
 						"or room_id in "+
 					"(select room_id " +
 						"from room r " +
 						"inner join floor f on f.floor_id = r.floor_id " +
 						"inner join building b on b.building_id = f.building_id " +
-						"where status = 'free' and room_type_id = 3 Limit " + Integer.parseInt(map.get("requestLocation1").get("numberClosedOffice")) + ") "+
+						"where status = 'free' and room_type_id = 3 Limit " + numberSingleOffice + ") "+
 						"or room_id in " +
 					"(select room_id " +
 						"from room r " +
 						"inner join floor f on f.floor_id = r.floor_id " +
 						"inner join building b on b.building_id = f.building_id " +
-						"where status = 'free' and room_type_id = 2 Limit " + Integer.parseInt(map.get("requestLocation1").get("numberMeetingRoom")) + ") ;";
+						"where status = 'free' and room_type_id = 2 Limit " + numberMeetingRoom + ") ;";
 			ResultSet result = c.createStatement().executeQuery(request);
-			StringBuilder data = new StringBuilder();
+			Map<String, Map<String, String>> room = new HashMap<>();
+			Map<String , Map<String, Map<String ,String>>> proposal = new HashMap<>();
+
+			int numberRoom = Integer.parseInt(map.get("requestLocation1").get("numberClosedOffice"))
+					+ Integer.parseInt(map.get("requestLocation1").get("numberSingleOffice"))
+					+ Integer.parseInt(map.get("requestLocation1").get("numberOpenSpace"))
+					+ Integer.parseInt(map.get("requestLocation1").get("numberMeetingRoom"));
+			int roomCount = 1;
+			int proposalCount = 1;
+			int count = 1;
 			while(result.next()){
-					data.append("Room wording : " + result.getString(1) + " numero etage : " + result.getInt(2) +
-							"nom bâtiment : " +result.getString(3)+ " prix : "+result.getString(4) + " room id : " +
-							result.getInt(5));
+				Map<String, String> underMap = new HashMap<>();
+				underMap.put("room_wording",result.getString(1));
+				underMap.put("floor_number",result.getInt(2)+"");
+				underMap.put("building_name",result.getString(3));
+				underMap.put("price",result.getString(4));
+				underMap.put("room_id",result.getString(5));
+
+				room.put("room"+roomCount,underMap);
+
+				if(count == numberRoom){
+					count = 1;
+					roomCount = 1;
+					proposal.put("proposal"+proposalCount, room);
+					proposalCount++;
+					room = new HashMap<>();
+				} else {
+					count++;
+					roomCount++;
+				}
 			}
-			output.println(data);
+			for (Map.Entry test : proposal.entrySet()) {
+				System.out.println("clé: "+test.getKey()
+						+ " | valeur: " + test.getValue());
+
+			}
+			ObjectMapper objectMapper = new ObjectMapper();
+			String proposals = objectMapper.writeValueAsString(proposal);
+
+			output.println(proposals);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

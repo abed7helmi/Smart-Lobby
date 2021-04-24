@@ -88,17 +88,17 @@ public class ChoiceCriteria{
                 advancement.setVisible(false);
                 pageBody.repaint();
 
-                Client.map.get("requestLocation1").put("end_date", input.get("end_date"));
-                Client.map.get("requestLocation1").put("start_date", input.get("start_date"));
-                Client.map.get("requestLocation1").put("numberOpenSpace", input.get("numberOpenSpace"));
-                Client.map.get("requestLocation1").put("numberClosedOffice", input.get("numberClosedOffice"));
-                Client.map.get("requestLocation1").put("numberSingleOffice", input.get("numberSingleOffice"));
-                Client.map.get("requestLocation1").put("numberMeetingRoom", input.get("numberMeetingRoom"));
-
                 String request = "requestLocation1";
 
-                Client.sendBd(request);
-                changePage();
+                Client.map.get(request).put("end_date", input.get("end_date"));
+                Client.map.get(request).put("start_date", input.get("start_date"));
+                Client.map.get(request).put("numberOpenSpace", input.get("numberOpenSpace"));
+                Client.map.get(request).put("numberClosedOffice", input.get("numberClosedOffice"));
+                Client.map.get(request).put("numberSingleOffice", input.get("numberSingleOffice"));
+                Client.map.get(request).put("numberMeetingRoom", input.get("numberMeetingRoom"));
+
+                String result = Client.sendBd(request);
+                changePage(result);
             }
         });
         choice.add(buttonContinue);
@@ -556,8 +556,8 @@ public class ChoiceCriteria{
         else return false;
     }
 
-    public void changePage(){
+    public void changePage(String proposals){
         Choice selectChoice = new Choice(input, frame);
-        selectChoice.choice(pageBody);
+        selectChoice.choice(pageBody, proposals);
     }
 }

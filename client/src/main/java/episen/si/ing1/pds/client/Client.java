@@ -71,11 +71,10 @@ public class Client {
 		}
 	}
 
-	public static void sendBd(String request){
+	public static String sendBd(String request){
 		try{
 			ObjectMapper objectMapper = new ObjectMapper();
 			String data = objectMapper.writeValueAsString(map);
-
 
 			episenClientConfig = System.getenv(configClient);
 			final ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
@@ -87,10 +86,11 @@ public class Client {
 			BufferedReader input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
 			output.println(request+"#"+data);
-			System.out.println(input.readLine());
 
+			return input.readLine();
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
+		return "";
 	}
 }

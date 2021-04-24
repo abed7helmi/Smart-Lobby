@@ -87,16 +87,22 @@ public class ViewWithPlan {
         int y = 20;
 
         JButton room1 = configRoom("Salle n 1" + " etage n 1" , x,y,150,50, configButton, view);
+        room1.setToolTipText("batiment Pavillon ");
         y = y + 60;
         JButton room2 = configRoom("Salle n 2"  + " etage n 1", x,y,150,50, configButton, view);
+        room2.setToolTipText("batiment Pavillon ");
         y = y + 60;
         JButton room3 = configRoom("Salle n 1"  + " etage n 2", x,y,150,50, configButton, view);
+        room3.setToolTipText("batiment Pavillon ");
         y = y + 60;
         JButton room4 = configRoom("Salle n 5" + " etage n 3", x,y,150,50, configButton, view);
+        room4.setToolTipText("batiment Pavillon ");
         y = y + 60;
         JButton room5 = configRoom("Salle n 5" + " etage n 4", x,y,150,50, configButton, view);
+        room5.setToolTipText("batiment Pavillon ");
         y = y + 60;
         JButton room6 = configRoom("Salle n 1" + " etage n 5", x,y,150,50, configButton, view);
+        room6.setToolTipText("batiment Pavillon ");
         y = y + 60;
 
         view.add(configButton);
