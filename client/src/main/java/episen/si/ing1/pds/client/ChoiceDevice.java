@@ -227,7 +227,7 @@ public class ChoiceDevice {
         rNoSensor.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                 input.put("config_capteur_" + roomName,"non");
+                input.put("config_capteur_" + roomName,"non");
 
                 if(verifMap()) buttonValidate.setEnabled(true);
                 visibleListe(view, listeS, selectionS,quantityS, validateQuantityS, messageErrorS);
@@ -235,7 +235,6 @@ public class ChoiceDevice {
         });
         groupSensor.add(rNoSensor);
         view.add(rNoSensor);
-
         return view;
     }
     public void sizeComposant(Dimension dim, Component c){

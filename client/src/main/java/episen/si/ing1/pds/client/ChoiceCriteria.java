@@ -12,7 +12,6 @@ public class ChoiceCriteria{
     private Map<String, String> input = new HashMap<>();
     private final String page = "criteria";
     private JButton buttonContinue = new JButton("Continuer");
-    private JPanel pageBody = new JPanel();
     private JFrame frame;
     private JCheckBox checkBoxOpenSpace = new JCheckBox();
     private JCheckBox checkBoxMeetingRoom = new JCheckBox();
@@ -22,16 +21,15 @@ public class ChoiceCriteria{
     private JTextField valueClosedOffice = new JTextField();
     private JTextField valueMeetingRoom = new JTextField();
     private JTextField valueSingleOffice = new JTextField();
+    private JPanel pageBody = new JPanel();
 
     public ChoiceCriteria(JFrame f)  {
         input.clear();
         frame = f;
     }
 
-    public void realizeReservation(){
-        frame.setSize(1200, 800);
+    public JPanel realizeReservation(){
         pageBody.setLayout(new BorderLayout());
-        Menu menu = new Menu();
         TitleReservation title = new TitleReservation();
 
         pageBody.add(title.titleReservation(), BorderLayout.NORTH);
@@ -45,7 +43,6 @@ public class ChoiceCriteria{
         buttonContinue.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println(input+"avant modif");
                 boolean changeValue = false;
                 boolean verifOpenSpace = input.containsKey("numberOpenSpace");
                 boolean verifClosedOffice = input.containsKey("numberClosedOffice");
@@ -61,6 +58,7 @@ public class ChoiceCriteria{
                     sauvClosedOffice = input.get("numberClosedOffice");
                 }
                 if(!verifSingleOffice) input.put("numberSingleOffice", "0");
+                if(!verifMeetingRoom) input.put("numberMeetingRoom", "0");
 
 
                 int nbrEmployee = Integer.parseInt(input.get("numberEmployee"));
@@ -79,29 +77,38 @@ public class ChoiceCriteria{
                     input.replace("numberClosedOffice", newValue+"");
                     changeValue = true;
                 }
-                System.out.println(input+"apres modif");
                 if(changeValue){
                     int result = JOptionPane.showConfirmDialog(null, "Au vue des donnees que vous avez rentre, nous avons ajuste votre demande par rapport a la capacite de chaque piece");
-                    System.out.println("space "+ sauvOpenSpace);
                     if(result == JOptionPane.NO_OPTION){
-                        System.out.println("test "+ sauvOpenSpace);
                         input.replace("numberOpenSpace", sauvOpenSpace);
                         input.replace("numberClosedOffice", sauvClosedOffice);
                     }
                 }
-                System.out.println(input+"apres confirm");
                 choice.setVisible(false);
                 advancement.setVisible(false);
                 pageBody.repaint();
+
+                Client.map.get("requestLocation1").put("end_date", input.get("end_date"));
+                Client.map.get("requestLocation1").put("start_date", input.get("start_date"));
+                Client.map.get("requestLocation1").put("numberOpenSpace", input.get("numberOpenSpace"));
+                Client.map.get("requestLocation1").put("numberClosedOffice", input.get("numberClosedOffice"));
+                Client.map.get("requestLocation1").put("numberSingleOffice", input.get("numberSingleOffice"));
+                Client.map.get("requestLocation1").put("numberMeetingRoom", input.get("numberMeetingRoom"));
+
+                String request = "requestLocation1";
+
+                Client.sendBd(request);
                 changePage();
             }
         });
         choice.add(buttonContinue);
         pageBody.add(choice, BorderLayout.SOUTH);
-        pageBody.setBackground(Color.WHITE);
-        frame.getContentPane().add(menu.menu(), BorderLayout.WEST);
+        pageBody.setBackground(Color.white);
+        pageBody.setVisible(true);
         frame.getContentPane().add(pageBody, BorderLayout.CENTER);
         frame.repaint();
+
+        return pageBody;
     }
 
     public JPanel reservationCritere(){
@@ -213,7 +220,6 @@ public class ChoiceCriteria{
                 String m = (((JTextField)source).getText()).trim();
                 if(m.matches("\\d+") && (Integer.parseInt(m) > 0)) {
                     input.put("numberEmployee",((JTextField)source).getText().trim());
-                    System.out.println(input);
                     messageErrorEmployee.setText(" ");
                     if(verifMap()) buttonContinue.setEnabled(true);
                     buttonValidate.setEnabled(true);
@@ -438,8 +444,6 @@ public class ChoiceCriteria{
 
                         input.put("numberClosedOffice",nbrClosedOffice+"");
                     }
-                    if(verifMap()) buttonContinue.setEnabled(true);
-                    System.out.println(input);
                 }
             }
         });
@@ -462,67 +466,27 @@ public class ChoiceCriteria{
         JTextField locationTextField = new JTextField("Veuillez indiquer un ou plusieurs lieux geographiques : ");
         locationTextField = styleJTextFieldReservation(locationTextField, 20, 480, 300, 20);
 
-        JCheckBox locationNorth = new JCheckBox("Nord de la ville");
-        locationNorth = styleJCheckBoxReservation(locationNorth,20, 510, 150, 20);
-        locationNorth.addItemListener(new ItemListener() {
-            @Override
-            public void itemStateChanged(ItemEvent e) {
-                if(input.containsKey("nord"))input.remove("nord");
-                else input.put("nord", "yes");
-            }
-        });
+        ButtonGroup groupLocation = new ButtonGroup();
+        JRadioButton locationNorth = new JRadioButton("Nord de la ville");
+        styleLocationReservation(choice, groupLocation, locationNorth,20, 510, 150, 20, "nord");
 
-        JCheckBox locationSouth = new JCheckBox("Sud de la ville");
-        locationSouth = styleJCheckBoxReservation(locationSouth,20, 540, 150, 20);
-        locationSouth.addItemListener(new ItemListener() {
-            @Override
-            public void itemStateChanged(ItemEvent e) {
-                if(input.containsKey("sud"))input.remove("sud");
-                else input.put("sud", "yes");
-            }
-        });
+        JRadioButton locationSouth = new JRadioButton("Sud de la ville");
+        styleLocationReservation(choice, groupLocation, locationSouth,20, 540, 150, 20, "sud");
 
-        JCheckBox locationEast = new JCheckBox("Est de la ville");
-        locationEast = styleJCheckBoxReservation(locationEast,180, 510, 150, 20);
-        locationEast.addItemListener(new ItemListener() {
-            @Override
-            public void itemStateChanged(ItemEvent e) {
-                if(input.containsKey("est"))input.remove("est");
-                else input.put("est", "yes");
-            }
-        });
+        JRadioButton locationEast = new JRadioButton("Est de la ville");
+        styleLocationReservation(choice, groupLocation, locationEast,180, 510, 150, 20, "est");
 
-        JCheckBox locationWest = new JCheckBox("Ouest de la ville");
-        locationWest = styleJCheckBoxReservation(locationWest,180, 540, 150, 20);
-        locationWest.addItemListener(new ItemListener() {
-            @Override
-            public void itemStateChanged(ItemEvent e) {
-                if(input.containsKey("ouest"))input.remove("ouest");
-                else input.put("ouest", "yes");
-            }
-        });
+        JRadioButton locationWest = new JRadioButton("Ouest de la ville");
+        styleLocationReservation(choice, groupLocation,locationWest,180, 540, 150, 20, "ouest");
 
-        JCheckBox locationCenter = new JCheckBox("Centre de la ville");
-        locationCenter = styleJCheckBoxReservation(locationCenter,340, 510, 150, 20);
-        locationCenter.addItemListener(new ItemListener() {
-            @Override
-            public void itemStateChanged(ItemEvent e) {
-                if(input.containsKey("centre"))input.remove("centre");
-                else input.put("centre", "yes");
-            }
-        });
+        JRadioButton locationCenter = new JRadioButton("Centre de la ville");
+        styleLocationReservation(choice, groupLocation,locationCenter,340, 510, 150, 20,"centre");
 
-        JCheckBox locationAnyway = new JCheckBox("Peu importe");
-        locationAnyway = styleJCheckBoxReservation(locationAnyway,340, 540, 150, 20);
+        JRadioButton locationAnyway = new JRadioButton("Peu importe");
+        styleLocationReservation(choice, groupLocation, locationAnyway,340, 540, 150, 20, "anyway");
 
         choice.add(locationLabel);
         choice.add(locationTextField);
-        choice.add(locationAnyway);
-        choice.add(locationCenter);
-        choice.add(locationNorth);
-        choice.add(locationSouth);
-        choice.add(locationWest);
-        choice.add(locationEast);
 
         return choice;
     }
@@ -550,6 +514,27 @@ public class ChoiceCriteria{
         t.setBounds(x, y, w, h);
         choice.add(t);
         return t;
+    }
+    public void styleLocationReservation(JPanel choice, ButtonGroup group, JRadioButton c, int x, int y, int w, int h, String data){
+        group.add(c);
+        if(data.equals("anyway")){
+            c.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    input.remove("location");
+                }
+            });
+        } else {
+            c.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    input.put("location", data);
+                }
+            });
+        }
+        c.setBackground(Color.WHITE);
+        c.setBounds(x, y, w, h);
+        choice.add(c);
     }
     public JCheckBox styleJCheckBoxReservation(JCheckBox c, int x, int y, int w, int h){
         c.setBackground(Color.WHITE);

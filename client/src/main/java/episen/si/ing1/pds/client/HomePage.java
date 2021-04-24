@@ -51,7 +51,7 @@ public class HomePage extends JFrame {
         gc.gridx = 2;
         registeredCompany.add(entry, gc);
 
-        JLabel unregistered = new JLabel("Pas inscrit : ");
+        /*JLabel unregistered = new JLabel("Pas inscrit : ");
         JTextField unregisteredCompanyName = new JTextField(10);
         JButton entryUnregistered = new JButton("Envoyer");
 
@@ -65,8 +65,7 @@ public class HomePage extends JFrame {
         registeredCompany.add(unregisteredCompanyName, gc);
         gc.gridx = 2;
         gc.gridy = 1;
-        registeredCompany.add(entryUnregistered, gc);
-
+        registeredCompany.add(entryUnregistered, gc);*/
 
         entry.addActionListener(new ActionListener() {
             @Override
@@ -85,7 +84,7 @@ public class HomePage extends JFrame {
                 }
             }
         });
-        entryUnregistered.addActionListener(new ActionListener() {
+        /*entryUnregistered.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.out.println(unregisteredCompanyName.getText());
@@ -99,7 +98,7 @@ public class HomePage extends JFrame {
                     a.printStackTrace();
                 }
             }
-        });
+        });*/
 
         getContentPane().add(title, BorderLayout.NORTH);
         getContentPane().add(registeredCompany, BorderLayout.CENTER);

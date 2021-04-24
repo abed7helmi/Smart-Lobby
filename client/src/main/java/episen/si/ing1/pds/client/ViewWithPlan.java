@@ -76,10 +76,8 @@ public class ViewWithPlan {
         JPanel config = new JPanel();
         createButton(view);
         view.add(config);
-
         return view;
     }
-
     public void createButton(JPanel view){
 
         configButton.setLayout(null);

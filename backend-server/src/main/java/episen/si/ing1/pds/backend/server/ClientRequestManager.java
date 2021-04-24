@@ -8,6 +8,8 @@ import java.net.Socket;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -39,20 +41,12 @@ public class ClientRequestManager {
 
 					String clientInput = input.readLine();
 					logger.debug(clientInput);
-					String requestType = clientInput.split("=")[0];
-					String values = clientInput.split("=")[1];
+					String requestType = clientInput.split("#")[0];
+					String values = clientInput.split("#")[1];
 
-					firstPage(requestType, values);
+					returnChoice(values);
 
-					/*
-					ObjectMapper mapper = new ObjectMapper(new JsonFactory());
-					Map<String, Map<String, String>> map = mapper.readValue(values,
-							new TypeReference<Map<String, Map<String, String>>>() {
-							});
-
-					System.out.println(map.toString());
-
-					switch (requestType) {
+					/*switch (requestType) {
 					case "insert":
 						StringBuilder request = new StringBuilder();
 						request.append("insert into test(name,age) values");
@@ -100,7 +94,54 @@ public class ClientRequestManager {
 		return self;
 	}
 
-	public void firstPage(String requestType, String values) {
+	public void returnChoice(String values){
+		try {
+			ObjectMapper mapper = new ObjectMapper(new JsonFactory());
+			Map<String, Map<String, String>> map = mapper.readValue(values,
+					new TypeReference<Map<String, Map<String, String>>>() {
+					});
+			String request = "select room_wording, floor_number, building_name, room_price as prix, room_id " +
+					"from room r " +
+					"inner join floor f on f.floor_id = r.floor_id " +
+					"inner join building b on b.building_id = f.building_id " +
+					"where room_id in "+
+					"(select room_id " +
+						"from room r " +
+						"inner join floor f on f.floor_id = r.floor_id " +
+						"inner join building b on b.building_id = f.building_id " +
+						"where status = 'free' and room_type_id = 1 Limit " + Integer.parseInt(map.get("requestLocation1").get("numberOpenSpace")) + ") " +
+						"or room_id in "+
+					" (select room_id "+
+						"from room r " +
+						"inner join floor f on f.floor_id = r.floor_id " +
+						"inner join building b on b.building_id = f.building_id " +
+						"where status = 'free' and room_type_id = 3 Limit " + Integer.parseInt(map.get("requestLocation1").get("numberClosedOffice")) + ") "+
+						"or room_id in "+
+					"(select room_id " +
+						"from room r " +
+						"inner join floor f on f.floor_id = r.floor_id " +
+						"inner join building b on b.building_id = f.building_id " +
+						"where status = 'free' and room_type_id = 3 Limit " + Integer.parseInt(map.get("requestLocation1").get("numberClosedOffice")) + ") "+
+						"or room_id in " +
+					"(select room_id " +
+						"from room r " +
+						"inner join floor f on f.floor_id = r.floor_id " +
+						"inner join building b on b.building_id = f.building_id " +
+						"where status = 'free' and room_type_id = 2 Limit " + Integer.parseInt(map.get("requestLocation1").get("numberMeetingRoom")) + ") ;";
+			ResultSet result = c.createStatement().executeQuery(request);
+			StringBuilder data = new StringBuilder();
+			while(result.next()){
+					data.append("Room wording : " + result.getString(1) + " numero etage : " + result.getInt(2) +
+							"nom bâtiment : " +result.getString(3)+ " prix : "+result.getString(4) + " room id : " +
+							result.getInt(5));
+			}
+			output.println(data);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	/*public void firstPage(String requestType, String values) {
 		logger.debug(requestType+"//" + values);
 		try {
 			if(requestType.equals("select")) {
@@ -109,15 +150,9 @@ public class ClientRequestManager {
 				if(result.next()) output.println(true);
 				else
 					output.println(false);
-			} else if(requestType.equals("insert")){
-				StringBuilder request = new StringBuilder();
-				request.append("insert into company (company_name) values ('"+ values +"');");
-				logger.debug(request.toString());
-				output.println("Successfully inserted " + c.createStatement().executeUpdate(request.toString())
-						+ " rows.");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	}
+	}*/
 }
