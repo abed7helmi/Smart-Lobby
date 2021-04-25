@@ -72,22 +72,24 @@ public class Choice{
 
 
         JTextField order = new JTextField("Choisissez une offre : ");
-        order = styleJTextFieldReservation(order, 20, 10, 320, 50, Color.WHITE, Color.WHITE);
+        order = styleJTextFieldReservation(order, 20, 10, 320, 50, Color.white, Color.white);
         order.setFont(new Font("Serif", Font.BOLD, 20));
+        order.setForeground(Color.black);
         view.add(order);
 
         selected = styleJTextFieldReservation(selected, 360, 10, 150, 50, Color.WHITE, Color.WHITE);
+        selected.setForeground(Color.black);
         view.add(selected);
 
         JPanel display1 = proposal(mapProposals.get("proposal1"));
         JButton buttonDisplay1 = new JButton("Choisir");
-        selectProposal(buttonDisplay1, 157,170,100,40,3, display1,mapProposals.get("proposal1"));
+        selectProposal(buttonDisplay1, 157,170,100,40,1, display1,mapProposals.get("proposal1"));
         display1.setBounds(10, 80, 415,235);
 
         JPanel display2 = proposal(mapProposals.get("proposal2"));
         display2.setBounds(10, 325, 415, 235);
         JButton buttonDisplay2 = new JButton("Choisir");
-        selectProposal(buttonDisplay2, 157,170,100,40,3, display2,mapProposals.get("proposal2"));
+        selectProposal(buttonDisplay2, 157,170,100,40,2, display2,mapProposals.get("proposal2"));
 
         JPanel display3 = proposal(mapProposals.get("proposal3"));
         display3.setBounds(450, 80, 415, 235);
@@ -149,7 +151,6 @@ public class Choice{
 
         proposal.add(building);
         proposal.add(floor);
-        proposal.add(building);
         proposal.add(price);
 
         return proposal;
@@ -169,8 +170,9 @@ public class Choice{
     }
 
     public void changePage(String order, Map<String ,Map<String ,String>> proposalSelected){
-        ViewWithPlan viewPlan = new ViewWithPlan(frame, input , order);
+        ViewWithPlan viewPlan = new ViewWithPlan(frame, input , order, proposalSelected);
         viewPlan.viewWithPlan(pageBody);
+        System.out.println("test");
         System.out.println(proposalSelected);
     }
 
@@ -182,6 +184,7 @@ public class Choice{
                 selected.setText("Vous avez choisi : " + numberProposal);
                 proposalSelected = proposal;
                 buttonContinue.setEnabled(true);
+                System.out.println("test");
                 System.out.println(proposalSelected);
             }
         });

@@ -88,6 +88,9 @@ public class ChoiceCriteria{
                 advancement.setVisible(false);
                 pageBody.repaint();
 
+                System.out.println("avant client.map");
+                System.out.println(input);
+
                 String request = "requestLocation1";
 
                 Client.map.get(request).put("end_date", input.get("end_date"));
@@ -222,7 +225,6 @@ public class ChoiceCriteria{
                     input.put("numberEmployee",((JTextField)source).getText().trim());
                     messageErrorEmployee.setText(" ");
                     if(verifMap()) buttonContinue.setEnabled(true);
-                    buttonValidate.setEnabled(true);
 
                     valueOpenSpace.setText("");
                     valueMeetingRoom.setText("");
@@ -247,6 +249,12 @@ public class ChoiceCriteria{
         openSpace = styleJTextFieldReservation(openSpace,20, 290, 100, 20);
 
         checkBoxOpenSpace = styleJCheckBoxReservation(checkBoxOpenSpace, 120, 290, 20, 20);
+        checkBoxOpenSpace.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if(input.containsKey("numberEmployee")) buttonValidate.setEnabled(true);
+            }
+        });
 
         JTextField quantityOpenSpace = new JTextField("- nombre d'open-space : ");
         quantityOpenSpace = styleJTextFieldReservation(quantityOpenSpace,380, 290, 175, 20);
@@ -258,26 +266,24 @@ public class ChoiceCriteria{
         choice.add(valueOpenSpace);
         choice.repaint();
 
-        checkBoxOpenSpace.addItemListener(new ItemListener() {
-            public void itemStateChanged(ItemEvent e) {
-                JTextField messageErrorOpenSpace = styleJTextFieldError(choice,585, 290, 20, 20);
-                valueOpenSpace.addFocusListener(new FocusListener() {
-                    @Override
-                    public void focusGained(FocusEvent e) {}
-                    @Override
-                    public void focusLost(FocusEvent e) {
-                        Object source = e.getSource();
-                        String m = (((JTextField)source).getText()).trim();
-                        if(m.matches("\\d+")) {
-                            input.put("numberOpenSpace", ((JTextField)source).getText().trim());
-                            messageErrorOpenSpace.setText(" ");
-                            if(verifMap()) buttonContinue.setEnabled(true);
-                        }else {
-                            messageErrorOpenSpace.setText("X");
-                            messageErrorOpenSpace.setForeground(Color.red);
-                        }
-                    }
-                });
+        JTextField messageErrorOpenSpace = styleJTextFieldError(choice,585, 290, 20, 20);
+        valueOpenSpace.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {}
+            @Override
+            public void focusLost(FocusEvent e) {
+                System.out.println("test"+ input);
+                Object source = e.getSource();
+                String m = (((JTextField)source).getText()).trim();
+                if(m.matches("\\d+")) {
+                    input.put("numberOpenSpace", ((JTextField)source).getText().trim());
+                    messageErrorOpenSpace.setText(" ");
+                    if(verifMap()) buttonContinue.setEnabled(true);
+                    System.out.println("test"+ input);
+                }else {
+                    messageErrorOpenSpace.setText("X");
+                    messageErrorOpenSpace.setForeground(Color.red);
+                }
             }
         });
 
@@ -296,26 +302,24 @@ public class ChoiceCriteria{
         choice.add(quantityMeetingRoom);
         choice.repaint();
 
-        checkBoxMeetingRoom.addItemListener(new ItemListener() {
-            public void itemStateChanged(ItemEvent e) {
-                JTextField messageErrorOpenSpace = styleJTextFieldError(choice,585, 320, 20, 20);
-                valueMeetingRoom.addFocusListener(new FocusListener() {
-                    @Override
-                    public void focusGained(FocusEvent e) {}
-                    @Override
-                    public void focusLost(FocusEvent e) {
-                        Object source = e.getSource();
-                        String m = (((JTextField)source).getText()).trim();
-                        if(m.matches("\\d+")) {
-                            input.put("numberMeetingRoom",((JTextField)source).getText().trim());
-                            messageErrorOpenSpace.setText(" ");
-                            if(verifMap()) buttonContinue.setEnabled(true);
-                        }else {
-                            messageErrorOpenSpace.setText("X");
-                            messageErrorOpenSpace.setForeground(Color.RED);
-                        }
-                    }
-                });
+        JTextField messageErrorMeetingRoom = styleJTextFieldError(choice,585, 320, 20, 20);
+        valueMeetingRoom.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {}
+            @Override
+            public void focusLost(FocusEvent e) {
+                System.out.println("test"+ input);
+                Object source = e.getSource();
+                String m = (((JTextField)source).getText()).trim();
+                if(m.matches("\\d+")) {
+                    input.put("numberMeetingRoom",((JTextField)source).getText().trim());
+                    messageErrorMeetingRoom.setText(" ");
+                    if(verifMap()) buttonContinue.setEnabled(true);
+                    System.out.println("test"+ input);
+                }else {
+                    messageErrorMeetingRoom.setText("X");
+                    messageErrorMeetingRoom.setForeground(Color.RED);
+                }
             }
         });
 
@@ -334,26 +338,23 @@ public class ChoiceCriteria{
         choice.add(valueSingleOffice);
         choice.repaint();
 
-        checkBoxSingleOffice.addItemListener(new ItemListener() {
-            public void itemStateChanged(ItemEvent e) {
-                JTextField messageErrorSingleoffice = styleJTextFieldError(choice, 825, 320, 20, 20);
-                valueSingleOffice.addFocusListener(new FocusListener() {
-                    @Override
-                    public void focusGained(FocusEvent e) {}
-                    @Override
-                    public void focusLost(FocusEvent e) {
-                        Object source = e.getSource();
-                        String m = (((JTextField)source).getText()).trim();
-                        if(m.matches("\\d+")) {
-                            input.put("numberSingleOffice",((JTextField)source).getText().trim());
-                            messageErrorSingleoffice.setText(" ");
-                            if(verifMap()) buttonContinue.setEnabled(true);
-                        }else {
-                            messageErrorSingleoffice.setText("X");
-                            messageErrorSingleoffice.setForeground(Color.red);
-                        }
-                    }
-                });
+        JTextField messageErrorSingleOffice = styleJTextFieldError(choice, 825, 320, 20, 20);
+        valueSingleOffice.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {}
+            @Override
+            public void focusLost(FocusEvent e) {
+                Object source = e.getSource();
+                String m = (((JTextField)source).getText()).trim();
+                if(m.matches("\\d+")) {
+                    input.put("numberSingleOffice",((JTextField)source).getText().trim());
+                    messageErrorSingleOffice.setText(" ");
+                    if(verifMap()) buttonContinue.setEnabled(true);
+                    System.out.println("test"+ input);
+                }else {
+                    messageErrorSingleOffice.setText("X");
+                    messageErrorSingleOffice.setForeground(Color.red);
+                }
             }
         });
 
@@ -361,6 +362,12 @@ public class ChoiceCriteria{
         closedOffice = styleJTextFieldReservation(closedOffice, 200, 320, 100, 20);
 
         checkBoxClosedOffice = styleJCheckBoxReservation(checkBoxClosedOffice,300, 320, 20, 20);
+        checkBoxClosedOffice.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if(input.containsKey("numberEmployee")) buttonValidate.setEnabled(true);
+            }
+        });
 
         JTextField quantityClosedOffice = new JTextField("- nombre de bureau ferme : ");
         quantityClosedOffice = styleJTextFieldReservation(quantityClosedOffice,620, 290, 175, 20);
@@ -372,26 +379,23 @@ public class ChoiceCriteria{
         choice.add(valueClosedOffice);
         choice.repaint();
 
-        checkBoxClosedOffice.addItemListener(new ItemListener() {
-            public void itemStateChanged(ItemEvent e) {
-                JTextField messageErrorClosedOffice = styleJTextFieldError(choice, 825, 290, 20, 20);
-                valueClosedOffice.addFocusListener(new FocusListener() {
-                    @Override
-                    public void focusGained(FocusEvent e) {}
-                    @Override
-                    public void focusLost(FocusEvent e) {
-                        Object source = e.getSource();
-                        String m = (((JTextField)source).getText()).trim();
-                        if(m.matches("\\d+")) {
-                            input.put("numberClosedOffice",((JTextField)source).getText().trim());
-                            messageErrorClosedOffice.setText(" ");
-                            if(verifMap()) buttonContinue.setEnabled(true);
-                        }else {
-                            messageErrorClosedOffice.setText("X");
-                            messageErrorClosedOffice.setForeground(Color.red);
-                        }
-                    }
-                });
+        JTextField messageErrorClosedOffice = styleJTextFieldError(choice, 825, 290, 20, 20);
+        valueClosedOffice.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {}
+            @Override
+            public void focusLost(FocusEvent e) {
+                Object source = e.getSource();
+                String m = (((JTextField)source).getText()).trim();
+                if(m.matches("\\d+")) {
+                    input.put("numberClosedOffice",((JTextField)source).getText().trim());
+                    messageErrorClosedOffice.setText(" ");
+                    if(verifMap()) buttonContinue.setEnabled(true);
+                    System.out.println("test"+ input);
+                }else {
+                    messageErrorClosedOffice.setText("X");
+                    messageErrorClosedOffice.setForeground(Color.red);
+                }
             }
         });
 

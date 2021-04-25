@@ -38,14 +38,12 @@ public class ClientRequestManager {
 			@Override
 			public void run() {
 				try {
-
-
 					String clientInput = input.readLine();
 					logger.debug(clientInput);
 					String requestType = clientInput.split("#")[0];
 					String values = clientInput.split("#")[1];
 
-					returnChoice(values);
+					if(requestType.equals("requestLocation1")) returnChoice(values);
 
 					/*switch (requestType) {
 					case "insert":
@@ -106,7 +104,8 @@ public class ClientRequestManager {
 			int numberClosedOffice = Integer.parseInt(map.get("requestLocation1").get("numberClosedOffice")) *4;
 			int numberSingleOffice = Integer.parseInt(map.get("requestLocation1").get("numberSingleOffice")) * 4;
 			int numberMeetingRoom = Integer.parseInt(map.get("requestLocation1").get("numberMeetingRoom")) * 4;
-			String request = "select room_wording, floor_number, building_name, room_price as prix, room_id " +
+
+			String request = "select room_wording, floor_number, building_name, room_price as prix, room_id, room_type_id " +
 					"from room r " +
 					"inner join floor f on f.floor_id = r.floor_id " +
 					"inner join building b on b.building_id = f.building_id " +
@@ -127,24 +126,51 @@ public class ClientRequestManager {
 						"from room r " +
 						"inner join floor f on f.floor_id = r.floor_id " +
 						"inner join building b on b.building_id = f.building_id " +
-						"where status = 'free' and room_type_id = 3 Limit " + numberSingleOffice + ") "+
+						"where status = 'free' and room_type_id = 4 Limit " + numberSingleOffice + ") "+
 						"or room_id in " +
 					"(select room_id " +
 						"from room r " +
 						"inner join floor f on f.floor_id = r.floor_id " +
 						"inner join building b on b.building_id = f.building_id " +
-						"where status = 'free' and room_type_id = 2 Limit " + numberMeetingRoom + ") ;";
+						"where status = 'free' and room_type_id = 2 Limit " + numberMeetingRoom + ")" +
+					" order by room_price;";
 			ResultSet result = c.createStatement().executeQuery(request);
-			Map<String, Map<String, String>> room = new HashMap<>();
+			Map<String, Map<String, String>> roomProposal1 = new HashMap<>();
+			Map<String, Map<String, String>> roomProposal2 = new HashMap<>();
+			Map<String, Map<String, String>> roomProposal3 = new HashMap<>();
+			Map<String, Map<String, String>> roomProposal4 = new HashMap<>();
 			Map<String , Map<String, Map<String ,String>>> proposal = new HashMap<>();
 
 			int numberRoom = Integer.parseInt(map.get("requestLocation1").get("numberClosedOffice"))
 					+ Integer.parseInt(map.get("requestLocation1").get("numberSingleOffice"))
 					+ Integer.parseInt(map.get("requestLocation1").get("numberOpenSpace"))
 					+ Integer.parseInt(map.get("requestLocation1").get("numberMeetingRoom"));
-			int roomCount = 1;
-			int proposalCount = 1;
-			int count = 1;
+
+			int countOpenSpaceProposal1 = 0, countMeetingRoomProposal1 = 0;
+			int countMeetingRoomProposal1 = 0;
+			int countClosedOfficeProposal1 = 0;
+			int countSingleOfficeProposal1 = 0;
+
+			int countOpenSpaceProposal2 = 0;
+			int countMeetingRoomProposal2 = 0;
+			int countClosedOfficeProposal2 = 0;
+			int countSingleOfficeProposal2 = 0;
+
+			int countOpenSpaceProposal3 = 0;
+			int countMeetingRoomProposal3 = 0;
+			int countClosedOfficeProposal3 = 0;
+			int countSingleOfficeProposal3 = 0;
+
+			int countOpenSpaceProposal4 = 0;
+			int countMeetingRoomProposal4 = 0;
+			int countClosedOfficeProposal4 = 0;
+			int countSingleOfficeProposal4 = 0;
+
+			int countRoomProposal1 =1;
+			int countRoomProposal2 =1;
+			int countRoomProposal3 =1;
+			int countRoomProposal4 =1;
+
 			while(result.next()){
 				Map<String, String> underMap = new HashMap<>();
 				underMap.put("room_wording",result.getString(1));
@@ -152,25 +178,83 @@ public class ClientRequestManager {
 				underMap.put("building_name",result.getString(3));
 				underMap.put("price",result.getString(4));
 				underMap.put("room_id",result.getString(5));
+				underMap.put("room_type_id",result.getString(6));
 
-				room.put("room"+roomCount,underMap);
 
-				if(count == numberRoom){
-					count = 1;
-					roomCount = 1;
-					proposal.put("proposal"+proposalCount, room);
-					proposalCount++;
-					room = new HashMap<>();
-				} else {
-					count++;
-					roomCount++;
+				if( result.getInt(6) == 4 ){
+					if(countSingleOfficeProposal1 < Integer.parseInt(map.get("requestLocation1").get("numberSingleOffice") )) {
+						roomProposal1.put("roomSingleOffice"+countRoomProposal1,underMap);
+						countSingleOfficeProposal1++;
+					} else if (countSingleOfficeProposal2 < Integer.parseInt(map.get("requestLocation1").get("numberSingleOffice") )) {
+						roomProposal2.put("roomSingleOffice"+countRoomProposal2,underMap);
+						countSingleOfficeProposal2++;
+					} else if(countSingleOfficeProposal3 < Integer.parseInt(map.get("requestLocation1").get("numberSingleOffice") )) {
+						roomProposal3.put("roomSingleOffice"+countRoomProposal3,underMap);
+						countSingleOfficeProposal3++;
+					} else if(countSingleOfficeProposal4 < Integer.parseInt(map.get("requestLocation1").get("numberSingleOffice") )) {
+						roomProposal4.put("roomSingleOffice"+countRoomProposal4,underMap);
+						countSingleOfficeProposal4++;
+					}
 				}
+				if( result.getInt(6) == 3 ){
+					if(countClosedOfficeProposal1 < Integer.parseInt(map.get("requestLocation1").get("numberClosedOffice") )) {
+						roomProposal1.put("roomClosedOffice"+countRoomProposal1,underMap);
+						countClosedOfficeProposal1++;
+					}else if (countClosedOfficeProposal2 < Integer.parseInt(map.get("requestLocation1").get("numberClosedOffice") )) {
+						roomProposal2.put("roomClosedOffice"+countRoomProposal2,underMap);
+						countClosedOfficeProposal2++;
+					}else if(countClosedOfficeProposal3 < Integer.parseInt(map.get("requestLocation1").get("numberClosedOffice") )) {
+						roomProposal3.put("roomClosedOffice"+countRoomProposal3,underMap);
+						countClosedOfficeProposal3++;
+					}else if(countClosedOfficeProposal4 < Integer.parseInt(map.get("requestLocation1").get("numberClosedOffice") )) {
+						roomProposal4.put("roomClosedOffice"+countRoomProposal4,underMap);
+						countClosedOfficeProposal4++;
+					}
+				}
+				if( result.getInt(6) == 2 ){
+					if(countMeetingRoomProposal1 < Integer.parseInt(map.get("requestLocation1").get("numberMeetingRoom") )) {
+						roomProposal1.put("roomMeetingRoom"+countRoomProposal1,underMap);
+						countMeetingRoomProposal1++;
+					}else if (countMeetingRoomProposal2 < Integer.parseInt(map.get("requestLocation1").get("numberMeetingRoom") )) {
+						roomProposal2.put("roomMeetingRoom"+countRoomProposal2,underMap);
+						countMeetingRoomProposal2++;
+					}else if(countMeetingRoomProposal3 < Integer.parseInt(map.get("requestLocation1").get("numberMeetingRoom") )) {
+						roomProposal3.put("roomMeetingRoom"+countRoomProposal3,underMap);
+						countMeetingRoomProposal3++;
+					}else if(countMeetingRoomProposal4 < Integer.parseInt(map.get("requestLocation1").get("numberMeetingRoom") )) {
+						roomProposal4.put("roomMeetingRoom"+countRoomProposal4,underMap);
+						countMeetingRoomProposal4++;
+					}
+				}
+				if( result.getInt(6) == 1 ){
+					if(countOpenSpaceProposal1 < Integer.parseInt(map.get("requestLocation1").get("numberOpenSpace") )) {
+						roomProposal1.put("roomOpenSpace"+countRoomProposal1,underMap);
+						countOpenSpaceProposal1++;
+					}else if (countOpenSpaceProposal2 < Integer.parseInt(map.get("requestLocation1").get("numberOpenSpace") )) {
+						roomProposal2.put("roomOpenSpace"+countRoomProposal2,underMap);
+						countOpenSpaceProposal2++;
+					}else if(countOpenSpaceProposal3 < Integer.parseInt(map.get("requestLocation1").get("numberOpenSpace") )) {
+						roomProposal3.put("roomOpenSpace"+countRoomProposal3,underMap);
+						countOpenSpaceProposal3++;
+					}else if(countOpenSpaceProposal4 < Integer.parseInt(map.get("requestLocation1").get("numberOpenSpace") )) {
+						roomProposal4.put("roomOpenSpace"+countRoomProposal4,underMap);
+						countOpenSpaceProposal4++;
+					}
+				}
+				if(countRoomProposal1 == numberRoom) countRoomProposal1 = 1;
+				else countRoomProposal1++;
+				if(countRoomProposal2 == numberRoom) countRoomProposal2 = 1;
+				else countRoomProposal2++;
+				if(countRoomProposal3 == numberRoom) countRoomProposal3 = 1;
+				else countRoomProposal3++;
+				if(countRoomProposal4 == numberRoom) countRoomProposal4 = 1;
+				else countRoomProposal4++;
 			}
-			for (Map.Entry test : proposal.entrySet()) {
-				System.out.println("clé: "+test.getKey()
-						+ " | valeur: " + test.getValue());
+			proposal.put("proposal1", roomProposal1);
+			proposal.put("proposal2", roomProposal2);
+			proposal.put("proposal3", roomProposal3);
+			proposal.put("proposal4", roomProposal4);
 
-			}
 			ObjectMapper objectMapper = new ObjectMapper();
 			String proposals = objectMapper.writeValueAsString(proposal);
 

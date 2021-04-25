@@ -7,6 +7,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,16 +23,19 @@ public class ViewWithPlan {
     private String floorNumber;
     private JPanel configButton = new JPanel();
     private Map<JButton, String> listButton = new HashMap<>();
+    private Map<String ,Map<String,String>> proposalSelected = new HashMap<>();
 
 
     public ViewWithPlan(JFrame frame, Map<String, String> input){
         this.frame = frame;
         this.input = input;
     }
-    public ViewWithPlan(JFrame frame, Map<String, String> input, String o) {
+
+    public ViewWithPlan(JFrame frame, Map<String, String> input, String o,  Map<String ,Map<String,String>>  ps) {
         this.frame = frame;
         this.input = input;
         this.order = o;
+        proposalSelected = ps;
     }
 
     public void viewWithPlan(JPanel pb){
@@ -74,37 +78,34 @@ public class ViewWithPlan {
         view.add(plan);
 
         JPanel config = new JPanel();
+
         createButton(view);
         view.add(config);
         return view;
     }
     public void createButton(JPanel view){
-
         configButton.setLayout(null);
-        configButton.setBounds(520,100,380,480);
+        configButton.setBounds(520,100,380,490);
 
-        int x  = 20;
-        int y = 20;
+        int x = 10;
+        int y = 10;
 
-        JButton room1 = configRoom("Salle n 1" + " etage n 1" , x,y,150,50, configButton, view);
-        room1.setToolTipText("batiment Pavillon ");
-        y = y + 60;
-        JButton room2 = configRoom("Salle n 2"  + " etage n 1", x,y,150,50, configButton, view);
-        room2.setToolTipText("batiment Pavillon ");
-        y = y + 60;
-        JButton room3 = configRoom("Salle n 1"  + " etage n 2", x,y,150,50, configButton, view);
-        room3.setToolTipText("batiment Pavillon ");
-        y = y + 60;
-        JButton room4 = configRoom("Salle n 5" + " etage n 3", x,y,150,50, configButton, view);
-        room4.setToolTipText("batiment Pavillon ");
-        y = y + 60;
-        JButton room5 = configRoom("Salle n 5" + " etage n 4", x,y,150,50, configButton, view);
-        room5.setToolTipText("batiment Pavillon ");
-        y = y + 60;
-        JButton room6 = configRoom("Salle n 1" + " etage n 5", x,y,150,50, configButton, view);
-        room6.setToolTipText("batiment Pavillon ");
-        y = y + 60;
+        ArrayList listRoom = new ArrayList();
+        ArrayList listBuilding = new ArrayList();
+        ArrayList listFloor = new ArrayList();
 
+        for(Map<String , String> map : proposalSelected.values()){
+            listRoom.add( map.get("room_wording").split("salle")[0] );
+            listBuilding.add(map.get("building_name"));
+            listFloor.add(map.get("floor_number"));
+        }
+        for(int i = 0; i < listRoom.size() ; i++){
+            configRoom(listRoom.get(i)+" etage "+ listFloor.get(i) , x,y,175,50, configButton, view, listBuilding.get(i)+"");
+            if(y >= 480) {
+                y = 10;
+                x = 195;
+            } else y = y + 60;
+        }
         view.add(configButton);
         view.repaint();
     }
@@ -122,11 +123,13 @@ public class ViewWithPlan {
         return t;
     }
 
-    public JButton configRoom(String message, int x, int y, int w, int h,JPanel configButton, JPanel view){
+    public void configRoom( String message, int x, int y, int w, int h,JPanel configButton, JPanel view,String information){
         JButton room = new JButton(message);
         room.setBackground(Color.red);
         room.setBounds(x,y,w,h);
         room.setVisible(true);
+        room.setFont(new Font("Arial", Font.PLAIN, 10));
+        room.setToolTipText(information);
         room.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -136,7 +139,6 @@ public class ViewWithPlan {
         });
         listButton.put(room, "unvalidated");
         configButton.add(room);
-        return room;
     }
     public void changePage(JPanel view, JButton room, Map<JButton, String> listButton){
         ChoiceDevice device = new ChoiceDevice(frame, input);
