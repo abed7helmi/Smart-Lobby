@@ -53,7 +53,7 @@ public class Ihm extends JFrame{
         });
 
         sizeComposant(new Dimension(Integer.MAX_VALUE, 75), realize);
-        realize.setBackground(Color.CYAN);
+        setColor(realize,Color.white,new Color(0, 102,204));
 
         JButton consult = new JButton("Consulter une location");
         consult.addActionListener(new ActionListener() {
@@ -63,7 +63,7 @@ public class Ihm extends JFrame{
             }
         });
         sizeComposant(new Dimension(Integer.MAX_VALUE, 75), consult);
-        consult.setBackground(Color.CYAN);
+        setColor(consult,Color.white,new Color(0, 102,204));
 
         JButton staff = new JButton("Personnel");
         staff.addActionListener(new ActionListener() {
@@ -73,7 +73,7 @@ public class Ihm extends JFrame{
             }
         });
         sizeComposant(new Dimension(Integer.MAX_VALUE, 75), staff);
-        staff.setBackground(Color.CYAN);
+        setColor(staff,Color.white,new Color(0, 102,204));
 
         JButton configWindow = new JButton("Configurer fenêtre");
         staff.addActionListener(new ActionListener() {
@@ -83,11 +83,11 @@ public class Ihm extends JFrame{
             }
         });
         sizeComposant(new Dimension(Integer.MAX_VALUE, 75), staff);
-        configWindow.setBackground(Color.CYAN);
+        setColor(configWindow,Color.white,new Color(0, 102,204));
 
         JPanel underMenu = new JPanel(new FlowLayout(FlowLayout.LEFT));
         underMenu.setMaximumSize(new Dimension(Integer.MAX_VALUE, 100));
-        underMenu.setBackground(Color.CYAN);
+        underMenu.setBackground(new Color(0, 102,204));
 
         JButton disconnect = new JButton("Deconnecter");
         disconnect.addActionListener(new ActionListener() {
@@ -97,7 +97,7 @@ public class Ihm extends JFrame{
             }
         });
         disconnect.setMaximumSize(new Dimension(100, 100));
-        disconnect.setBackground(Color.CYAN);
+        setColor(disconnect,Color.white,new Color(0, 102,204));
 
         ImageIcon iconHome = new ImageIcon(new ImageIcon("C:\\Users\\cedri\\Bureau\\pds\\image\\maison.png").getImage().getScaledInstance(18,18,Image.SCALE_DEFAULT));
         JButton home = new JButton(iconHome);
@@ -105,7 +105,7 @@ public class Ihm extends JFrame{
             @Override
             public void actionPerformed(ActionEvent e) {}
         });
-        home.setBackground(Color.CYAN);
+        setColor(home,Color.white,new Color(0, 102,204));
 
         ImageIcon iconRefresh = new ImageIcon(new ImageIcon("C:\\Users\\cedri\\Bureau\\pds\\image\\actualiser.png").getImage().getScaledInstance(18,18,Image.SCALE_DEFAULT));
         JButton refresh = new JButton(iconRefresh);
@@ -113,7 +113,7 @@ public class Ihm extends JFrame{
             @Override
             public void actionPerformed(ActionEvent e) {}
         });
-        refresh.setBackground(Color.CYAN);
+        setColor(refresh,Color.white,new Color(0, 102,204));
 
         underMenu.add(disconnect);
         underMenu.add(home);
@@ -125,7 +125,7 @@ public class Ihm extends JFrame{
         menu.add(Box.createGlue());
         menu.add(underMenu);
 
-        menu.setBackground(Color.CYAN);
+        menu.setBackground(new Color(0, 102,204));
         menu.setPreferredSize(new Dimension(250, 800));
 
         frame.add(menu , BorderLayout.WEST);
@@ -133,11 +133,16 @@ public class Ihm extends JFrame{
         frame.setVisible(true);
         frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setResizable(false);
     }
 
     public void sizeComposant(Dimension dim, Component c){
         c.setPreferredSize(dim);
         c.setMaximumSize(dim);
         c.setMinimumSize(dim);
+    }
+    public void setColor(JButton button,Color font, Color back){
+        button.setForeground(font);
+        button.setBackground(back);
     }
 }

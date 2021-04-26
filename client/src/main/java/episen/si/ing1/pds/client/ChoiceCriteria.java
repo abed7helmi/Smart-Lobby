@@ -16,7 +16,7 @@ import java.util.Map;
 public class ChoiceCriteria{
     private Map<String, String> input = new HashMap<>();
     private final String page = "criteria";
-    private JButton buttonContinue = new JButton("Continuer");
+    private JButton buttonContinue = new JButton("> Continuer");
     private JFrame frame;
     private JCheckBox checkBoxOpenSpace = new JCheckBox();
     private JCheckBox checkBoxMeetingRoom = new JCheckBox();
@@ -43,8 +43,14 @@ public class ChoiceCriteria{
         pageBody.add(advancement, BorderLayout.CENTER);
 
         JPanel choice = reservationCritere();
-        buttonContinue.setEnabled(false);
+
         buttonContinue.setBounds(780, 500, 100, 50);
+        buttonContinue.setBackground(new Color(255, 255,255));
+        buttonContinue.setForeground(Color.BLACK);
+        Border line = BorderFactory.createLineBorder(Color.BLACK);
+        buttonContinue.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+
+        buttonContinue.setEnabled(false);
         buttonContinue.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -126,26 +132,24 @@ public class ChoiceCriteria{
 
         //label of date
         JTextField startDate = new JTextField("Debut de la reservation : (YYYY-MM-DD) ");
-        startDate = styleJTextFieldReservation(startDate, 20, 80, 275, 20);
+        startDate = styleJTextFieldReservation(startDate, 20, 80, 230, 20);
 
         JTextField endDate = new JTextField("Fin de la reservation : (YYYY-MM-DD)");
-        endDate = styleJTextFieldReservation(endDate,20, 110, 275, 20);
+        endDate = styleJTextFieldReservation(endDate,20, 110, 230, 20);
 
-        JTextField valueStartDate = new JTextField(" ");
+
         Calendar date = Calendar.getInstance();
         date.setTime(new Date());
         Format f = new SimpleDateFormat("yyyy-MM-dd");
-        valueStartDate.setText(f.format(date.getTime()));
 
-        valueStartDate = styleJTextFieldReservation(valueStartDate, 350,80,100,20);
+        JTextField valueStartDate = new JTextField(f.format(date.getTime()));
+        valueStartDate = styleJTextFieldReservation(valueStartDate, 260,80,100,20);
         input.put("start_date", (valueStartDate.getText()).trim());
 
         date.add(Calendar.YEAR,1);
 
-        JTextField valueEndDate = new JTextField(" ");
-        valueEndDate = styleJTextFieldReservation(valueEndDate, 350,110,100,20);
-
-        valueEndDate.setText(f.format(date.getTime()));
+        JTextField valueEndDate = new JTextField(f.format(date.getTime()));
+        valueEndDate = styleJTextFieldReservation(valueEndDate, 260,110,100,20);
         input.put("end_date", (valueEndDate.getText()).trim());
 
         JLabel dateLabel = new JLabel("Date : ");
@@ -451,7 +455,6 @@ public class ChoiceCriteria{
 
         return choice;
     }
-
     public JLabel styleJLabelReservation(JLabel l, int x, int y, int w, int h){
         sizeComposant(new Dimension(200, 200) ,l);
         l.setBorder(BorderFactory.createMatteBorder(0,0, 1, 0, Color.black));
@@ -503,13 +506,11 @@ public class ChoiceCriteria{
         c.setBounds(x, y, w, h);
         return c;
     }
-
     public void sizeComposant(Dimension dim, Component c){
         c.setPreferredSize(dim);
         c.setMaximumSize(dim);
         c.setMinimumSize(dim);
     }
-
     public boolean verifMap(){
         if((input.containsKey("start_date") && input.containsKey("end_date") && input.containsKey("numberEmployee"))
                 && ( (input.containsKey("numberOpenSpace") || input.containsKey("numberMeetingRoom") ||
@@ -517,7 +518,6 @@ public class ChoiceCriteria{
             return true;
         else return false;
     }
-
     public void changePage(String proposals){
         Choice selectChoice = new Choice(input, frame);
         selectChoice.choice(pageBody, proposals);

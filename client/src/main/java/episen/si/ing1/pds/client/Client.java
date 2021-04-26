@@ -69,7 +69,6 @@ public class Client {
 			e.printStackTrace();
 		}
 	}
-
 	public static String sendBd(String request){
 		try{
 			ObjectMapper objectMapper = new ObjectMapper();
@@ -87,8 +86,6 @@ public class Client {
 			BufferedReader input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
 			output.println(request+"#"+data);
-
-
 			return input.readLine();
 		} catch(Exception e) {
 			e.printStackTrace();

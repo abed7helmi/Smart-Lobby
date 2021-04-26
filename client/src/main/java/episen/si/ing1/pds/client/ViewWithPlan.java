@@ -9,7 +9,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 
@@ -30,14 +29,12 @@ public class ViewWithPlan {
         this.frame = frame;
         this.input = input;
     }
-
     public ViewWithPlan(JFrame frame, Map<String, String> input, String o,  Map<String ,Map<String,String>>  ps) {
         this.frame = frame;
         this.input = input;
         this.order = o;
         proposalSelected = ps;
     }
-
     public void viewWithPlan(JPanel pb){
         this.pageBody = pb;
         pageBody.setBackground(Color.WHITE);
@@ -52,9 +49,7 @@ public class ViewWithPlan {
         pageBody.add(view, BorderLayout.SOUTH);
         pageBody.repaint();
         frame.repaint();
-
     }
-
     public JPanel view(){
         JPanel view = new JPanel();
         view.setBackground(Color.WHITE);
@@ -109,7 +104,6 @@ public class ViewWithPlan {
         view.add(configButton);
         view.repaint();
     }
-
     public void sizeComposant(Dimension dim, Component c){
         c.setPreferredSize(dim);
         c.setMaximumSize(dim);
@@ -122,7 +116,6 @@ public class ViewWithPlan {
         t.setBounds(x, y, w, h);
         return t;
     }
-
     public void configRoom( String message, int x, int y, int w, int h,JPanel configButton, JPanel view,String information){
         JButton room = new JButton(message);
         room.setBackground(Color.red);

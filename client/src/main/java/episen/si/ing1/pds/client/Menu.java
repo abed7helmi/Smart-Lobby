@@ -27,13 +27,10 @@ public class Menu extends JFrame{
 
         JButton staff = new JButton("Personnel");
         menuJButton(staff,150,260,200,50, "staff");
-
-
         setVisible(true);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
-
     public void menuJButton(JButton button,int x, int y, int w,int h, String page){
         button.setBounds(x,y,w,h);
         button.addActionListener(new ActionListener() {
@@ -44,6 +41,5 @@ public class Menu extends JFrame{
             }
         });
         frame.add(button);
-
     }
 }

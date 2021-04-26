@@ -34,7 +34,6 @@ public class Bill {
         frame.repaint();
         frame.setVisible(true);
     }
-
     public JPanel view(){
         JPanel view = new JPanel();
         view.setBackground(Color.WHITE);
