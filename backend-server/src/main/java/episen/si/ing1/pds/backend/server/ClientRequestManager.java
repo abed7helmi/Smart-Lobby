@@ -9,8 +9,6 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -43,6 +41,7 @@ public class ClientRequestManager {
 					String requestType = clientInput.split("#")[0];
 					String values = clientInput.split("#")[1];
 
+					if(requestType.equals("homePage1")) firstPage(values);
 					if(requestType.equals("requestLocation1")) returnChoice(values);
 
 					/*switch (requestType) {
@@ -146,30 +145,12 @@ public class ClientRequestManager {
 					+ Integer.parseInt(map.get("requestLocation1").get("numberOpenSpace"))
 					+ Integer.parseInt(map.get("requestLocation1").get("numberMeetingRoom"));
 
-			int countOpenSpaceProposal1 = 0, countMeetingRoomProposal1 = 0;
-			int countMeetingRoomProposal1 = 0;
-			int countClosedOfficeProposal1 = 0;
-			int countSingleOfficeProposal1 = 0;
+			int countOpenSpaceProposal1 = 0, countMeetingRoomProposal1 = 0, countClosedOfficeProposal1 = 0, countSingleOfficeProposal1 = 0;
+			int countOpenSpaceProposal2 = 0,countMeetingRoomProposal2 = 0,countClosedOfficeProposal2 = 0,countSingleOfficeProposal2 = 0;
+			int countOpenSpaceProposal3 = 0,countMeetingRoomProposal3 = 0,countClosedOfficeProposal3 = 0,countSingleOfficeProposal3 = 0;
+			int countOpenSpaceProposal4 = 0,countMeetingRoomProposal4 = 0,countClosedOfficeProposal4 = 0,countSingleOfficeProposal4 = 0;
 
-			int countOpenSpaceProposal2 = 0;
-			int countMeetingRoomProposal2 = 0;
-			int countClosedOfficeProposal2 = 0;
-			int countSingleOfficeProposal2 = 0;
-
-			int countOpenSpaceProposal3 = 0;
-			int countMeetingRoomProposal3 = 0;
-			int countClosedOfficeProposal3 = 0;
-			int countSingleOfficeProposal3 = 0;
-
-			int countOpenSpaceProposal4 = 0;
-			int countMeetingRoomProposal4 = 0;
-			int countClosedOfficeProposal4 = 0;
-			int countSingleOfficeProposal4 = 0;
-
-			int countRoomProposal1 =1;
-			int countRoomProposal2 =1;
-			int countRoomProposal3 =1;
-			int countRoomProposal4 =1;
+			int countRoomProposal1 =1,countRoomProposal2 =1,countRoomProposal3 =1,countRoomProposal4 =1;
 
 			while(result.next()){
 				Map<String, String> underMap = new HashMap<>();
@@ -179,7 +160,6 @@ public class ClientRequestManager {
 				underMap.put("price",result.getString(4));
 				underMap.put("room_id",result.getString(5));
 				underMap.put("room_type_id",result.getString(6));
-
 
 				if( result.getInt(6) == 4 ){
 					if(countSingleOfficeProposal1 < Integer.parseInt(map.get("requestLocation1").get("numberSingleOffice") )) {
@@ -264,18 +244,22 @@ public class ClientRequestManager {
 		}
 	}
 
-	/*public void firstPage(String requestType, String values) {
-		logger.debug(requestType+"//" + values);
+	public void firstPage( String values) {
 		try {
-			if(requestType.equals("select")) {
-				logger.debug("toto");
-				ResultSet result = c.createStatement().executeQuery("select company_name from company where company_name = '"+ values +"';");
-				if(result.next()) output.println(true);
-				else
-					output.println(false);
-			}
+			ObjectMapper mapper = new ObjectMapper(new JsonFactory());
+			Map<String, Map<String, String>> map = mapper.readValue(values,
+					new TypeReference<Map<String, Map<String, String>>>() {
+					});
+			logger.debug("toto");
+			System.out.println("select company_name from company " +
+					"where company_name = '"+ map.get("homePage1").get("company_name") +"';");
+			ResultSet result = c.createStatement().executeQuery("select company_name from company " +
+					"where company_name = '"+ map.get("homePage1").get("company_name") +"';");
+
+			if(result.next()) output.println(true);
+			else output.println(false);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	}*/
+	}
 }

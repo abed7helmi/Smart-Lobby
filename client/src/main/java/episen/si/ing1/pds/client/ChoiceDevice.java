@@ -9,6 +9,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -33,6 +34,8 @@ public class ChoiceDevice {
     private JTextField messageErrorE = new JTextField();
     private JTextField messageErrorS = new JTextField();
     private String roomName = "";
+
+    //private ArrayList<Map <String, String>> array = new ArrayList<>();
 
 
 
@@ -126,7 +129,10 @@ public class ChoiceDevice {
                                 public void actionPerformed(ActionEvent e) {
                                     String value = quantityE.getText().trim();
                                     verifNumber(value, input, messageErrorE, text);
-                                    System.out.println(input);
+                                    validateQuantityE.setVisible(false);
+                                    quantityE.setVisible(false);
+                                    selectionE.setVisible(false);
+                                    quantityE.setText("");
                                 }
                             });
                         }
@@ -205,7 +211,10 @@ public class ChoiceDevice {
                                 public void actionPerformed(ActionEvent e) {
                                     String value = quantityS.getText().trim();
                                     verifNumber(value, input, messageErrorS, text);
-                                    System.out.println(input);
+                                    validateQuantityS.setVisible(true);
+                                    quantityS.setVisible(true);
+                                    selectionS.setVisible(true);
+                                    quantityS.setText("");
                                 }
                             });
                         }
@@ -250,7 +259,6 @@ public class ChoiceDevice {
         return t;
     }
     public boolean verifMap(){
-        System.out.println(input);
         if(input.containsKey("config_capteur_"+ roomName) && input.containsKey("config_equipement_"+ roomName))
             return true;
         else return false;

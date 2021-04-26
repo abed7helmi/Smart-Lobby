@@ -184,8 +184,6 @@ public class Choice{
                 selected.setText("Vous avez choisi : " + numberProposal);
                 proposalSelected = proposal;
                 buttonContinue.setEnabled(true);
-                System.out.println("test");
-                System.out.println(proposalSelected);
             }
         });
         display.add(button);

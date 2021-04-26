@@ -24,7 +24,7 @@ public class RentalAdvancement {
         Dimension dimAdvancement = new Dimension(950, 70);
         sizeComposant(dimAdvancement, rentalAdvancement);
         rentalAdvancement.setBackground(Color.WHITE);
-        rentalAdvancement.setBorder(BorderFactory.createMatteBorder(0,0,2,0, Color.BLACK));
+        rentalAdvancement.setBorder(BorderFactory.createMatteBorder(0,0,1,0, Color.BLACK));
 
         JTextField criteria= new JTextField("Criteres", 5);
         criteria.setEditable(false);

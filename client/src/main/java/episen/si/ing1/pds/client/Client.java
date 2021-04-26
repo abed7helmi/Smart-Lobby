@@ -39,7 +39,6 @@ public class Client {
     public static Map<String, Map<String, String>> map;
 	
 	public static void main(String[] args) {
-		//Ihm window = new Ihm("Smart Lobby");
 		try {
 			final Options options = new Options();
 			final Option requesttype = Option.builder().longOpt("requesttype").hasArg().argName("requesttype").build();
@@ -51,8 +50,8 @@ public class Client {
 			Properties props = new Properties();
 			props.load(Thread.currentThread().getContextClassLoader().getResourceAsStream("connection.properties"));
 
-
-			Ihm window = new Ihm("Smart Lobby");
+			//Ihm ihm = new Ihm("Smart Lobby");
+			HomePage homePage = new HomePage();
 			
 			//String requestType = commandLine.getOptionValue("requesttype");
 
@@ -76,6 +75,8 @@ public class Client {
 			ObjectMapper objectMapper = new ObjectMapper();
 			String data = objectMapper.writeValueAsString(map);
 
+			System.out.println(request+"#"+data);
+
 			episenClientConfig = System.getenv(configClient);
 			final ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
 			config = mapper.readValue(new File(episenClientConfig), ClientConfig.class);
@@ -86,6 +87,7 @@ public class Client {
 			BufferedReader input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
 			output.println(request+"#"+data);
+
 
 			return input.readLine();
 		} catch(Exception e) {

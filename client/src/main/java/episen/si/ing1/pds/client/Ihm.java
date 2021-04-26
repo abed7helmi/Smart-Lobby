@@ -1,15 +1,9 @@
 package episen.si.ing1.pds.client;
 
-import javax.smartcardio.Card;
 import javax.swing.*;
-import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.net.Socket;
 
 
 public class Ihm extends JFrame{
@@ -20,25 +14,29 @@ public class Ihm extends JFrame{
     private JPanel pageBody3 ;
     private JPanel pageBody4 ;
 
-    public Ihm(String name) {
-        //HomePage home = new HomePage(this);
-        //home.firstPage();
+    public Ihm(String name, String page) {
         frame = this;
         CardLayout pages = new CardLayout();
+
         pageBody.setLayout(pages);
-
-
         ChoiceCriteria reservation = new ChoiceCriteria(frame);
         pageBody1 = reservation.realizeReservation();
 
         Mapping m = new Mapping();
         pageBody2 = m.mappingPanel();
 
+        if(page.equals("realize")){
+            pageBody.add(pageBody1,"realize");
+            pageBody.add(pageBody2,"consult");
+            //pageBody.add(pageBody3,"staff");
+            //pageBody.add(pageBody1,"page1");
+        } else if(page.equals("consult")){
+            pageBody.add(pageBody2,"consult");
+            pageBody.add(pageBody1,"realize");
+            //pageBody.add(pageBody3,"staff");
+            //pageBody.add(pageBody1,"page1");
+        }
 
-        pageBody.add(pageBody1,"realize");
-        pageBody.add(pageBody2,"consult");
-        //pageBody.add(pageBody1,"staff");
-        //pageBody.add(pageBody1,"page1");
 
         frame.add(pageBody, BorderLayout.CENTER);
 
@@ -62,7 +60,6 @@ public class Ihm extends JFrame{
             @Override
             public void actionPerformed(ActionEvent e) {
                 pages.show(pageBody,"consult");
-
             }
         });
         sizeComposant(new Dimension(Integer.MAX_VALUE, 75), consult);
