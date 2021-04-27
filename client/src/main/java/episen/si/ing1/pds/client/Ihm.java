@@ -1,15 +1,9 @@
 package episen.si.ing1.pds.client;
 
-import javax.smartcardio.Card;
 import javax.swing.*;
-import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.net.Socket;
 
 
 public class Ihm extends JFrame{
@@ -34,10 +28,12 @@ public class Ihm extends JFrame{
         Mapping m = new Mapping();
         pageBody2 = m.mappingPanel();
 
+        Window window=new Window();
+        pageBody3=window.firstMenu;
 
         pageBody.add(pageBody1,"realize");
         pageBody.add(pageBody2,"consult");
-        //pageBody.add(pageBody1,"staff");
+        pageBody.add(pageBody3,"window");
         //pageBody.add(pageBody1,"page1");
 
         frame.add(pageBody, BorderLayout.CENTER);
@@ -79,13 +75,14 @@ public class Ihm extends JFrame{
         staff.setBackground(Color.CYAN);
 
         JButton configWindow = new JButton("Configurer fenêtre");
-        staff.addActionListener(new ActionListener() {
+        configWindow.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+
                 pages.show(pageBody,"window");
             }
         });
-        sizeComposant(new Dimension(Integer.MAX_VALUE, 75), staff);
+        sizeComposant(new Dimension(Integer.MAX_VALUE, 75), configWindow);
         configWindow.setBackground(Color.CYAN);
 
         JPanel underMenu = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -124,6 +121,7 @@ public class Ihm extends JFrame{
 
         menu.add(realize);
         menu.add(consult);
+        menu.add(configWindow);
         menu.add(staff);
         menu.add(Box.createGlue());
         menu.add(underMenu);
