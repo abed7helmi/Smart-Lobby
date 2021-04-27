@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -14,8 +15,7 @@ public class Choice{
     private final String page = "choice";
     private Map<String, String> input = new HashMap<>();
     private JFrame frame;
-    private JButton buttonContinue = new JButton("Continuer");
-    private JButton buttonReturn = new JButton("Retour");
+    private JButton buttonContinue = new JButton("> Continuer");
     private JTextField selected = new JTextField("Vous avez choisi : ");
     private JPanel pageBody;
     private Map<String , Map<String, Map<String ,String>>> mapProposals = new HashMap<>();
@@ -33,8 +33,13 @@ public class Choice{
         JPanel view = view(proposals);
         RentalAdvancement rentalAdvancement = new RentalAdvancement(page);
         JPanel advancement = rentalAdvancement.rentalAdvancement();
-        buttonContinue.setEnabled(false);
+
         buttonContinue.setBounds(780, 10, 100, 50);
+        buttonContinue.setBackground(new Color(255,255,255));
+        buttonContinue.setForeground(Color.black);
+        buttonContinue.setBorder(BorderFactory.createLineBorder(Color.black));
+
+        buttonContinue.setEnabled(false);
         buttonContinue.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -44,10 +49,7 @@ public class Choice{
                 changePage(order,proposalSelected);
             }
         });
-        buttonReturn.setEnabled(true);
-        buttonReturn.setBounds(670, 10, 100, 50);
         view.add(buttonContinue);
-        view.add(buttonReturn);
         pageBody.add(advancement, BorderLayout.CENTER);
         pageBody.add(view, BorderLayout.SOUTH);
         pageBody.repaint();

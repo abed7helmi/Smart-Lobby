@@ -37,12 +37,12 @@ public class ClientRequestManager {
 			public void run() {
 				try {
 					String clientInput = input.readLine();
-					logger.debug(clientInput);
 					String requestType = clientInput.split("#")[0];
 					String values = clientInput.split("#")[1];
 
 					if(requestType.equals("homePage1")) firstPage(values);
-					if(requestType.equals("requestLocation1")) returnChoice(values);
+					if(requestType.equals("requestLocation1")) getChoice(values);
+					if(requestType.equals("requestLocation2")) getDevice((values));
 
 					/*switch (requestType) {
 					case "insert":
@@ -92,7 +92,7 @@ public class ClientRequestManager {
 		return self;
 	}
 
-	public void returnChoice(String values){
+	public void getChoice(String values){
 		try {
 			ObjectMapper mapper = new ObjectMapper(new JsonFactory());
 			Map<String, Map<String, String>> map = mapper.readValue(values,
@@ -250,14 +250,35 @@ public class ClientRequestManager {
 			Map<String, Map<String, String>> map = mapper.readValue(values,
 					new TypeReference<Map<String, Map<String, String>>>() {
 					});
-			logger.debug("toto");
-			System.out.println("select company_name from company " +
-					"where company_name = '"+ map.get("homePage1").get("company_name") +"';");
 			ResultSet result = c.createStatement().executeQuery("select company_name from company " +
 					"where company_name = '"+ map.get("homePage1").get("company_name") +"';");
 
 			if(result.next()) output.println(true);
 			else output.println(false);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void getDevice(String values){
+		try {
+			ObjectMapper mapper = new ObjectMapper(new JsonFactory());
+			Map<String, Map<String, String>> map = mapper.readValue(values,
+					new TypeReference<Map<String, Map<String, String>>>() {
+					});
+			int room_id = Integer.parseInt(map.get("requestLocation2").get("room_id"));
+			String request = "select device_type_wording " +
+					"from device_type dt " +
+					"inner join could_configure cc on cc.device_type_id = dt.device_type_id " +
+					"inner join room_type rt on rt.room_type_id = cc.room_type_id " +
+					"inner join room r on r.room_type_id = rt.room_type_id " +
+					"where room_id = "+ room_id +";";
+
+			ResultSet result = c.createStatement().executeQuery(request);
+			StringBuilder sb = new StringBuilder();
+			while(result.next()) sb.append(result.getString(1)+",");
+
+			output.println(sb.toString());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

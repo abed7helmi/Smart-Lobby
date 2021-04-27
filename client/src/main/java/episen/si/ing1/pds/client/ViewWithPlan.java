@@ -16,7 +16,6 @@ public class ViewWithPlan {
     private String page = "device";
     private final JFrame frame;
     private Map<String , String> input = new HashMap<>();
-    private final JButton buttonReturn = new JButton("Retour");
     private JPanel pageBody;
     private String order;
     private String floorNumber;
@@ -39,13 +38,10 @@ public class ViewWithPlan {
         this.pageBody = pb;
         pageBody.setBackground(Color.WHITE);
         JPanel view = view();
-        view.add(buttonReturn);
         JPanel advancement;
         RentalAdvancement rentalAdvancement = new RentalAdvancement(page);
         advancement = rentalAdvancement.rentalAdvancement();
         pageBody.add(advancement, BorderLayout.CENTER);
-        buttonReturn.setEnabled(true);
-        buttonReturn.setBounds(670, 10, 100, 50);
         pageBody.add(view, BorderLayout.SOUTH);
         pageBody.repaint();
         frame.repaint();
@@ -85,17 +81,8 @@ public class ViewWithPlan {
         int x = 10;
         int y = 10;
 
-        ArrayList listRoom = new ArrayList();
-        ArrayList listBuilding = new ArrayList();
-        ArrayList listFloor = new ArrayList();
-
         for(Map<String , String> map : proposalSelected.values()){
-            listRoom.add( map.get("room_wording").split("salle")[0] );
-            listBuilding.add(map.get("building_name"));
-            listFloor.add(map.get("floor_number"));
-        }
-        for(int i = 0; i < listRoom.size() ; i++){
-            configRoom(listRoom.get(i)+" etage "+ listFloor.get(i) , x,y,175,50, configButton, view, listBuilding.get(i)+"");
+            configRoom(map.get("room_wording").split("salle")[0]+" etage "+ map.get("floor_number"), x,y,175,50, configButton, view, map.get("building_name"), map.get("room_id"));
             if(y >= 480) {
                 y = 10;
                 x = 195;
@@ -116,7 +103,7 @@ public class ViewWithPlan {
         t.setBounds(x, y, w, h);
         return t;
     }
-    public void configRoom( String message, int x, int y, int w, int h,JPanel configButton, JPanel view,String information){
+    public void configRoom( String message, int x, int y, int w, int h,JPanel configButton, JPanel view,String information, String room_id){
         JButton room = new JButton(message);
         room.setBackground(Color.red);
         room.setBounds(x,y,w,h);
@@ -127,14 +114,14 @@ public class ViewWithPlan {
             @Override
             public void actionPerformed(ActionEvent e) {
                 view.setVisible(false);
-                changePage(view, room, listButton);
+                changePage(view, room, listButton, room_id);
             }
         });
         listButton.put(room, "unvalidated");
         configButton.add(room);
     }
-    public void changePage(JPanel view, JButton room, Map<JButton, String> listButton){
-        ChoiceDevice device = new ChoiceDevice(frame, input);
+    public void changePage(JPanel view, JButton room, Map<JButton, String> listButton, String room_id){
+        ChoiceDevice device = new ChoiceDevice(frame, input,room_id);
         device.choice(pageBody, view, room, listButton);
     }
     public void back(JPanel oldView, JPanel pb, JButton room, Map<JButton, String> list){
@@ -144,7 +131,10 @@ public class ViewWithPlan {
             if( (map.getValue()).equals("unvalidated")) verifContinue = false;
         }
         if(verifContinue){
-            JButton buttonContinue = new JButton("Continuer");
+            JButton buttonContinue = new JButton("> Continuer");
+            buttonContinue.setBackground(new Color(255,255,255));
+            buttonContinue.setForeground(Color.black);
+            buttonContinue.setBorder(BorderFactory.createLineBorder(Color.black));
             buttonContinue.setEnabled(true);
             buttonContinue.setBounds(780, 10, 100, 50);
             oldView.add(buttonContinue);

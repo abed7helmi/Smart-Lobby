@@ -41,7 +41,7 @@ public class Bill {
         view.setLayout(null);
 
         JButton validate = new JButton("Confirmer");
-        validate.setBounds(700,20,100,50);
+        validate.setBounds(780, 10, 100, 50);
         validate.setBackground(Color.orange);
         validate.addActionListener(new ActionListener() {
             @Override

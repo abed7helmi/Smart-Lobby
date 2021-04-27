@@ -47,7 +47,6 @@ public class ChoiceCriteria{
         buttonContinue.setBounds(780, 500, 100, 50);
         buttonContinue.setBackground(new Color(255, 255,255));
         buttonContinue.setForeground(Color.BLACK);
-        Border line = BorderFactory.createLineBorder(Color.BLACK);
         buttonContinue.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 
         buttonContinue.setEnabled(false);

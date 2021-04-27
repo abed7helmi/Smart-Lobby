@@ -9,22 +9,16 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.List;
 
 public class ChoiceDevice {
-    public ChoiceDevice(JFrame frame, Map<String, String> input) {
-        this.frame = frame;
-        this.input = input;
-    }
+    private String room_id ="";
     private final JFrame frame;
     private Map<String , String> input = new HashMap<>();
     private final JButton buttonValidate = new JButton("Valider");
     private JPanel pageBody;
     private final String page = "device";
-    private String[] listeEquipment = {"ordinateur fixe","fenetre", "television connecte"};
-    private String[] listeSensor = {"capteur de temperature","capteur de luminosite", "capteur de mouvement"};
     private JTextField selectionE = new JTextField();
     private JTextField quantityE = new JTextField();
     private JTextField selectionS = new JTextField();
@@ -34,10 +28,33 @@ public class ChoiceDevice {
     private JTextField messageErrorE = new JTextField();
     private JTextField messageErrorS = new JTextField();
     private String roomName = "";
+    private String resultRequest= "";
+    private List<String> listEquipment = new ArrayList<>();
+    private List<String> listSensor = new ArrayList<>();
+    private String[] equipementArray;
+    private String[] sensorArray;
+
+    public ChoiceDevice(JFrame frame, Map<String, String> input, String id) {
+        this.frame = frame;
+        this.input = input;
+        this.room_id = id;
+        Client.map.get("requestLocation2").put("room_id", room_id);
+        resultRequest = Client.sendBd("requestLocation2");
+
+        String[] value = resultRequest.split(",");
+        for(int i = 0; i< value.length; i++){
+            if(value[i].contains("capteur")) listSensor.add(value[i]);
+            else listEquipment.add(value[i]);
+        }
+        equipementArray = new String[listEquipment.size()];
+        sensorArray = new String[listSensor.size()];
+
+        equipementArray = listEquipment.toArray(equipementArray);
+        sensorArray = listSensor.toArray(sensorArray);
+    }
+
 
     //private ArrayList<Map <String, String>> array = new ArrayList<>();
-
-
 
     public void choice(JPanel pb, JPanel oldView, JButton room, Map<JButton,String> listButton){
         roomName = room.getText();
@@ -92,7 +109,7 @@ public class ChoiceDevice {
         rYesEquipment.setVisible(true);
         rYesEquipment.setBackground(Color.white);
         rYesEquipment.setBounds(275, 160, 80,20);
-        JList listeE = new JList(listeEquipment);
+        JList listeE = new JList(equipementArray);
 
         view.add(listeE);
 
@@ -100,6 +117,7 @@ public class ChoiceDevice {
         rYesEquipment.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
+
                 if(input.containsKey("config_equipement_" + roomName))input.replace("config_equipement_" + roomName, "oui");
                 else input.put("config_equipement_" + roomName,"oui");
 
@@ -178,7 +196,7 @@ public class ChoiceDevice {
         rYesSensor.setBounds(675, 160, 80,20);
         rYesSensor.setVisible(true);
         rYesSensor.setBackground(Color.white);
-        JList listeS = new JList(listeSensor);
+        JList listeS = new JList(sensorArray);
         view.add(listeS);
         rYesSensor.addItemListener(new ItemListener() {
             @Override
