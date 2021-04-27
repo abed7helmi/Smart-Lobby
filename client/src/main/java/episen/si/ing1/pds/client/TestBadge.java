@@ -5,13 +5,19 @@ import javax.swing.table.TableCellRenderer;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.util.HashMap;
+import java.util.Map;
 
 public class TestBadge {
 
     private JFrame frame;
     private JPanel pageBody = new JPanel();
+    private Map<String, String> input = new HashMap<>();
 
     public TestBadge(JFrame f)  {
+        input.clear();
 
         frame = f;
     }
@@ -54,12 +60,56 @@ public class TestBadge {
         JButton testbutton = new JButton("Tester");
         testbutton.setBounds(400, 280, 150, 30);
 
-
+        testbutton.setEnabled(false);
 
 
         JTextField result = new JTextField("Resultat :");
         result = styleJTextFieldReservation(result, 400, 350, 60, 20);
 
+
+
+        JTextField messageErrorNom = styleJTextFieldError(view,170, 195, 100, 20);
+        valuenom.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {}
+            @Override
+            public void focusLost(FocusEvent e) {
+                Object source = e.getSource();
+                String m = (((JTextField)source).getText()).trim();
+
+                if (m.matches("[a-zA-Z]+")) {
+                    input.put("nomemploye", ((JTextField) source).getText().trim());
+                    messageErrorNom.setText(" ");
+                    if (verifMap()) testbutton.setEnabled(true);
+                } else {
+                    messageErrorNom.setText("X");
+                    messageErrorNom.setForeground(Color.red);
+                }
+
+            }
+        });
+
+
+        JTextField messageErrorPrenom = styleJTextFieldError(view,380, 195, 100, 20);
+        valueprenom.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {}
+            @Override
+            public void focusLost(FocusEvent e) {
+                Object source = e.getSource();
+                String m = (((JTextField)source).getText()).trim();
+
+                if (m.matches("[a-zA-Z]+")) {
+                    input.put("prenomemploye", ((JTextField) source).getText().trim());
+                    messageErrorPrenom.setText(" ");
+                    if (verifMap()) testbutton.setEnabled(true);
+                } else {
+                    messageErrorPrenom.setText("X");
+                    messageErrorPrenom.setForeground(Color.red);
+                }
+
+            }
+        });
 
         view.add(infoLabel);
         view.add(NomEmploye);
@@ -75,6 +125,14 @@ public class TestBadge {
         pageBody.repaint();
         frame.repaint();
 
+    }
+
+
+    public boolean verifMap(){
+        System.out.println(input);
+        if((input.containsKey("nomemploye") && input.containsKey("prenomemploye")))
+            return true;
+        else return false;
     }
 
     public JPanel view(){
@@ -112,6 +170,19 @@ public class TestBadge {
         t.setBounds(x, y, w, h);
         return t;
     }
+
+    public JTextField styleJTextFieldError(JPanel choice, int x, int y, int w, int h) {
+        JTextField t = new JTextField();
+        t.setEditable(false);
+        t.setBackground(Color.WHITE);
+        t.setForeground(Color.RED);
+        t.setBorder(BorderFactory.createLineBorder(Color.WHITE));
+        t.setBounds(x, y, w, h);
+        choice.add(t);
+        return t;
+    }
+
+
 
 
 }

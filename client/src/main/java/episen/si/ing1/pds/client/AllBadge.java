@@ -22,23 +22,50 @@ public class AllBadge {
 
         this.pageBody = pb;
         pageBody.setBackground(Color.WHITE);
-
         view = view();
+
         view.setLayout(new BorderLayout());
 
 
+        view.setBackground(Color.white);
+
+
+        JPanel panneau1 = new JPanel();
+        panneau1.setLayout(null);
+        panneau1.setBackground(Color.white);
+        panneau1.setPreferredSize(new Dimension(200, 100));
+
+        view.add(panneau1, BorderLayout.NORTH);
+
+
+        JPanel panneau2 = new JPanel();
+        panneau2.setLayout(new BorderLayout());
+        panneau2.setBackground(Color.blue);
+        panneau2.setPreferredSize(new Dimension(200, 200));
+
+        view.add(panneau2, BorderLayout.CENTER);
+
+        JPanel panneau3 = new JPanel();
+        panneau3.setLayout(null);
+        panneau3.setBackground(Color.white);
+        panneau3.setPreferredSize(new Dimension(200, 150));
+
+        view.add(panneau3, BorderLayout.SOUTH);
+
+
+
+
+        JLabel infoLabel = new JLabel("Gestion Droits: ");
+        infoLabel = styleJLabelBadge(infoLabel, 20, 20,250,20);
+        panneau1.add(infoLabel);
 
 
 
 
 
+        /*JButton confirm = new JButton("Confirmer");
 
-
-
-
-        JButton confirm = new JButton("Confirmer");
-
-        JButton cancel = new JButton("Annuler");
+        JButton cancel = new JButton("Annuler");*/
 
 
 
@@ -70,17 +97,17 @@ public class AllBadge {
 
 
 
-        tableau.setBounds(100,200,200,500);
+
 
         JButton Manage = new JButton("Gestion Multiple");
 
 
-        Manage.setBounds(400, 550, 150, 30);
-        view.add(Manage);
+       Manage.setBounds(400, 60, 150, 30);;
+        panneau3.add(Manage);
 
 
-        view.add(tableau.getTableHeader(), BorderLayout.NORTH);
-        view.add(tableau, BorderLayout.CENTER);
+        panneau2.add(tableau.getTableHeader(), BorderLayout.NORTH);
+        panneau2.add(tableau, BorderLayout.CENTER);
 
 
 
@@ -129,7 +156,13 @@ public class AllBadge {
 
 
 
-
+    public JLabel styleJLabelBadge(JLabel l, int x, int y, int w, int h){
+        sizeComposant(new Dimension(200, 200) ,l);
+        l.setBorder(BorderFactory.createMatteBorder(0,0, 1, 0, Color.black));
+        l.setBounds(x,y,w,h);
+        l.setFont(new Font("Serif", Font.BOLD, 20));
+        return l;
+    }
 
 
 

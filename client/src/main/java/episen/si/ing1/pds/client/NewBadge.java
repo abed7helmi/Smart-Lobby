@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -33,16 +34,16 @@ public class NewBadge {
         JTextField messageErrorStartDate = styleJTextFieldError(view ,740, 60, 170, 20);
         JTextField messageErrorEndDate = styleJTextFieldError(view ,670, 330, 170, 20);
         JLabel infoLabel = new JLabel("INFOS EMPLOYE : ");
-        infoLabel = styleJLabelReservation(infoLabel, 20, 20,200,20);
+        infoLabel = styleJLabelBadge(infoLabel, 20, 20,200,20);
 
         JTextField NomEmploye = new JTextField("Nom :");
-        NomEmploye = styleJTextFieldReservation(NomEmploye, 20, 80, 50, 20);
+        NomEmploye = styleJTextFieldBadge(NomEmploye, 20, 80, 50, 20);
 
         JTextField PrenomEmploye = new JTextField("Prenom :");
-        PrenomEmploye = styleJTextFieldReservation(PrenomEmploye, 300, 80, 60, 20);
+        PrenomEmploye = styleJTextFieldBadge(PrenomEmploye, 300, 80, 60, 20);
 
         JTextField DateContract = new JTextField("Date fin contrat (YYYY-MM-DD)");
-        DateContract = styleJTextFieldReservation(DateContract, 500, 80, 200, 20);
+        DateContract = styleJTextFieldBadge(DateContract, 500, 80, 200, 20);
 
         JTextField valuenom = new JTextField(" ");
         valuenom.setBounds(100, 80, 100, 20);
@@ -55,11 +56,11 @@ public class NewBadge {
 
 
         JLabel permissionLabel = new JLabel("DROITS : ");
-        permissionLabel = styleJLabelReservation(permissionLabel, 20, 150,200,20);
+        permissionLabel = styleJLabelBadge(permissionLabel, 20, 150,200,20);
 
 
         JTextField permissionEmploye = new JTextField("Selectionnez Droits :");
-        permissionEmploye = styleJTextFieldReservation(permissionEmploye, 50, 200, 200, 20);
+        permissionEmploye = styleJTextFieldBadge(permissionEmploye, 40, 200, 120, 20);
 
         String[] permissions = {"Droit Access aux Fenetres","Droit Equipe Laurent","Droit access aux capteurs"};
         JComboBox myPermissions = new JComboBox(permissions);
@@ -76,17 +77,17 @@ public class NewBadge {
 
 
         JLabel BadgeLabel = new JLabel("Badge : ");
-        BadgeLabel = styleJLabelReservation(BadgeLabel, 20, 300,200,20);
+        BadgeLabel = styleJLabelBadge(BadgeLabel, 20, 300,200,20);
 
 
         JTextField PuceLabel = new JTextField("Puce :");
-        PuceLabel = styleJTextFieldReservation(PuceLabel, 300, 350, 50, 20);
+        PuceLabel = styleJTextFieldBadge(PuceLabel, 300, 350, 50, 20);
 
         JTextField valuepuce = new JTextField(" ");
         valuepuce.setBounds(350, 350, 100, 20);
 
         JTextField datebadge = new JTextField("Date fin (YYYY-MM-DD):");
-        datebadge = styleJTextFieldReservation(datebadge, 500, 350, 150, 20);
+        datebadge = styleJTextFieldBadge(datebadge, 500, 350, 150, 20);
 
         JTextField valuedatebadge = new JTextField(" ");
         valuedatebadge.setBounds(650, 350, 100, 20);
@@ -130,9 +131,9 @@ public class NewBadge {
                 String m = (((JTextField)source).getText()).trim();
                 if(m.matches("[0-9]{4}-[0-1]{1}[0-9]{1}-[0-3]{1}[0-9]{1}")) {
                     try {
-                        Date today1 = dateFormat.parse(dateFormat.format(new Date()));
-                        Date date1 = dateFormat.parse(m);
-                        if(today1.equals(date1) || today1.before(date1)){
+                        Date today = dateFormat.parse(dateFormat.format(new Date()));
+                        Date Mydate = dateFormat.parse(m);
+                        if(today.equals(Mydate) || today.before(Mydate)){
                             if(input.containsKey("contract_date"))
                                 input.replace("contract_date", ((JTextField)source).getText().trim());
                             else
@@ -163,9 +164,9 @@ public class NewBadge {
                 String m = (((JTextField)source).getText()).trim();
                 if(m.matches("[0-9]{4}-[0-1]{1}[0-9]{1}-[0-1]{1}[0-9]{1}")) {
                     try {
-                        Date today1 = dateFormat.parse(dateFormat.format(new Date()));
-                        Date date1 = dateFormat.parse(m);
-                        if(today1.equals(date1) || today1.before(date1)){
+                        Date today = dateFormat.parse(dateFormat.format(new Date()));
+                        Date Mydate = dateFormat.parse(m);
+                        if(today.equals(Mydate) || today.before(Mydate)){
                             if(input.containsKey("badge_date"))input.replace("badge_date", ((JTextField)source).getText().trim());
                             else input.put("badge_date", ((JTextField)source).getText().trim());
                             messageErrorEndDate.setText(" ");
@@ -179,6 +180,70 @@ public class NewBadge {
                 }else {
                     messageErrorEndDate.setText("Veuillez respecter le format");
                     messageErrorEndDate.setForeground(Color.red);
+                }
+            }
+        });
+
+
+        JTextField messageErrorNom = styleJTextFieldError(view,20, 45, 100, 20);
+        valuenom.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {}
+            @Override
+            public void focusLost(FocusEvent e) {
+                Object source = e.getSource();
+                String m = (((JTextField)source).getText()).trim();
+
+                    if (m.matches("[a-zA-Z]+")) {
+                        input.put("nomemploye", ((JTextField) source).getText().trim());
+                        messageErrorNom.setText(" ");
+                        if (verifMap()) confirm.setEnabled(true);
+                    } else {
+                        messageErrorNom.setText("X");
+                        messageErrorNom.setForeground(Color.red);
+                    }
+
+            }
+        });
+
+        JTextField messageErrorPrenom = styleJTextFieldError(view,380, 45, 20, 20);
+        valueprenom.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {}
+            @Override
+            public void focusLost(FocusEvent e) {
+                Object source = e.getSource();
+                String m = (((JTextField)source).getText()).trim();
+                if(m.matches("[a-zA-Z]+")) {
+                   // System.out.println("waaw");
+                    input.put("prenomemploye", ((JTextField)source).getText().trim());
+                    messageErrorPrenom.setText(" ");
+                    if(verifMap()) confirm.setEnabled(true);
+                }else {
+                    //System.out.println("wiiw");
+                    messageErrorPrenom.setText("X");
+                    messageErrorPrenom.setForeground(Color.red);
+                }
+            }
+        });
+
+        JTextField messageErrorPuce = styleJTextFieldError(view,350, 330, 200, 20);
+        valuepuce.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {}
+            @Override
+            public void focusLost(FocusEvent e) {
+                Object source = e.getSource();
+                String m = (((JTextField)source).getText()).trim();
+                if(m.matches("[a-zA-Z_0-9]{6}")) {
+                    // System.out.println("waaw");
+                    input.put("puceemploye", ((JTextField)source).getText().trim());
+                    messageErrorPuce.setText(" ");
+                    if(verifMap()) confirm.setEnabled(true);
+                }else {
+                    //System.out.println("wiiw");
+                    messageErrorPuce.setText("code doit etre de 6 caracteres");
+                    messageErrorPuce.setForeground(Color.red);
                 }
             }
         });
@@ -224,11 +289,32 @@ public class NewBadge {
 
     public boolean verifMap(){
         System.out.println(input);
-        if((input.containsKey("contract_date") && input.containsKey("badge_date") && input.containsKey("numberEmployee"))
-                && ( (input.containsKey("numberOpenSpace") || input.containsKey("numberMeetingRoom") ||
-                input.containsKey("numberSingleOffice")|| input.containsKey("numberBoxClosedOffice"))))
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            Date contract_date = dateFormat.parse(input.get("contract_date"));
+            Date badge_date = dateFormat.parse(input.get("badge_date"));
+            if(contract_date.before(badge_date)){
+
+                JOptionPane d = new JOptionPane();
+                d.showMessageDialog(view,
+                        "la date de fin de contrat doit etre supperieur à la date de validité de badge",
+                        " Attention",
+                        JOptionPane.WARNING_MESSAGE);
+
+                return false;
+
+            }
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+
+        if((input.containsKey("contract_date") && input.containsKey("badge_date") &&
+                input.containsKey("puceemploye") && input.containsKey("prenomemploye") && input.containsKey("nomemploye")))
             return true;
         else return false;
+
     }
 
 
@@ -244,7 +330,7 @@ public class NewBadge {
     }
 
 
-    public JTextField styleJTextFieldReservation(JTextField t, int x, int y, int w, int h) {
+    public JTextField styleJTextFieldBadge(JTextField t, int x, int y, int w, int h) {
         t.setEditable(false);
         t.setBackground(Color.WHITE);
         t.setBorder(BorderFactory.createLineBorder(Color.WHITE));
@@ -252,7 +338,7 @@ public class NewBadge {
         return t;
     }
 
-    public JLabel styleJLabelReservation(JLabel l, int x, int y, int w, int h){
+    public JLabel styleJLabelBadge(JLabel l, int x, int y, int w, int h){
         sizeComposant(new Dimension(200, 200) ,l);
         l.setBorder(BorderFactory.createMatteBorder(0,0, 1, 0, Color.black));
         l.setBounds(x,y,w,h);

@@ -2,12 +2,18 @@ package episen.si.ing1.pds.client;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.List;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 public class BadgePermissions {
 
     private JFrame frame;
     private JPanel pageBody = new JPanel();
     private JPanel view;
+
+    private JList<String> listchosen;
+    private JList<String> list;
 
     public BadgePermissions(JFrame f) {
 
@@ -23,25 +29,73 @@ public class BadgePermissions {
         view.setLayout(new BorderLayout());
 
 
+        DefaultListModel<String> listModel = new DefaultListModel<>();
+
+        listModel.addElement("USA");
+        listModel.addElement("India");
+        listModel.addElement("Vietnam");
+        listModel.addElement("Canada");
+        listModel.addElement("Denmark");
+        listModel.addElement("France");
+        listModel.addElement("Great Britain");
+        listModel.addElement("Japan");
+        listModel.addElement("USA");
+        listModel.addElement("India");
+        listModel.addElement("Vietnam");
+        listModel.addElement("Canada");
+        listModel.addElement("Denmark");
+        listModel.addElement("France");
+        listModel.addElement("Great Britain");
+        listModel.addElement("Japan");
+        listModel.addElement("Japan");
+        listModel.addElement("USA");
+        listModel.addElement("India");
+        listModel.addElement("Vietnam");
+        listModel.addElement("Canada");
+        listModel.addElement("Denmark");
+        listModel.addElement("France");
+        listModel.addElement("Great Britain");
+        listModel.addElement("Japan");
+
+        DefaultListModel<String> listModelchosen = new DefaultListModel<>();
+
+        listModelchosen.addElement("employé 1");
+        listModelchosen.addElement("employé2");
+
+
+
+        //create the list
+        list = new JList<>(listModel);
+
+        listchosen=new JList<>(listModelchosen);
+
+
+
+
+
+
+
 
         view.setBackground(Color.white);
 
-        String labels[] = { "Employe 1", "Employe 1", "Employe 1", "Employe 1","Employe 1", "Employe 1", "Employe 1", "Employe 1", "Employe 1", "Employe 61","Employe 15", "Employe 17", "Employe 14", "Employe 18","I", "J","feouiej" };
+       /* String labels[] = { "Employe 1", "Employe 1", "Employe 1", "Employe 1","Employe 1", "Employe 1", "Employe 1", "Employe 1", "Employe 1", "Employe 61","Employe 15", "Employe 17", "Employe 14", "Employe 18","I", "J","feouiej" };
 
-        JList list = new JList(labels);
+        JList list = new JList(labels);*/
         JScrollPane EmployeList = new JScrollPane(list);
 
-        String labelschosen[] = {"Employe 1", "Employe 2" };
 
-        JList listchosen = new JList(labelschosen);
+
+        //String labelschosen[] = {"Employe 1", "Employe 2" };
+
+        //JList listchosen = new JList(labelschosen);
         JScrollPane EmployeListChosen = new JScrollPane(listchosen);
 
 
         JTextField NomEmploye = new JTextField("Les Employes choisits:");
-       /* NomEmploye = styleJTextFieldReservation(NomEmploye, 300, 220, 50, 20);*/
+
 
         JTextField NomEmploye2 = new JTextField("Choisir un Employe");
-        /*NomEmploye2 = styleJTextFieldReservation(NomEmploye2, 100, 220, 50, 20);*/
+
 
         JPanel panneau1 = new JPanel(new BorderLayout());
         panneau1.setBackground(Color.yellow);
@@ -78,10 +132,10 @@ public class BadgePermissions {
 
 
         JLabel permissionLabel = new JLabel("DROITS : ");
-        permissionLabel = styleJLabelReservation(permissionLabel, 20, 20,200,20);
+        permissionLabel = styleJLabelBadge(permissionLabel, 20, 20,200,20);
 
         JTextField permissionEmploye = new JTextField("Selectionnez Droits :");
-        permissionEmploye = styleJTextFieldReservation(permissionEmploye, 50, 100, 200, 20);
+        permissionEmploye = styleJTextFieldBadge(permissionEmploye, 50, 100, 200, 20);
 
 
         String[] permissions = {"Droit Access aux Fenetres","Droit Equipe Laurent","Droit access aux capteurs"};
@@ -98,7 +152,7 @@ public class BadgePermissions {
         newpermission.setBounds(750, 100, 150, 30);
 
         JTextField validtytime = new JTextField("Durée validité :");
-        validtytime = styleJTextFieldReservation(validtytime, 300, 200, 150, 20);
+        validtytime = styleJTextFieldBadge(validtytime, 300, 200, 150, 20);
 
         JTextField datevalidity = new JTextField(" ");
         datevalidity.setBounds(500, 200, 100, 20);
@@ -136,6 +190,51 @@ public class BadgePermissions {
         pageBody.repaint();
         frame.repaint();
 
+
+        list.addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e)
+            {
+                //System.out.println(e);
+                if(!e.getValueIsAdjusting()) {
+                    //final List<String> selectedValuesList = list.getSelectedValuesList();
+                   // System.out.println(selectedValuesList);
+                    listModelchosen.addElement(list.getSelectedValue());
+                    pageBody.repaint();
+                    frame.repaint();
+
+                }
+            }
+        });
+
+        listchosen.addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e)
+            {
+                //System.out.println(e);
+                if(!e.getValueIsAdjusting()) {
+                    //final List<String> selectedValuesList = list.getSelectedValuesList();
+                    // System.out.println(selectedValuesList);
+                    listModelchosen.removeElement(listchosen.getSelectedValue());
+                    pageBody.repaint();
+                    frame.repaint();
+
+                }
+            }
+        });
+
+
+
+
+        // add element list
+        /*listModel = new DefaultListModel();
+        listModel.addElement("Jane Doe");
+        listModel.addElement("John Smith");
+        listModel.addElement("Kathy Green");
+
+
+        list = new JList(listModel);*/
+
     }
 
 
@@ -151,7 +250,7 @@ public class BadgePermissions {
     }
 
 
-    public JLabel styleJLabelReservation(JLabel l, int x, int y, int w, int h) {
+    public JLabel styleJLabelBadge(JLabel l, int x, int y, int w, int h) {
         sizeComposant(new Dimension(200, 200), l);
         l.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.black));
         l.setBounds(x, y, w, h);
@@ -166,7 +265,7 @@ public class BadgePermissions {
         c.setMinimumSize(dim);
     }
 
-    public JTextField styleJTextFieldReservation(JTextField t, int x, int y, int w, int h) {
+    public JTextField styleJTextFieldBadge(JTextField t, int x, int y, int w, int h) {
         t.setEditable(false);
         t.setBackground(Color.WHITE);
         t.setBorder(BorderFactory.createLineBorder(Color.WHITE));
