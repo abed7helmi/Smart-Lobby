@@ -267,16 +267,22 @@ public class ClientRequestManager {
 					new TypeReference<Map<String, Map<String, String>>>() {
 					});
 			int room_id = Integer.parseInt(map.get("requestLocation2").get("room_id"));
-			String request = "select device_type_wording " +
+			String request = "select distinct device_wording, device_type_wording " +
+					"from device d " +
+					"inner join device_type dt on dt.device_type_id = d.device_type_id "+
+					"where d.device_type_id in(" +
+					"select dt.device_type_id " +
 					"from device_type dt " +
 					"inner join could_configure cc on cc.device_type_id = dt.device_type_id " +
 					"inner join room_type rt on rt.room_type_id = cc.room_type_id " +
 					"inner join room r on r.room_type_id = rt.room_type_id " +
-					"where room_id = "+ room_id +";";
+					"where room_id = "+ room_id +");";
 
 			ResultSet result = c.createStatement().executeQuery(request);
 			StringBuilder sb = new StringBuilder();
-			while(result.next()) sb.append(result.getString(1)+",");
+			while(result.next()) sb.append(result.getString(1)+ " /  "+ result.getString(2)+ ",");
+
+			System.out.println(sb.toString());
 
 			output.println(sb.toString());
 		} catch (Exception e) {

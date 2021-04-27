@@ -43,7 +43,7 @@ public class ChoiceDevice {
 
         String[] value = resultRequest.split(",");
         for(int i = 0; i< value.length; i++){
-            if(value[i].contains("capteur")) listSensor.add(value[i]);
+            if(value[i].contains("capteur")) listSensor.add((value[i]).replace('_', ' '));
             else listEquipment.add(value[i]);
         }
         equipementArray = new String[listEquipment.size()];
@@ -110,8 +110,10 @@ public class ChoiceDevice {
         rYesEquipment.setBackground(Color.white);
         rYesEquipment.setBounds(275, 160, 80,20);
         JList listeE = new JList(equipementArray);
+        JScrollPane scrollEquipment = new JScrollPane(listeE);
+        scrollEquipment.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 
-        view.add(listeE);
+        view.add(scrollEquipment);
 
         view.add(messageErrorE);
         rYesEquipment.addItemListener(new ItemListener() {
@@ -121,17 +123,18 @@ public class ChoiceDevice {
                 if(input.containsKey("config_equipement_" + roomName))input.replace("config_equipement_" + roomName, "oui");
                 else input.put("config_equipement_" + roomName,"oui");
 
-                listeE.setBounds(50, 250, 350, 250);
+
+                scrollEquipment.setBounds(50, 250, 350, 250);
                 listeE.setBackground(Color.white);
-                listeE.setVisible(true);
+                scrollEquipment.setVisible(true);
                 listeE.setBorder(new TitledBorder("Veuillez selectionner les equipements."));
                 listeE.addListSelectionListener(new ListSelectionListener() {
                     @Override
                     public void valueChanged(ListSelectionEvent e) {
                         if(!e.getValueIsAdjusting()){
-                            String text = (String)listeE.getSelectedValue();
+                            String text = ((String)listeE.getSelectedValue()).split("/")[0];
                             selectionE.setText("Quelle quantite pour "+ text +" ?");
-                            selectionE = styleJTextFieldReservation(selectionE, 50, 500, 250, 20, Color.white, Color.white);
+                            selectionE = styleJTextFieldReservation(selectionE, 50, 500, 300, 20, Color.white, Color.white);
                             selectionE.setVisible(true);
 
                             quantityE.setBackground(Color.white);
@@ -175,7 +178,7 @@ public class ChoiceDevice {
                 input.put("config_equipement_" + roomName,"non");
 
                 if(verifMap()) buttonValidate.setEnabled(true);
-                visibleListe(view, listeE, selectionE,quantityE, validateQuantityE, messageErrorE);
+                visibleListe(view, scrollEquipment, selectionE,quantityE, validateQuantityE, messageErrorE);
             }
         });
         groupEquipment.add(rNonEquipment);
@@ -197,23 +200,26 @@ public class ChoiceDevice {
         rYesSensor.setVisible(true);
         rYesSensor.setBackground(Color.white);
         JList listeS = new JList(sensorArray);
-        view.add(listeS);
+        JScrollPane scrollSensor = new JScrollPane(listeS);
+        scrollSensor.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+
+        view.add(scrollSensor);
         rYesSensor.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
                 input.put("config_capteur_" + roomName,"oui");
 
                 listeS.setBackground(Color.white);
-                listeS.setBounds(450, 250, 350, 250);
-                listeS.setVisible(true);
+                scrollSensor.setBounds(450, 250, 350, 250);
+                scrollSensor.setVisible(true);
                 listeS.setBorder(new TitledBorder("Veuillez selectionner les capteurs."));
                 listeS.addListSelectionListener(new ListSelectionListener() {
                     @Override
                     public void valueChanged(ListSelectionEvent e) {
                         if(!e.getValueIsAdjusting()){
-                            String text = (String)listeS.getSelectedValue();
+                            String text = ((String)listeS.getSelectedValue()).split("/")[0];
                             selectionS.setText("Quelle quantite pour "+ text +" ?");
-                            selectionS = styleJTextFieldReservation(selectionS, 450, 500, 250, 20, Color.white, Color.white);
+                            selectionS = styleJTextFieldReservation(selectionS, 450, 500, 300, 20, Color.white, Color.white);
                             selectionS.setVisible(true);
 
                             quantityS.setBackground(Color.white);
@@ -257,7 +263,7 @@ public class ChoiceDevice {
                 input.put("config_capteur_" + roomName,"non");
 
                 if(verifMap()) buttonValidate.setEnabled(true);
-                visibleListe(view, listeS, selectionS,quantityS, validateQuantityS, messageErrorS);
+                visibleListe(view, scrollSensor, selectionS,quantityS, validateQuantityS, messageErrorS);
             }
         });
         groupSensor.add(rNoSensor);
@@ -291,8 +297,8 @@ public class ChoiceDevice {
         view.add(t);
         return t;
     }
-    public void visibleListe(JPanel view, JList list, JTextField selection, JTextField quantity, JButton validate, JTextField messageError){
-        list.setVisible(false);
+    public void visibleListe(JPanel view, JScrollPane scroll, JTextField selection, JTextField quantity, JButton validate, JTextField messageError){
+        scroll.setVisible(false);
         selection.setVisible(false);
         quantity.setVisible(false);
         validate.setVisible(false);
