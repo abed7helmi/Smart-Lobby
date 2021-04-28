@@ -5,7 +5,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Bill {
@@ -16,13 +18,22 @@ public class Bill {
     private Map<String , String> criteria = new HashMap<>();
     private Map<String, Map<String,String>> proposalSelected = new HashMap<>();
     private Map<String, Map<String, String>> configRooms = new HashMap<>();
+    private Map<String, List> listDeviceIdRoom = new HashMap<>();
 
-    public Bill(Map<String, String> in, JFrame f, Map<String , String> c,Map<String, Map<String,String>> p, Map<String, Map<String, String>> config)  {
+    public Bill(Map<String, String> in, JFrame f, Map<String , String> c, Map<String, Map<String,String>> p, Map<String, Map<String, String>> config, Map<String ,List> listIdRoom)  {
         this.input = in;
         this.frame = f;
         criteria = c;
         proposalSelected = p;
         configRooms = config;
+        listDeviceIdRoom =listIdRoom;
+        System.out.println("/////////////////////////////"+listDeviceIdRoom);
+        System.out.println("///////////////////");
+        System.out.println(criteria);
+        System.out.println("///////////////////");
+        System.out.println(proposalSelected);
+        System.out.println("///////////////////");
+        System.out.println(configRooms);
     }
 
     public void confirmation(JPanel pb){
@@ -56,7 +67,7 @@ public class Bill {
         });
 
         JPanel table = new JPanel(new BorderLayout());
-        table.setBounds(50,100,650,500);
+        table.setBounds(50,100,750,400);
 
 
         String[] columns = {"Salle", "Batiment","Etage","Configuration (Capteur/Equipement)"};

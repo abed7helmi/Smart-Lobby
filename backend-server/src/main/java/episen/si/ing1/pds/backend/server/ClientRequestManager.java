@@ -42,7 +42,8 @@ public class ClientRequestManager {
 
 					if(requestType.equals("homePage1")) firstPage(values);
 					if(requestType.equals("requestLocation1")) getChoice(values);
-					if(requestType.equals("requestLocation2")) getDevice((values));
+					if(requestType.equals("requestLocation2")) getDevice(values);
+					if(requestType.equals("requestLocation3")) getDisponibility(values);
 
 					/*switch (requestType) {
 					case "insert":
@@ -285,10 +286,34 @@ public class ClientRequestManager {
 			StringBuilder sb = new StringBuilder();
 			while(result.next()) sb.append(result.getString(1)+ " /  "+ result.getString(2)+ ",");
 
-			System.out.println(sb.toString());
-
 			output.println(sb.toString());
 		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void getDisponibility(String values){
+		try {
+			ObjectMapper mapper = new ObjectMapper(new JsonFactory());
+			Map<String, Map<String, String>> map = mapper.readValue(values,
+					new TypeReference<Map<String, Map<String, String>>>() {
+					});
+			int quantity = Integer.parseInt(map.get("requestLocation3").get("quantity"));
+			String device = map.get("requestLocation3").get("device_wording");
+			String request = "  select device_id " +
+					"  from device d " +
+					"  where device_wording ='"+ device +"' and device_status = 'free' " +
+					"  limit "+ quantity +"  ;";
+			System.out.println(request);
+			ResultSet result = c.createStatement().executeQuery(request);
+
+			StringBuilder strB = new StringBuilder();
+			while(result.next()){
+				strB.append(result.getInt(1)+ ",");
+			}
+			System.out.println(strB);
+			output.println(strB.toString());
+		}catch (Exception e) {
 			e.printStackTrace();
 		}
 	}

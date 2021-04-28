@@ -20,31 +20,35 @@ public class ChoiceDevice {
     private JPanel pageBody;
     private final String page = "device";
     private JTextField selectionE = new JTextField();
-    private JTextField quantityE = new JTextField();
+    private final JTextField quantityE = new JTextField();
     private JTextField selectionS = new JTextField();
-    private JTextField quantityS = new JTextField();
-    private JButton validateQuantityE = new JButton("Valider");
-    private JButton validateQuantityS = new JButton("Valider");
+    private final JTextField quantityS = new JTextField();
+    private final JButton validateQuantityE = new JButton("Valider");
+    private final JButton validateQuantityS = new JButton("Valider");
     private JTextField messageErrorE = new JTextField();
     private JTextField messageErrorS = new JTextField();
     private String roomName = "";
     private String resultRequest= "";
-    private List<String> listEquipment = new ArrayList<>();
-    private List<String> listSensor = new ArrayList<>();
+    private final List<String> listEquipment = new ArrayList<>();
+    private final List<String> listSensor = new ArrayList<>();
     private String[] equipementArray;
     private String[] sensorArray;
     private Map<String ,Map<String,String>> configRoom = new HashMap<>();
     private Map<String, Map<String,String>> proposalSelected = new HashMap<>();
-    private Map<String, String> config = new HashMap<>();
-    private List keyConfigSensor  = new ArrayList();
-    private List keyConfigEquipment  = new ArrayList();
+    private final Map<String, String> config = new HashMap<>();
+    private final List keyConfigSensor  = new ArrayList();
+    private final List keyConfigEquipment  = new ArrayList();
+    private List listDeviceId = new ArrayList();
+    private Map<String, List> listDeviceIdRoom = new HashMap<>();
 
-    public ChoiceDevice(JFrame frame, Map<String, String> input, String id, Map<String, Map<String,String>> configRoom, Map<String, Map<String,String>> ps) {
+    public ChoiceDevice(JFrame frame, Map<String, String> input, String id, Map<String, Map<String,String>> configRoom, Map<String, Map<String,String>> ps, List ldI, Map<String, List> listIdRoom) {
         this.frame = frame;
         this.input = input;
         this.room_id = id;
         this.configRoom = configRoom;
+        listDeviceIdRoom = listIdRoom;
         proposalSelected = ps;
+        listDeviceId = ldI;
         Client.map.get("requestLocation2").put("room_id", room_id);
         resultRequest = Client.sendBd("requestLocation2");
 
@@ -80,7 +84,7 @@ public class ChoiceDevice {
                 view.setVisible(false);
                 room.setBackground(Color.green);
                 ViewWithPlan backViewPlan = new ViewWithPlan(frame, input);
-                backViewPlan.back(oldView,pb,room,listButton, configRoom, proposalSelected);
+                backViewPlan.back(oldView,pb,room,listButton, configRoom, proposalSelected, listDeviceId, listDeviceIdRoom);
             }
         });
         view.add(buttonValidate);
@@ -333,13 +337,51 @@ public class ChoiceDevice {
 
     public boolean verifNumber(String str, JTextField messageError, String text){
         if(str.matches("\\d+") && (Integer.parseInt(str) > 0)){
-            config.put(text, str);
-            messageError.setText(" ");
-            return true;
+            Client.map.get("requestLocation3").put("device_wording",text.trim());
+            Client.map.get("requestLocation3").put("quantity",str);
+
+            String verifDispo = Client.sendBd("requestLocation3");
+            System.out.println("verifDipso"+verifDispo);
+            if(verifDispo.contains(",")){
+                String[] value = verifDispo.split(",");
+                List deviceIdInRoom = new ArrayList();
+                System.out.print("value.length"+value.length);
+                if(value.length == Integer.parseInt(str)){
+                    stockDevice(value,deviceIdInRoom, text,str,messageError);
+                    System.out.println("kkkkkkkkkkkkkkkkkkkkkkkkk"+listDeviceId.toString());
+                    return true;
+                } else {
+                    int result = JOptionPane.showConfirmDialog(null, "On n'a seulement "+ value.length +" . Souhaitez-vous prendre les "+ value.length+ " ?");
+                    if( result == JOptionPane.YES_OPTION) {
+                        stockDevice(value,deviceIdInRoom, text,str,messageError);
+                        System.out.println("kkkkkkkkkkkkkkkkkkkkkkkkk"+listDeviceId.toString());
+                        return true;
+                    } else return false;
+                }
+            } else {
+                JOptionPane.showMessageDialog(null,"Nous n'avons plus le composant souhaité");
+                return false;
+            }
         } else {
             messageError.setText("X");
             messageError.setForeground(Color.RED);
             return false;
         }
+    }
+
+    public void stockDevice(String[] value, List deviceIdInRoom, String text, String str, JTextField messageError){
+        int count = 0;
+        for(int i = 0; i < value.length; i++) {
+            if(listDeviceId.contains(value[i]) && count == 0){
+                JOptionPane.showMessageDialog(null,"Vous avez déja pris tout le stock restant pour les salles precedentes");
+                count++;
+            } else if( !(listDeviceId.contains(value[i])) ) {
+                listDeviceId.add(value[i]);
+                deviceIdInRoom.add(value[i]);
+            }
+        }
+        listDeviceIdRoom.put(room_id, deviceIdInRoom);
+        config.put(text, deviceIdInRoom.size()+"");
+        messageError.setText(" ");
     }
 }
