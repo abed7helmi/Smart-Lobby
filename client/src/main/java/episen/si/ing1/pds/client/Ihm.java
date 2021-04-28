@@ -13,13 +13,15 @@ public class Ihm extends JFrame{
     private JPanel pageBody2 ;
     private JPanel pageBody3 ;
     private JPanel pageBody4 ;
+    private String company_id ="";
 
-    public Ihm(String name, String page) {
+    public Ihm(String name, String page, String id) {
+        company_id = id;
         frame = this;
         CardLayout pages = new CardLayout();
 
         pageBody.setLayout(pages);
-        ChoiceCriteria reservation = new ChoiceCriteria(frame);
+        ChoiceCriteria reservation = new ChoiceCriteria(frame, company_id);
         pageBody1 = reservation.realizeReservation();
 
         Mapping m = new Mapping();

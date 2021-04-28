@@ -40,11 +40,11 @@ public class HomePage extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 String m = (companyName.getText()).trim();
                 Client.map.get("homePage1").put("company_name", m);
-                Boolean result = Boolean.parseBoolean(Client.sendBd("homePage1"));
-                System.out.println(result+"result");
-                System.out.println(Client.map);
-                if (result) {
-                    Menu Menu = new Menu("Smart Lobby");
+                String result = Client.sendBd("homePage1");
+                String company = result.split(",")[0];
+                if ( !(company.equals("false")) ) {
+                    String company_id = result.split(",")[1];
+                    Menu Menu = new Menu("Smart Lobby", company_id);
                     frame.dispose();
                 } else
                     JOptionPane.showMessageDialog(null, "Le nom renseigne n'existe pas", "",

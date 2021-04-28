@@ -17,8 +17,8 @@ public class Bill {
     private Map<String, Map<String,String>> proposalSelected = new HashMap<>();
     private Map<String, Map<String, String>> configRooms = new HashMap<>();
 
-    public Bill(Map<String, String> input, JFrame f, Map<String , String> c,Map<String, Map<String,String>> p, Map<String, Map<String, String>> config)  {
-        this.input = input;
+    public Bill(Map<String, String> in, JFrame f, Map<String , String> c,Map<String, Map<String,String>> p, Map<String, Map<String, String>> config)  {
+        this.input = in;
         this.frame = f;
         criteria = c;
         proposalSelected = p;
@@ -51,7 +51,7 @@ public class Bill {
             @Override
             public void actionPerformed(ActionEvent e) {
                 frame.dispose();
-                Menu menu = new Menu("Smart Lobby");
+                Menu menu = new Menu("Smart Lobby", input.get("company_id"));
             }
         });
 
@@ -94,10 +94,7 @@ public class Bill {
 
     public String[][] fillTable(){
         String[][] data= new String[configRooms.size()][4];
-        System.out.println(configRooms.size());
-
         int i = 0;
-
         for(Map<String, String> m : proposalSelected.values()){
             data[i][0] = (m.get("room_wording")).split("salle")[0];
             data[i][1] = m.get("building_name");

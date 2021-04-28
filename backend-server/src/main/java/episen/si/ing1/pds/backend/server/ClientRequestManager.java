@@ -250,11 +250,14 @@ public class ClientRequestManager {
 			Map<String, Map<String, String>> map = mapper.readValue(values,
 					new TypeReference<Map<String, Map<String, String>>>() {
 					});
-			ResultSet result = c.createStatement().executeQuery("select company_name from company " +
+			ResultSet result = c.createStatement().executeQuery("select company_name,company_id from company " +
 					"where company_name = '"+ map.get("homePage1").get("company_name") +"';");
 
-			if(result.next()) output.println(true);
-			else output.println(false);
+
+			if(result.next()) {
+				String data = result.getString(1)+ ","+result.getString(2);
+				output.println(data);
+			} else output.println("false,");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -25,10 +25,14 @@ public class ChoiceCriteria{
     private JTextField valueMeetingRoom = new JTextField();
     private JTextField valueSingleOffice = new JTextField();
     private JPanel pageBody = new JPanel();
+    private String company_id = "";
 
-    public ChoiceCriteria(JFrame f)  {
+    public ChoiceCriteria(JFrame f,String id)  {
         input.clear();
         frame = f;
+        company_id = id;
+        input.put("company_id", company_id);
+        System.out.println(input);
     }
 
     public JPanel realizeReservation(){
