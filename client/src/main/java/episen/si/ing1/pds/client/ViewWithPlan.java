@@ -7,7 +7,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,6 +21,7 @@ public class ViewWithPlan {
     private JPanel configButton = new JPanel();
     private Map<JButton, String> listButton = new HashMap<>();
     private Map<String ,Map<String,String>> proposalSelected = new HashMap<>();
+    private Map<String,Map<String, String>> configRoom = new HashMap<>();
 
 
     public ViewWithPlan(JFrame frame, Map<String, String> input){
@@ -103,6 +103,7 @@ public class ViewWithPlan {
         t.setBounds(x, y, w, h);
         return t;
     }
+
     public void configRoom( String message, int x, int y, int w, int h,JPanel configButton, JPanel view,String information, String room_id){
         JButton room = new JButton(message);
         room.setBackground(Color.red);
@@ -121,10 +122,12 @@ public class ViewWithPlan {
         configButton.add(room);
     }
     public void changePage(JPanel view, JButton room, Map<JButton, String> listButton, String room_id){
-        ChoiceDevice device = new ChoiceDevice(frame, input,room_id);
+        ChoiceDevice device = new ChoiceDevice(frame, input,room_id, configRoom, proposalSelected);
         device.choice(pageBody, view, room, listButton);
     }
-    public void back(JPanel oldView, JPanel pb, JButton room, Map<JButton, String> list){
+    public void back(JPanel oldView, JPanel pb, JButton room, Map<JButton, String> list, Map<String, Map<String, String>> configurationRoom , Map<String, Map<String, String>> ps){
+        configRoom = configurationRoom;
+        proposalSelected = ps;
         this.pageBody = pb;
         boolean verifContinue = true;
         for(Map.Entry map : list.entrySet()){
@@ -142,7 +145,7 @@ public class ViewWithPlan {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     oldView.setVisible(false);
-                    Bill bill = new Bill(input, frame);
+                    Bill bill = new Bill(input, frame, input, proposalSelected, configRoom);
                     bill.confirmation(pageBody);
                 }
             });

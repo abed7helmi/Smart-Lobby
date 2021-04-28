@@ -1,7 +1,5 @@
 package episen.si.ing1.pds.client;
 
-import com.fasterxml.jackson.databind.deser.std.DateDeserializers;
-
 import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
@@ -27,10 +25,14 @@ public class ChoiceCriteria{
     private JTextField valueMeetingRoom = new JTextField();
     private JTextField valueSingleOffice = new JTextField();
     private JPanel pageBody = new JPanel();
+    private String company_id = "";
 
-    public ChoiceCriteria(JFrame f)  {
+    public ChoiceCriteria(JFrame f,String id)  {
         input.clear();
         frame = f;
+        company_id = id;
+        input.put("company_id", company_id);
+        System.out.println(input);
     }
 
     public JPanel realizeReservation(){
@@ -229,14 +231,12 @@ public class ChoiceCriteria{
             public void focusGained(FocusEvent e) {}
             @Override
             public void focusLost(FocusEvent e) {
-                System.out.println("test"+ input);
                 Object source = e.getSource();
                 String m = (((JTextField)source).getText()).trim();
                 if(m.matches("\\d+")) {
                     input.put("numberOpenSpace", ((JTextField)source).getText().trim());
                     messageErrorOpenSpace.setText(" ");
                     if(verifMap()) buttonContinue.setEnabled(true);
-                    System.out.println("test"+ input);
                 }else {
                     messageErrorOpenSpace.setText("X");
                     messageErrorOpenSpace.setForeground(Color.red);
@@ -265,14 +265,12 @@ public class ChoiceCriteria{
             public void focusGained(FocusEvent e) {}
             @Override
             public void focusLost(FocusEvent e) {
-                System.out.println("test"+ input);
                 Object source = e.getSource();
                 String m = (((JTextField)source).getText()).trim();
                 if(m.matches("\\d+")) {
                     input.put("numberMeetingRoom",((JTextField)source).getText().trim());
                     messageErrorMeetingRoom.setText(" ");
                     if(verifMap()) buttonContinue.setEnabled(true);
-                    System.out.println("test"+ input);
                 }else {
                     messageErrorMeetingRoom.setText("X");
                     messageErrorMeetingRoom.setForeground(Color.RED);
@@ -307,7 +305,6 @@ public class ChoiceCriteria{
                     input.put("numberSingleOffice",((JTextField)source).getText().trim());
                     messageErrorSingleOffice.setText(" ");
                     if(verifMap()) buttonContinue.setEnabled(true);
-                    System.out.println("test"+ input);
                 }else {
                     messageErrorSingleOffice.setText("X");
                     messageErrorSingleOffice.setForeground(Color.red);

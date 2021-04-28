@@ -7,8 +7,10 @@ import java.awt.event.ActionListener;
 
 public class Menu extends JFrame{
     private JFrame frame;
+    private String company_id = "";
 
-    public Menu(String name){
+    public Menu(String name, String id){
+        company_id = id;
         setTitle(name);
         frame = this;
         setSize(500, 500);
@@ -36,7 +38,7 @@ public class Menu extends JFrame{
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Ihm ihm = new Ihm("Smart Lobby",page);
+                Ihm ihm = new Ihm("Smart Lobby",page, company_id);
                 frame.dispose();
             }
         });

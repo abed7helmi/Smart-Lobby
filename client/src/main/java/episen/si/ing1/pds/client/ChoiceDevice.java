@@ -33,11 +33,18 @@ public class ChoiceDevice {
     private List<String> listSensor = new ArrayList<>();
     private String[] equipementArray;
     private String[] sensorArray;
+    private Map<String ,Map<String,String>> configRoom = new HashMap<>();
+    private Map<String, Map<String,String>> proposalSelected = new HashMap<>();
+    private Map<String, String> config = new HashMap<>();
+    private List keyConfigSensor  = new ArrayList();
+    private List keyConfigEquipment  = new ArrayList();
 
-    public ChoiceDevice(JFrame frame, Map<String, String> input, String id) {
+    public ChoiceDevice(JFrame frame, Map<String, String> input, String id, Map<String, Map<String,String>> configRoom, Map<String, Map<String,String>> ps) {
         this.frame = frame;
         this.input = input;
         this.room_id = id;
+        this.configRoom = configRoom;
+        proposalSelected = ps;
         Client.map.get("requestLocation2").put("room_id", room_id);
         resultRequest = Client.sendBd("requestLocation2");
 
@@ -52,9 +59,6 @@ public class ChoiceDevice {
         equipementArray = listEquipment.toArray(equipementArray);
         sensorArray = listSensor.toArray(sensorArray);
     }
-
-
-    //private ArrayList<Map <String, String>> array = new ArrayList<>();
 
     public void choice(JPanel pb, JPanel oldView, JButton room, Map<JButton,String> listButton){
         roomName = room.getText();
@@ -76,7 +80,7 @@ public class ChoiceDevice {
                 view.setVisible(false);
                 room.setBackground(Color.green);
                 ViewWithPlan backViewPlan = new ViewWithPlan(frame, input);
-                backViewPlan.back(oldView,pb,room,listButton);
+                backViewPlan.back(oldView,pb,room,listButton, configRoom, proposalSelected);
             }
         });
         view.add(buttonValidate);
@@ -119,10 +123,7 @@ public class ChoiceDevice {
         rYesEquipment.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
-
-                if(input.containsKey("config_equipement_" + roomName))input.replace("config_equipement_" + roomName, "oui");
-                else input.put("config_equipement_" + roomName,"oui");
-
+                config.put("config_equipment", "oui");
 
                 scrollEquipment.setBounds(50, 250, 350, 250);
                 listeE.setBackground(Color.white);
@@ -149,11 +150,14 @@ public class ChoiceDevice {
                                 @Override
                                 public void actionPerformed(ActionEvent e) {
                                     String value = quantityE.getText().trim();
-                                    verifNumber(value, input, messageErrorE, text);
-                                    validateQuantityE.setVisible(false);
-                                    quantityE.setVisible(false);
-                                    selectionE.setVisible(false);
-                                    quantityE.setText("");
+                                    if(verifNumber(value, messageErrorE, text)){
+                                        validateQuantityE.setVisible(false);
+                                        quantityE.setVisible(false);
+                                        selectionE.setVisible(false);
+                                        quantityE.setText("");
+                                        messageErrorE.setVisible(false);
+                                        if(verifMap()) buttonValidate.setEnabled(true);
+                                    }
                                 }
                             });
                         }
@@ -175,7 +179,15 @@ public class ChoiceDevice {
         rNonEquipment.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                input.put("config_equipement_" + roomName,"non");
+                if(config.containsKey("config_equipment")){
+                    config.replace("config_equipment","non");
+                    for(String key : config.keySet()){
+                        if( !(key.equals("config_equipment")) && !( key.equals("config_capteur")) )keyConfigEquipment.add(key);
+                    }
+                    for(int i =0 ; i < keyConfigEquipment.size(); i++){
+                        config.remove(keyConfigEquipment.get(i));
+                    }
+                } else config.put("config_equipment","non");
 
                 if(verifMap()) buttonValidate.setEnabled(true);
                 visibleListe(view, scrollEquipment, selectionE,quantityE, validateQuantityE, messageErrorE);
@@ -207,7 +219,7 @@ public class ChoiceDevice {
         rYesSensor.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
-                input.put("config_capteur_" + roomName,"oui");
+                config.put("config_capteur","oui");
 
                 listeS.setBackground(Color.white);
                 scrollSensor.setBounds(450, 250, 350, 250);
@@ -234,11 +246,14 @@ public class ChoiceDevice {
                                 @Override
                                 public void actionPerformed(ActionEvent e) {
                                     String value = quantityS.getText().trim();
-                                    verifNumber(value, input, messageErrorS, text);
-                                    validateQuantityS.setVisible(true);
-                                    quantityS.setVisible(true);
-                                    selectionS.setVisible(true);
-                                    quantityS.setText("");
+                                    if(verifNumber(value, messageErrorS, text)) {
+                                        validateQuantityS.setVisible(false);
+                                        quantityS.setVisible(false);
+                                        selectionS.setVisible(false);
+                                        quantityS.setText("");
+                                        messageErrorS.setVisible(false);
+                                        if(verifMap()) buttonValidate.setEnabled(true);
+                                    }
                                 }
                             });
                         }
@@ -260,7 +275,15 @@ public class ChoiceDevice {
         rNoSensor.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                input.put("config_capteur_" + roomName,"non");
+                if(config.containsKey("config_capteur")){
+                    config.replace("config_capteur","non");
+                    for(String key : config.keySet()){
+                        if( !( key.equals("config_capteur")) && !( key.equals("config_equipment")) )  keyConfigSensor.add(key);
+                    }
+                    for(int i =0 ; i < keyConfigSensor.size(); i++){
+                        config.remove(keyConfigSensor.get(i));
+                    }
+                } else config.put("config_capteur","non");
 
                 if(verifMap()) buttonValidate.setEnabled(true);
                 visibleListe(view, scrollSensor, selectionS,quantityS, validateQuantityS, messageErrorS);
@@ -283,8 +306,10 @@ public class ChoiceDevice {
         return t;
     }
     public boolean verifMap(){
-        if(input.containsKey("config_capteur_"+ roomName) && input.containsKey("config_equipement_"+ roomName))
+        if(config.containsKey("config_capteur") && config.containsKey("config_equipment")){
+            configRoom.put(room_id, config);
             return true;
+        }
         else return false;
     }
     public JTextField styleJTextFieldError(JPanel view, int x, int y, int w, int h) {
@@ -306,15 +331,15 @@ public class ChoiceDevice {
         view.repaint();
     }
 
-    public void verifNumber(String str, Map<String, String> input, JTextField messageError, String text){
+    public boolean verifNumber(String str, JTextField messageError, String text){
         if(str.matches("\\d+") && (Integer.parseInt(str) > 0)){
-            if(input.containsKey(text))input.replace(text,str);
-            else input.put(text, str);
-
+            config.put(text, str);
             messageError.setText(" ");
+            return true;
         } else {
             messageError.setText("X");
             messageError.setForeground(Color.RED);
+            return false;
         }
     }
 }

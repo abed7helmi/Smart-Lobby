@@ -5,7 +5,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -174,8 +173,6 @@ public class Choice{
     public void changePage(String order, Map<String ,Map<String ,String>> proposalSelected){
         ViewWithPlan viewPlan = new ViewWithPlan(frame, input , order, proposalSelected);
         viewPlan.viewWithPlan(pageBody);
-        System.out.println("test");
-        System.out.println(proposalSelected);
     }
 
     public void selectProposal(JButton button ,int x, int y, int w, int h, int numberProposal, JPanel display, Map<String ,Map<String,String>> proposal){
