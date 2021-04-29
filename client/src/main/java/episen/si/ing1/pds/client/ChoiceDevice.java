@@ -358,9 +358,8 @@ public class ChoiceDevice {
             System.out.println("taille des doublons " + listDeviceId);
 
             for(int i = 0; i < listDeviceId.size(); i++){
-                Client.map.get("avoidDoublon").put("device"+i, listDeviceId.get(i)+"");
+                Client.map.get("requestLocation3").put("device"+i, listDeviceId.get(i)+"");
             }
-
 
             String verifDispo = Client.sendBd("requestLocation3");
             if(verifDispo.contains(",")){

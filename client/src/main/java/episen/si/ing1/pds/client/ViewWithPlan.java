@@ -2,8 +2,6 @@ package episen.si.ing1.pds.client;
 
 
 import javax.swing.*;
-
-
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -26,7 +24,6 @@ public class ViewWithPlan {
     private Map<String,Map<String, String>> configRoom = new HashMap<>();
     private List listDeviceId = new ArrayList();
     private Map<String, String> listDeviceIdRoom = new HashMap<>();
-
 
     public ViewWithPlan(JFrame frame, Map<String, String> input){
         this.frame = frame;

@@ -307,9 +307,11 @@ public class ClientRequestManager {
 			String device = map.get("requestLocation3").get("device_wording");
 
 			String exceptId = " ";
-			if(map.get("avoidDoublon").size() != 0){
-				for(Map.Entry m : map.get("avoidDoublon").entrySet()){
-					exceptId = exceptId + " and device_id <> " + m.getValue() + " ";
+			if(map.get("requestLocation3").size() > 2){
+				for(Map.Entry m : map.get("requestLocation3").entrySet()){
+					if( !((m.getKey()+"").equals("device_wording")) && !((m.getKey()+"").equals("quantity")) ){
+						exceptId = exceptId + " and device_id <> " + m.getValue() + " ";
+					}
 				}
 				System.out.println("exceptId"+ exceptId);
 			}
@@ -381,14 +383,14 @@ public class ClientRequestManager {
 			Map<String, Map<String, String>> map = mapper.readValue(values,
 					new TypeReference<Map<String, Map<String, String>>>() {
 					});
-
 			int i = 0;
 			String whereRequest = "where ";
 			if(map.get("requestLocation6").size() != 0){
 				for(Map.Entry m : map.get("requestLocation6").entrySet()) {
-					if (i == map.size()) whereRequest = whereRequest + " room_id = " + m.getValue() + ";";
+					if (i == (map.get("requestLocation6").size() - 1)) whereRequest = whereRequest + " room_id = " + m.getValue() + ";";
 					else whereRequest = whereRequest + " room_id = " + m.getValue() + " or ";
 					i++;
+
 				}
 			}
 			String request = "update room "+
@@ -409,6 +411,29 @@ public class ClientRequestManager {
 					});
 
 			String request = "";
+			for(Map.Entry m : map.get("requestLocation7").entrySet()){
+				String whereRequest =" where";
+
+				System.out.println("clé: "+m.getKey()
+						+ " | valeur: " + m.getValue());
+
+				String deviceId = m.getValue()+"";
+				deviceId = deviceId.replace("[", "");
+				deviceId = deviceId.replace("]","");
+
+				String[] listDeviceId = deviceId.split(",");
+				System.out.println(listDeviceId);
+				for(int i = 0; i < listDeviceId.length; i++){
+					if(i == (listDeviceId.length - 1))  whereRequest = whereRequest + " device_id = " + listDeviceId[i]+ ";";
+					else whereRequest = whereRequest + " device_id = " + listDeviceId[i]+ " or ";
+				}
+
+				request = request + " update device "+
+						"set device_status = 'booked', "+
+						"reservation_id = (select max(reservation_id) from reservation), "+
+						" room_id = " + m.getKey()+ " "+ whereRequest;
+			}
+
 
 			System.out.println(request);
 			//ResultSet result = c.createStatement().executeQuery(request);

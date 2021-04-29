@@ -143,7 +143,7 @@ public class Bill {
         System.out.println(Client.map);
 
         //Client.sendBd("requestLocation4");
-        Client.sendBd("requestLocation6");
+        //Client.sendBd("requestLocation6");
         Client.sendBd("requestLocation7");
 
     }
