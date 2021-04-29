@@ -25,7 +25,7 @@ public class ViewWithPlan {
     private Map<String ,Map<String,String>> proposalSelected = new HashMap<>();
     private Map<String,Map<String, String>> configRoom = new HashMap<>();
     private List listDeviceId = new ArrayList();
-    private Map<String, List> listDeviceIdRoom = new HashMap<>();
+    private Map<String, String> listDeviceIdRoom = new HashMap<>();
 
 
     public ViewWithPlan(JFrame frame, Map<String, String> input){
@@ -129,7 +129,7 @@ public class ViewWithPlan {
         ChoiceDevice device = new ChoiceDevice(frame, input,room_id, configRoom, proposalSelected, listDeviceId, listDeviceIdRoom);
         device.choice(pageBody, view, room, listButton);
     }
-    public void back(JPanel oldView, JPanel pb, JButton room, Map<JButton, String> list, Map<String, Map<String, String>> configurationRoom , Map<String, Map<String, String>> ps, List lDI,Map<String, List> listIdRoom ){
+    public void back(JPanel oldView, JPanel pb, JButton room, Map<JButton, String> list, Map<String, Map<String, String>> configurationRoom , Map<String, Map<String, String>> ps, List lDI,Map<String, String> listIdRoom ){
         configRoom = configurationRoom;
         proposalSelected = ps;
         listDeviceId = lDI;

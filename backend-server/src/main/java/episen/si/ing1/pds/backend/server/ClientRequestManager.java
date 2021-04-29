@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.lang.reflect.MalformedParameterizedTypeException;
 import java.net.Socket;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -44,6 +45,10 @@ public class ClientRequestManager {
 					if(requestType.equals("requestLocation1")) getChoice(values);
 					if(requestType.equals("requestLocation2")) getDevice(values);
 					if(requestType.equals("requestLocation3")) getDisponibility(values);
+					if(requestType.equals("requestLocation5")) getManagerId(values);
+					if(requestType.equals("requestLocation4")) insertReservation(values);
+					if(requestType.equals("requestLocation6")) updateRoom(values);
+					if(requestType.equals("requestLocation7")) updateDevice(values);
 
 					/*switch (requestType) {
 					case "insert":
@@ -271,7 +276,7 @@ public class ClientRequestManager {
 					new TypeReference<Map<String, Map<String, String>>>() {
 					});
 			int room_id = Integer.parseInt(map.get("requestLocation2").get("room_id"));
-			String request = "select distinct device_wording, device_type_wording " +
+			String request = "select distinct device_wording, device_type_wording, device_price " +
 					"from device d " +
 					"inner join device_type dt on dt.device_type_id = d.device_type_id "+
 					"where d.device_type_id in(" +
@@ -284,7 +289,7 @@ public class ClientRequestManager {
 
 			ResultSet result = c.createStatement().executeQuery(request);
 			StringBuilder sb = new StringBuilder();
-			while(result.next()) sb.append(result.getString(1)+ " /  "+ result.getString(2)+ ",");
+			while(result.next()) sb.append(result.getString(1)+ " -- "+ result.getString(3) + "euros /      "+ result.getString(2)+ ",");
 
 			output.println(sb.toString());
 		} catch (Exception e) {
@@ -300,10 +305,22 @@ public class ClientRequestManager {
 					});
 			int quantity = Integer.parseInt(map.get("requestLocation3").get("quantity"));
 			String device = map.get("requestLocation3").get("device_wording");
+
+			String exceptId = " ";
+			if(map.get("avoidDoublon").size() != 0){
+				for(Map.Entry m : map.get("avoidDoublon").entrySet()){
+					exceptId = exceptId + " and device_id <> " + m.getValue() + " ";
+				}
+				System.out.println("exceptId"+ exceptId);
+			}
+
 			String request = "  select device_id " +
 					"  from device d " +
-					"  where device_wording ='"+ device +"' and device_status = 'free' " +
-					"  limit "+ quantity +"  ;";
+					"  where device_wording ='"+ device +"' and device_status = 'free' ";
+			if( !(exceptId.equals(" ")) ) request = request + exceptId;
+
+			request = request + "  limit "+ quantity +"  ;";
+
 			System.out.println(request);
 			ResultSet result = c.createStatement().executeQuery(request);
 
@@ -317,4 +334,88 @@ public class ClientRequestManager {
 			e.printStackTrace();
 		}
 	}
+
+	public void getManagerId(String values){
+		try {
+			ObjectMapper mapper = new ObjectMapper(new JsonFactory());
+			Map<String, Map<String, String>> map = mapper.readValue(values,
+					new TypeReference<Map<String, Map<String, String>>>() {
+					});
+			String request = "select gs_manager_id " +
+					"from general_services_manager g " +
+					"inner join employee e on g.gs_manager_id = e.employee_id " +
+					"where company_id = "+ map.get("requestLocation5").get("company_id") +";";
+			System.out.println(request);
+			ResultSet result = c.createStatement().executeQuery(request);
+
+			String companyId ="";
+			while(result.next()){
+				companyId = result.getString(1);
+			}
+			System.out.println(companyId);
+			output.println(companyId.toString());
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void insertReservation(String values){
+		try {
+			ObjectMapper mapper = new ObjectMapper(new JsonFactory());
+			Map<String, Map<String, String>> map = mapper.readValue(values,
+					new TypeReference<Map<String, Map<String, String>>>() {
+					});
+			String request = "insert into reservation (end_date, start_date, price, gs_manager_id)"+
+					"values ('" + map.get("requestLocation4").get("end_date") + "', '"+ map.get("requestLocation4").get("start_date")+
+					"', '"+ map.get("requestLocation4").get("price") + "', '"+ map.get("requestLocation4").get("gs_manager_id")+ "');";
+			System.out.println(request);
+			//ResultSet result = c.createStatement().executeQuery(request);
+
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	public void updateRoom(String values){
+		try {
+			ObjectMapper mapper = new ObjectMapper(new JsonFactory());
+			Map<String, Map<String, String>> map = mapper.readValue(values,
+					new TypeReference<Map<String, Map<String, String>>>() {
+					});
+
+			int i = 0;
+			String whereRequest = "where ";
+			if(map.get("requestLocation6").size() != 0){
+				for(Map.Entry m : map.get("requestLocation6").entrySet()) {
+					if (i == map.size()) whereRequest = whereRequest + " room_id = " + m.getValue() + ";";
+					else whereRequest = whereRequest + " room_id = " + m.getValue() + " or ";
+					i++;
+				}
+			}
+			String request = "update room "+
+					"set status = 'booked', "+
+					"    reservation_id = (select max(reservation_id) from reservation)"+ whereRequest;
+			System.out.println(request);
+			//ResultSet result = c.createStatement().executeQuery(request);
+
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	public void updateDevice(String values){
+		try {
+			ObjectMapper mapper = new ObjectMapper(new JsonFactory());
+			Map<String, Map<String, String>> map = mapper.readValue(values,
+					new TypeReference<Map<String, Map<String, String>>>() {
+					});
+
+			String request = "";
+
+			System.out.println(request);
+			//ResultSet result = c.createStatement().executeQuery(request);
+
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 }

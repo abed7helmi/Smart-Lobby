@@ -5,9 +5,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class Bill {
@@ -18,15 +16,15 @@ public class Bill {
     private Map<String , String> criteria = new HashMap<>();
     private Map<String, Map<String,String>> proposalSelected = new HashMap<>();
     private Map<String, Map<String, String>> configRooms = new HashMap<>();
-    private Map<String, List> listDeviceIdRoom = new HashMap<>();
+    private Map<String, String> listDeviceIdRoom = new HashMap<>();
 
-    public Bill(Map<String, String> in, JFrame f, Map<String , String> c, Map<String, Map<String,String>> p, Map<String, Map<String, String>> config, Map<String ,List> listIdRoom)  {
+    public Bill(Map<String, String> in, JFrame f, Map<String , String> c, Map<String, Map<String,String>> p, Map<String, Map<String, String>> config, Map<String ,String> listIdRoom)  {
         this.input = in;
         this.frame = f;
         criteria = c;
         proposalSelected = p;
         configRooms = config;
-        listDeviceIdRoom =listIdRoom;
+        listDeviceIdRoom = listIdRoom;
         System.out.println("/////////////////////////////"+listDeviceIdRoom);
         System.out.println("///////////////////");
         System.out.println(criteria);
@@ -61,6 +59,7 @@ public class Bill {
         validate.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                prepareRequest();
                 frame.dispose();
                 Menu menu = new Menu("Smart Lobby", input.get("company_id"));
             }
@@ -115,5 +114,37 @@ public class Bill {
             i++;
         }
         return data;
+    }
+
+    public void prepareRequest(){
+        Client.map.get("requestLocation5").put("company_id", input.get("company_id"));
+        String manager_id = Client.sendBd("requestLocation5");
+
+        Client.map.get("requestLocation4").put("end_date", input.get("end_date"));
+        Client.map.get("requestLocation4").put("start_date", input.get("start_date"));
+        float price = 0;
+        int i = 0;
+        for(Map<String, String> map : proposalSelected.values()){
+            price = price + Float.parseFloat(map.get("price"));
+            Client.map.get("requestLocation6").put("room"+i, map.get("room_id"));
+            i++;
+        }//price of rooms
+        for(Map<String, String> map : configRooms.values()){
+            price = price + Float.parseFloat(map.get("price"));
+        }//price of device in room
+
+        Client.map.get("requestLocation4").put("price", price+"");
+        Client.map.get("requestLocation4").put("gs_manager_id", manager_id);
+
+        for(Map.Entry map : listDeviceIdRoom.entrySet()){
+            Client.map.get("requestLocation7").put(map.getKey()+"" , map.getValue()+"");
+        }
+
+        System.out.println(Client.map);
+
+        //Client.sendBd("requestLocation4");
+        Client.sendBd("requestLocation6");
+        Client.sendBd("requestLocation7");
+
     }
 }

@@ -39,9 +39,10 @@ public class ChoiceDevice {
     private final List keyConfigSensor  = new ArrayList();
     private final List keyConfigEquipment  = new ArrayList();
     private List listDeviceId = new ArrayList();
-    private Map<String, List> listDeviceIdRoom = new HashMap<>();
+    private Map<String, String> listDeviceIdRoom = new HashMap<>();
+    private List deviceIdInRoom = new ArrayList();
 
-    public ChoiceDevice(JFrame frame, Map<String, String> input, String id, Map<String, Map<String,String>> configRoom, Map<String, Map<String,String>> ps, List ldI, Map<String, List> listIdRoom) {
+    public ChoiceDevice(JFrame frame, Map<String, String> input, String id, Map<String, Map<String,String>> configRoom, Map<String, Map<String,String>> ps, List ldI, Map<String, String> listIdRoom) {
         this.frame = frame;
         this.input = input;
         this.room_id = id;
@@ -49,6 +50,10 @@ public class ChoiceDevice {
         listDeviceIdRoom = listIdRoom;
         proposalSelected = ps;
         listDeviceId = ldI;
+
+        System.out.println("test"+ listDeviceId);
+
+
         Client.map.get("requestLocation2").put("room_id", room_id);
         resultRequest = Client.sendBd("requestLocation2");
 
@@ -79,6 +84,8 @@ public class ChoiceDevice {
         buttonValidate.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                String list = deviceIdInRoom.toString();
+                listDeviceIdRoom.put(room_id, list);
                 advancement.setVisible(false);
                 listButton.replace(room, "validated");
                 view.setVisible(false);
@@ -137,7 +144,11 @@ public class ChoiceDevice {
                     @Override
                     public void valueChanged(ListSelectionEvent e) {
                         if(!e.getValueIsAdjusting()){
-                            String text = ((String)listeE.getSelectedValue()).split("/")[0];
+                            String equipment = ((String)listeE.getSelectedValue()).split("/")[0];
+                            String text = (equipment.split("--")[0]).trim();
+                            String price = (equipment.split("--")[1].trim()).split("euros")[0].trim();
+                            System.out.println("price"+price);
+
                             selectionE.setText("Quelle quantite pour "+ text +" ?");
                             selectionE = styleJTextFieldReservation(selectionE, 50, 500, 300, 20, Color.white, Color.white);
                             selectionE.setVisible(true);
@@ -154,7 +165,7 @@ public class ChoiceDevice {
                                 @Override
                                 public void actionPerformed(ActionEvent e) {
                                     String value = quantityE.getText().trim();
-                                    if(verifNumber(value, messageErrorE, text)){
+                                    if(verifNumber(value, messageErrorE, text, price)){
                                         validateQuantityE.setVisible(false);
                                         quantityE.setVisible(false);
                                         selectionE.setVisible(false);
@@ -233,7 +244,11 @@ public class ChoiceDevice {
                     @Override
                     public void valueChanged(ListSelectionEvent e) {
                         if(!e.getValueIsAdjusting()){
-                            String text = ((String)listeS.getSelectedValue()).split("/")[0];
+                            String sensor = ((String)listeS.getSelectedValue()).split("/")[0];
+                            String text = (sensor.split("--")[0]).trim();
+                            String price = (sensor.split("--")[1].trim()).split("euros")[0].trim();
+                            System.out.println("price"+price);
+
                             selectionS.setText("Quelle quantite pour "+ text +" ?");
                             selectionS = styleJTextFieldReservation(selectionS, 450, 500, 300, 20, Color.white, Color.white);
                             selectionS.setVisible(true);
@@ -250,7 +265,7 @@ public class ChoiceDevice {
                                 @Override
                                 public void actionPerformed(ActionEvent e) {
                                     String value = quantityS.getText().trim();
-                                    if(verifNumber(value, messageErrorS, text)) {
+                                    if(verifNumber(value, messageErrorS, text, price)) {
                                         validateQuantityS.setVisible(false);
                                         quantityS.setVisible(false);
                                         selectionS.setVisible(false);
@@ -335,26 +350,29 @@ public class ChoiceDevice {
         view.repaint();
     }
 
-    public boolean verifNumber(String str, JTextField messageError, String text){
+    public boolean verifNumber(String str, JTextField messageError, String text, String price){
         if(str.matches("\\d+") && (Integer.parseInt(str) > 0)){
             Client.map.get("requestLocation3").put("device_wording",text.trim());
             Client.map.get("requestLocation3").put("quantity",str);
 
+            System.out.println("taille des doublons " + listDeviceId);
+
+            for(int i = 0; i < listDeviceId.size(); i++){
+                Client.map.get("avoidDoublon").put("device"+i, listDeviceId.get(i)+"");
+            }
+
+
             String verifDispo = Client.sendBd("requestLocation3");
-            System.out.println("verifDipso"+verifDispo);
             if(verifDispo.contains(",")){
                 String[] value = verifDispo.split(",");
-                List deviceIdInRoom = new ArrayList();
-                System.out.print("value.length"+value.length);
+                //List deviceIdInRoom = new ArrayList();
                 if(value.length == Integer.parseInt(str)){
-                    stockDevice(value,deviceIdInRoom, text,str,messageError);
-                    System.out.println("kkkkkkkkkkkkkkkkkkkkkkkkk"+listDeviceId.toString());
+                    stockDevice(value,deviceIdInRoom, text,str,messageError, price);
                     return true;
                 } else {
                     int result = JOptionPane.showConfirmDialog(null, "On n'a seulement "+ value.length +" . Souhaitez-vous prendre les "+ value.length+ " ?");
                     if( result == JOptionPane.YES_OPTION) {
-                        stockDevice(value,deviceIdInRoom, text,str,messageError);
-                        System.out.println("kkkkkkkkkkkkkkkkkkkkkkkkk"+listDeviceId.toString());
+                        stockDevice(value,deviceIdInRoom, text,str,messageError, price);
                         return true;
                     } else return false;
                 }
@@ -369,19 +387,25 @@ public class ChoiceDevice {
         }
     }
 
-    public void stockDevice(String[] value, List deviceIdInRoom, String text, String str, JTextField messageError){
+    public void stockDevice(String[] value, List deviceIdInRoom, String text, String str, JTextField messageError, String price){
         int count = 0;
         for(int i = 0; i < value.length; i++) {
-            if(listDeviceId.contains(value[i]) && count == 0){
-                JOptionPane.showMessageDialog(null,"Vous avez déja pris tout le stock restant pour les salles precedentes");
-                count++;
-            } else if( !(listDeviceId.contains(value[i])) ) {
-                listDeviceId.add(value[i]);
-                deviceIdInRoom.add(value[i]);
-            }
+            listDeviceId.add(value[i]);
+            deviceIdInRoom.add(value[i]);
         }
-        listDeviceIdRoom.put(room_id, deviceIdInRoom);
+
         config.put(text, deviceIdInRoom.size()+"");
+        float valuePrice = 0;
+
+        valuePrice = Float.parseFloat(deviceIdInRoom.size()+"") * Float.parseFloat(price);
+        if(config.containsKey("price")){
+            valuePrice = valuePrice + Float.parseFloat(config.get("price"));
+            System.out.println("///////////////////");
+            System.out.println(valuePrice);
+            System.out.println("///////////////////");
+            config.put("price", valuePrice+"");
+        } else config.put("price", valuePrice+"");
+
         messageError.setText(" ");
     }
 }
