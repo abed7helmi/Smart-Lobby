@@ -7,7 +7,7 @@ import java.awt.event.ActionListener;
 
 public class Menu extends JFrame{
     private JFrame frame;
-    private String company_id = "";
+    protected static String company_id = "";
 
     public Menu(String name, String id){
         company_id = id;
