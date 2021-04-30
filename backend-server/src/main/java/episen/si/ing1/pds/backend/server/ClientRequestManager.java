@@ -42,12 +42,29 @@ public class ClientRequestManager {
 					String requestType = clientInput.split("#")[0];
 					String values = clientInput.split("#")[1];
 
-					if(requestType.equals("homePage1")) firstPage(values);
-					if(requestType.equals("requestLocation1")) getChoice(values);
-					if(requestType.equals("requestLocation2")) getDevice(values);
-					if(requestType.equals("requestLocation3")) getDisponibility(values);
-					if(requestType.equals("requestLocation5")) getManagerId(values);
-					if(requestType.equals("requestLocation4")) insertReservation(values);
+					switch (requestType) {
+					case "companyReservation":
+						companyReservation(values);
+						break;
+					case "homePage1":
+						firstPage(values);
+						break;
+					case "requestLocation1":
+						getChoice(values);
+						break;
+					case "requestLocation2":
+						getDevice((values));
+						break;
+					case "requestLocation3":
+						getDisponibility(values);
+						break;
+					case "requestLocation4":
+						getManagerId(values);
+						break;
+					case "requestLocation5":
+						insertReservation(values);
+						break;
+					}
 
 					/*switch (requestType) {
 					case "insert":
@@ -97,6 +114,29 @@ public class ClientRequestManager {
 		return self;
 	}
 
+	public void companyReservation(String values) {
+		try {
+			ObjectMapper mapper = new ObjectMapper(new JsonFactory());
+			Map<String, Map<String, String>> map = mapper.readValue(values,new TypeReference<Map<String, Map<String, String>>>(){});
+			String request = "Select reservation_id,start_date,end_date,price,employee_last_name,employee_first_name from reservation inner join employee on (reservation.gs_manager_id = employee.employee_id) where company_id="+map.get("companyReservation").get("company_id");
+			ResultSet rs = c.createStatement().executeQuery(request);
+			Map<String,Map<String, String>> result = new HashMap<String,Map<String, String>>();
+			int i=0;
+			while(rs.next()) {
+				Map<String, String> resultmap = new HashMap<String, String>();
+				resultmap.put("reservation_id", rs.getString(1));
+				resultmap.put("start_date", rs.getString(2));
+				resultmap.put("end_date", rs.getString(3));
+				resultmap.put("price", rs.getString(4));
+				resultmap.put("employee_last_name", rs.getString(5));
+				resultmap.put("employee_first_name", rs.getString(6));
+				result.put(""+i++, resultmap);
+			}
+			output.println(mapper.writeValueAsString(result));
+		} catch (JsonMappingException e) {} catch (JsonProcessingException e) {} catch (SQLException e) {}
+		
+	}
+	
 	public void getChoice(String values){
 		try {
 			ObjectMapper mapper = new ObjectMapper(new JsonFactory());
