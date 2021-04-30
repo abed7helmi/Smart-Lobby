@@ -13,6 +13,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.IOException;
+import java.util.Map;
 
 import javax.imageio.ImageIO;
 import javax.swing.Icon;
@@ -20,6 +21,12 @@ import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 public class Mapping {
@@ -32,6 +39,7 @@ public class Mapping {
 	private JPanel locationPlan = new JPanel();
 	private JPanel equipmentInfo = new JPanel();
 	private JPanel equipmentSelection = new JPanel();
+	private String companyId = Menu.company_id;
 
 	public Mapping() {
 		panel.setBackground(Color.white);
@@ -54,8 +62,15 @@ public class Mapping {
 		Font titlefont = new Font("font", 1, 20);
 		title.setFont(titlefont);
 		locationSelection.add(title);
-
-		String[] locationNameList = { "test", "toto", "rdaazd","azdazd"};
+		
+		try {
+		Client.map.get("companyReservation").put("company_id", companyId);
+		ObjectMapper mapper = new ObjectMapper(new JsonFactory());
+		Map<String, Map<String, String>> map = mapper.readValue(Client.sendBd("companyReservation"),new TypeReference<Map<String, Map<String, String>>>(){});
+		String[] locationNameList = new String[map.size()];
+		for(int i=0;i<locationNameList.length;i++) {
+			locationNameList[i]=map.get(""+i).get("reservation_id");
+		}
 		JComboBox<String> cb = new JComboBox<String>(locationNameList);
 		cb.setSize(100,10);
 		locationSelection.add(cb);
@@ -63,19 +78,20 @@ public class Mapping {
 		cb.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				locationPlan();
+				locationPlan(cb.getSelectedIndex());
 			}
 		});
 		
+		} catch (JsonMappingException e1) {} catch (JsonProcessingException e1) {}
 	}
 
-	public void locationPlan() {
+	public void locationPlan(int reservation_id) {
 		try {
 			locationPlan.removeAll();
 			locationPlan.setBackground(Color.white);
 			locationPlan.setLayout(new BorderLayout());
 
-			JLabel title = new JLabel("Sélectionnez un emplacement à configurer:");
+			JLabel title = new JLabel("Sélectionnez un emplacement à configurer:");
 			locationPlan.add(title, BorderLayout.NORTH);
 
 			JPanel plan = new JPanel() {
@@ -90,6 +106,7 @@ public class Mapping {
 				}
 			};
 
+			
 			Icon green = new ImageIcon(ImageIO.read(new File(System.getenv("GREEN"))));
 			JLabel greenpin = new JLabel();
 			greenpin.setIcon(green);
