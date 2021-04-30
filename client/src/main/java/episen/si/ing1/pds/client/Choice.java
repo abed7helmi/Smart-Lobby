@@ -3,7 +3,6 @@ package episen.si.ing1.pds.client;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -13,8 +12,8 @@ import java.util.*;
 public class Choice{
     private final String page = "choice";
     private Map<String, String> input = new HashMap<>();
-    private JFrame frame;
-    private JButton buttonContinue = new JButton("> Continuer");
+    private final JFrame frame;
+    private final JButton buttonContinue = new JButton("> Continuer");
     private JTextField selected = new JTextField("Vous avez choisi : ");
     private JPanel pageBody;
     private Map<String , Map<String, Map<String ,String>>> mapProposals = new HashMap<>();
@@ -62,15 +61,11 @@ public class Choice{
                     new TypeReference<Map<String , Map<String, Map<String ,String>>>>() {
                     });
 
-        }catch(Exception e) {
-            e.printStackTrace();
-        }
+        }catch(Exception e) {e.printStackTrace();}
         JPanel view = new JPanel();
         view.setBackground(Color.WHITE);
         sizeComposant(new Dimension(950,600), view);
         view.setLayout(null);
-
-
 
         JTextField order = new JTextField("Choisissez une offre : ");
         order = styleJTextFieldReservation(order, 20, 10, 320, 50, Color.white, Color.white);
@@ -119,21 +114,19 @@ public class Choice{
             numberFloor.add(m.get("floor_number"));
             priceProposal = priceProposal + Integer.parseInt(m.get("price"));
         }
-
         Iterator<String> itrName = nameBuildings.iterator();
         StringBuilder listName = new StringBuilder();
         while(itrName.hasNext()){
             listName.append(itrName.next()+ ",");
         }
+        listName.deleteCharAt(listName.length());
 
         Iterator<String> itrFloor = numberFloor.iterator();
         StringBuilder listFloor = new StringBuilder();
         while(itrFloor.hasNext()){
             listFloor.append(itrFloor.next()+ ",");
         }
-
-
-
+        listFloor.deleteCharAt(listFloor.length());
         JPanel proposal = new JPanel();
         proposal.setLayout(null);
         proposal.setBackground(new Color(150, 75,0));

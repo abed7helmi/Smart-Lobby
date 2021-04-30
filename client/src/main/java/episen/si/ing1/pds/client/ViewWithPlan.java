@@ -1,6 +1,5 @@
 package episen.si.ing1.pds.client;
 
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -10,16 +9,15 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.List;
 
-
 public class ViewWithPlan {
-    private String page = "device";
+    private final String page = "device";
     private final JFrame frame;
     private Map<String , String> input = new HashMap<>();
     private JPanel pageBody;
     private String order;
     private String floorNumber;
-    private JPanel configButton = new JPanel();
-    private Map<JButton, String> listButton = new HashMap<>();
+    private final JPanel configButton = new JPanel();
+    private final Map<JButton, String> listButton = new HashMap<>();
     private Map<String ,Map<String,String>> proposalSelected = new HashMap<>();
     private Map<String,Map<String, String>> configRoom = new HashMap<>();
     private List listDeviceId = new ArrayList();
@@ -148,7 +146,7 @@ public class ViewWithPlan {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     oldView.setVisible(false);
-                    Bill bill = new Bill(input, frame, input, proposalSelected, configRoom, listDeviceIdRoom);
+                    Bill bill = new Bill(input, frame, proposalSelected, configRoom, listDeviceIdRoom);
                     bill.confirmation(pageBody);
                 }
             });

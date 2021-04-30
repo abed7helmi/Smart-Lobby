@@ -1,6 +1,5 @@
 package episen.si.ing1.pds.client;
 
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -12,26 +11,17 @@ public class Bill {
     private final String page = "bill";
     private Map<String, String> input = new HashMap<>();
     private JPanel pageBody;
-    private JFrame frame;
-    private Map<String , String> criteria = new HashMap<>();
+    private final JFrame frame;
     private Map<String, Map<String,String>> proposalSelected = new HashMap<>();
     private Map<String, Map<String, String>> configRooms = new HashMap<>();
     private Map<String, String> listDeviceIdRoom = new HashMap<>();
 
-    public Bill(Map<String, String> in, JFrame f, Map<String , String> c, Map<String, Map<String,String>> p, Map<String, Map<String, String>> config, Map<String ,String> listIdRoom)  {
+    public Bill(Map<String, String> in, JFrame f, Map<String, Map<String,String>> p, Map<String, Map<String, String>> config, Map<String ,String> listIdRoom)  {
         this.input = in;
         this.frame = f;
-        criteria = c;
         proposalSelected = p;
         configRooms = config;
         listDeviceIdRoom = listIdRoom;
-        System.out.println("/////////////////////////////"+listDeviceIdRoom);
-        System.out.println("///////////////////");
-        System.out.println(criteria);
-        System.out.println("///////////////////");
-        System.out.println(proposalSelected);
-        System.out.println("///////////////////");
-        System.out.println(configRooms);
     }
 
     public void confirmation(JPanel pb){
@@ -67,7 +57,6 @@ public class Bill {
 
         JPanel table = new JPanel(new BorderLayout());
         table.setBounds(50,100,750,400);
-
 
         String[] columns = {"Salle", "Batiment","Etage","Configuration (Capteur/Equipement)"};
         String[][] dataTest = fillTable();
@@ -139,10 +128,7 @@ public class Bill {
         for(Map.Entry map : listDeviceIdRoom.entrySet()){
             Client.map.get("requestLocation4").put(map.getKey()+"" , map.getValue()+"");
         }
-
         System.out.println(Client.map);
-
         Client.sendBd("requestLocation4");
-
     }
 }

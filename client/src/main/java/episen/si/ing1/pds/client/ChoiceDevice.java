@@ -31,7 +31,7 @@ public class ChoiceDevice {
     private String resultRequest= "";
     private final List<String> listEquipment = new ArrayList<>();
     private final List<String> listSensor = new ArrayList<>();
-    private String[] equipementArray;
+    private String[] equipmentArray;
     private String[] sensorArray;
     private Map<String ,Map<String,String>> configRoom = new HashMap<>();
     private Map<String, Map<String,String>> proposalSelected = new HashMap<>();
@@ -40,7 +40,7 @@ public class ChoiceDevice {
     private final List keyConfigEquipment  = new ArrayList();
     private List listDeviceId = new ArrayList();
     private Map<String, String> listDeviceIdRoom = new HashMap<>();
-    private List deviceIdInRoom = new ArrayList();
+    private final List deviceIdInRoom = new ArrayList();
 
     public ChoiceDevice(JFrame frame, Map<String, String> input, String id, Map<String, Map<String,String>> configRoom, Map<String, Map<String,String>> ps, List ldI, Map<String, String> listIdRoom) {
         this.frame = frame;
@@ -52,8 +52,6 @@ public class ChoiceDevice {
         listDeviceId = ldI;
 
         System.out.println("test"+ listDeviceId);
-
-
         Client.map.get("requestLocation2").put("room_id", room_id);
         resultRequest = Client.sendBd("requestLocation2");
 
@@ -62,10 +60,10 @@ public class ChoiceDevice {
             if(value[i].contains("capteur")) listSensor.add((value[i]).replace('_', ' '));
             else listEquipment.add(value[i]);
         }
-        equipementArray = new String[listEquipment.size()];
+        equipmentArray = new String[listEquipment.size()];
         sensorArray = new String[listSensor.size()];
 
-        equipementArray = listEquipment.toArray(equipementArray);
+        equipmentArray = listEquipment.toArray(equipmentArray);
         sensorArray = listSensor.toArray(sensorArray);
     }
 
@@ -124,8 +122,8 @@ public class ChoiceDevice {
         rYesEquipment.setVisible(true);
         rYesEquipment.setBackground(Color.white);
         rYesEquipment.setBounds(275, 160, 80,20);
-        JList listeE = new JList(equipementArray);
-        JScrollPane scrollEquipment = new JScrollPane(listeE);
+        JList listE = new JList(equipmentArray);
+        JScrollPane scrollEquipment = new JScrollPane(listE);
         scrollEquipment.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 
         view.add(scrollEquipment);
@@ -137,14 +135,14 @@ public class ChoiceDevice {
                 config.put("config_equipment", "oui");
 
                 scrollEquipment.setBounds(50, 250, 350, 250);
-                listeE.setBackground(Color.white);
+                listE.setBackground(Color.white);
                 scrollEquipment.setVisible(true);
-                listeE.setBorder(new TitledBorder("Veuillez selectionner les equipements."));
-                listeE.addListSelectionListener(new ListSelectionListener() {
+                listE.setBorder(new TitledBorder("Veuillez selectionner les equipements."));
+                listE.addListSelectionListener(new ListSelectionListener() {
                     @Override
                     public void valueChanged(ListSelectionEvent e) {
                         if(!e.getValueIsAdjusting()){
-                            String equipment = ((String)listeE.getSelectedValue()).split("/")[0];
+                            String equipment = ((String)listE.getSelectedValue()).split("/")[0];
                             String text = (equipment.split("--")[0]).trim();
                             String price = (equipment.split("--")[1].trim()).split("euros")[0].trim();
                             System.out.println("price"+price);
@@ -197,7 +195,7 @@ public class ChoiceDevice {
                 if(config.containsKey("config_equipment")){
                     config.replace("config_equipment","non");
                     for(String key : config.keySet()){
-                        if( !(key.equals("config_equipment")) && !( key.equals("config_capteur")) )keyConfigEquipment.add(key);
+                        if( !(key.equals("config_equipment")) && !( key.equals("config_sensor")) )keyConfigEquipment.add(key);
                     }
                     for(int i =0 ; i < keyConfigEquipment.size(); i++){
                         config.remove(keyConfigEquipment.get(i));
@@ -220,31 +218,30 @@ public class ChoiceDevice {
         choiceSensor = styleJTextFieldReservation(choiceSensor, 450, 160, 175, 20,Color.white, Color.white);
         view.add(choiceSensor);
 
-
         ButtonGroup groupSensor = new ButtonGroup();
         JRadioButton rYesSensor = new JRadioButton("Oui");
         rYesSensor.setBounds(675, 160, 80,20);
         rYesSensor.setVisible(true);
         rYesSensor.setBackground(Color.white);
-        JList listeS = new JList(sensorArray);
-        JScrollPane scrollSensor = new JScrollPane(listeS);
+        JList listS = new JList(sensorArray);
+        JScrollPane scrollSensor = new JScrollPane(listS);
         scrollSensor.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 
         view.add(scrollSensor);
         rYesSensor.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
-                config.put("config_capteur","oui");
+                config.put("config_sensor","oui");
 
-                listeS.setBackground(Color.white);
+                listS.setBackground(Color.white);
                 scrollSensor.setBounds(450, 250, 350, 250);
                 scrollSensor.setVisible(true);
-                listeS.setBorder(new TitledBorder("Veuillez selectionner les capteurs."));
-                listeS.addListSelectionListener(new ListSelectionListener() {
+                listS.setBorder(new TitledBorder("Veuillez selectionner les capteurs."));
+                listS.addListSelectionListener(new ListSelectionListener() {
                     @Override
                     public void valueChanged(ListSelectionEvent e) {
                         if(!e.getValueIsAdjusting()){
-                            String sensor = ((String)listeS.getSelectedValue()).split("/")[0];
+                            String sensor = ((String)listS.getSelectedValue()).split("/")[0];
                             String text = (sensor.split("--")[0]).trim();
                             String price = (sensor.split("--")[1].trim()).split("euros")[0].trim();
                             System.out.println("price"+price);
@@ -294,15 +291,15 @@ public class ChoiceDevice {
         rNoSensor.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(config.containsKey("config_capteur")){
-                    config.replace("config_capteur","non");
+                if(config.containsKey("config_sensor")){
+                    config.replace("config_sensor","non");
                     for(String key : config.keySet()){
-                        if( !( key.equals("config_capteur")) && !( key.equals("config_equipment")) )  keyConfigSensor.add(key);
+                        if( !( key.equals("config_sensor")) && !( key.equals("config_equipment")) )  keyConfigSensor.add(key);
                     }
                     for(int i =0 ; i < keyConfigSensor.size(); i++){
                         config.remove(keyConfigSensor.get(i));
                     }
-                } else config.put("config_capteur","non");
+                } else config.put("config_sensor","non");
 
                 if(verifMap()) buttonValidate.setEnabled(true);
                 visibleListe(view, scrollSensor, selectionS,quantityS, validateQuantityS, messageErrorS);
@@ -325,7 +322,7 @@ public class ChoiceDevice {
         return t;
     }
     public boolean verifMap(){
-        if(config.containsKey("config_capteur") && config.containsKey("config_equipment")){
+        if(config.containsKey("config_sensor") && config.containsKey("config_equipment")){
             configRoom.put(room_id, config);
             return true;
         }
@@ -355,15 +352,13 @@ public class ChoiceDevice {
             Client.map.get("requestLocation3").put("device_wording",text.trim());
             Client.map.get("requestLocation3").put("quantity",str);
 
-            System.out.println("taille des doublons " + listDeviceId);
-
             for(int i = 0; i < listDeviceId.size(); i++){
                 Client.map.get("requestLocation3").put("device"+i, listDeviceId.get(i)+"");
             }
 
-            String verifDispo = Client.sendBd("requestLocation3");
-            if(verifDispo.contains(",")){
-                String[] value = verifDispo.split(",");
+            String verifyDispo = Client.sendBd("requestLocation3");
+            if(verifyDispo.contains(",")){
+                String[] value = verifyDispo.split(",");
                 //List deviceIdInRoom = new ArrayList();
                 if(value.length == Integer.parseInt(str)){
                     stockDevice(value,deviceIdInRoom, text,str,messageError, price);
@@ -399,12 +394,8 @@ public class ChoiceDevice {
         valuePrice = Float.parseFloat(deviceIdInRoom.size()+"") * Float.parseFloat(price);
         if(config.containsKey("price")){
             valuePrice = valuePrice + Float.parseFloat(config.get("price"));
-            System.out.println("///////////////////");
-            System.out.println(valuePrice);
-            System.out.println("///////////////////");
             config.put("price", valuePrice+"");
         } else config.put("price", valuePrice+"");
-
         messageError.setText(" ");
     }
 }
