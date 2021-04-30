@@ -25,18 +25,30 @@ public class Ihm extends JFrame{
         pageBody1 = reservation.realizeReservation();
 
         Mapping m = new Mapping();
-        pageBody2 = m.mappingPanel();
+        pageBody2 = m.getPanel();
+
+        Indicators indicator = new Indicators();
+        pageBody3 = indicator.getIndicator();
+
+
+
 
         if(page.equals("realize")){
             pageBody.add(pageBody1,"realize");
             pageBody.add(pageBody2,"consult");
+            pageBody.add(pageBody3,"indicator");
             //pageBody.add(pageBody3,"staff");
             //pageBody.add(pageBody1,"page1");
         } else if(page.equals("consult")){
             pageBody.add(pageBody2,"consult");
             pageBody.add(pageBody1,"realize");
-            //pageBody.add(pageBody3,"staff");
-            //pageBody.add(pageBody1,"page1");
+            pageBody.add(pageBody3,"indicator");
+
+        }
+        else if(page.equals("indicator")){
+            pageBody.add(pageBody3,"indicator");
+            pageBody.add(pageBody2,"consult");
+            pageBody.add(pageBody1,"realize");
         }
 
 
@@ -84,6 +96,16 @@ public class Ihm extends JFrame{
                 pages.show(pageBody,"window");
             }
         });
+        JButton indicatorButton = new JButton("Indicateurs et locations");
+        indicatorButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                pages.show(pageBody,"indicator");
+            }
+        });
+        sizeComposant(new Dimension(Integer.MAX_VALUE, 75), indicatorButton);
+        setColor(consult,Color.white,new Color(0, 102,204));
+
         sizeComposant(new Dimension(Integer.MAX_VALUE, 75), staff);
         setColor(configWindow,Color.white,new Color(0, 102,204));
 
@@ -124,6 +146,7 @@ public class Ihm extends JFrame{
         menu.add(realize);
         menu.add(consult);
         menu.add(staff);
+        menu.add(indicatorButton);
         menu.add(Box.createGlue());
         menu.add(underMenu);
 

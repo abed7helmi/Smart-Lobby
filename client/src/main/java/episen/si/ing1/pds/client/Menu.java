@@ -29,6 +29,10 @@ public class Menu extends JFrame{
 
         JButton staff = new JButton("Personnel");
         menuJButton(staff,150,260,200,50, "staff");
+
+        JButton indicator = new JButton("Indicateurs - locations");
+        menuJButton(indicator,150,310,200,50, "indicator");
+
         setVisible(true);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

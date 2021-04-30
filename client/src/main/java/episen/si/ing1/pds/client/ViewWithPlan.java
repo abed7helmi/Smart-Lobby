@@ -1,28 +1,27 @@
 package episen.si.ing1.pds.client;
 
-
 import javax.swing.*;
-
-
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-
+import java.util.List;
 
 public class ViewWithPlan {
-    private String page = "device";
+    private final String page = "device";
     private final JFrame frame;
     private Map<String , String> input = new HashMap<>();
     private JPanel pageBody;
     private String order;
     private String floorNumber;
-    private JPanel configButton = new JPanel();
-    private Map<JButton, String> listButton = new HashMap<>();
+    private final JPanel configButton = new JPanel();
+    private final Map<JButton, String> listButton = new HashMap<>();
     private Map<String ,Map<String,String>> proposalSelected = new HashMap<>();
     private Map<String,Map<String, String>> configRoom = new HashMap<>();
-
+    private List listDeviceId = new ArrayList();
+    private Map<String, String> listDeviceIdRoom = new HashMap<>();
 
     public ViewWithPlan(JFrame frame, Map<String, String> input){
         this.frame = frame;
@@ -122,12 +121,14 @@ public class ViewWithPlan {
         configButton.add(room);
     }
     public void changePage(JPanel view, JButton room, Map<JButton, String> listButton, String room_id){
-        ChoiceDevice device = new ChoiceDevice(frame, input,room_id, configRoom, proposalSelected);
+        ChoiceDevice device = new ChoiceDevice(frame, input,room_id, configRoom, proposalSelected, listDeviceId, listDeviceIdRoom);
         device.choice(pageBody, view, room, listButton);
     }
-    public void back(JPanel oldView, JPanel pb, JButton room, Map<JButton, String> list, Map<String, Map<String, String>> configurationRoom , Map<String, Map<String, String>> ps){
+    public void back(JPanel oldView, JPanel pb, JButton room, Map<JButton, String> list, Map<String, Map<String, String>> configurationRoom , Map<String, Map<String, String>> ps, List lDI,Map<String, String> listIdRoom ){
         configRoom = configurationRoom;
         proposalSelected = ps;
+        listDeviceId = lDI;
+        listDeviceIdRoom = listIdRoom;
         this.pageBody = pb;
         boolean verifContinue = true;
         for(Map.Entry map : list.entrySet()){
@@ -145,7 +146,7 @@ public class ViewWithPlan {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     oldView.setVisible(false);
-                    Bill bill = new Bill(input, frame, input, proposalSelected, configRoom);
+                    Bill bill = new Bill(input, frame, proposalSelected, configRoom, listDeviceIdRoom);
                     bill.confirmation(pageBody);
                 }
             });

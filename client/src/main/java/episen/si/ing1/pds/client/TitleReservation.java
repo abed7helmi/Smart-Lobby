@@ -20,12 +20,10 @@ public class TitleReservation {
         title.setEditable(false);
         title.setBounds(500, 0, 420, 75);
 
-        //titlePage.add(flecheBack);
         titlePage.add(title);
 
         return titlePage;
     }
-
     public void sizeComposant(Dimension dim, Component c){
         c.setPreferredSize(dim);
         c.setMaximumSize(dim);

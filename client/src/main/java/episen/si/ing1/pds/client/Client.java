@@ -33,25 +33,25 @@ public class Client {
 	private static final String episenClientJson = "CLIENT_JSON";
 	private static String episenClientFileLocation;
 	private static final String configClient = "CONFIG_CLIENT";
-    private static String episenClientConfig;
-    private static ClientConfig config;
-    public static Map<String, Map<String, String>> map;
-	
+	private static String episenClientConfig;
+	private static ClientConfig config;
+	public static Map<String, Map<String, String>> map;
+
 	public static void main(String[] args) {
 		try {
 			final Options options = new Options();
 			final Option requesttype = Option.builder().longOpt("requesttype").hasArg().argName("requesttype").build();
 			options.addOption(requesttype);
-			
+
 			final CommandLineParser clp = new DefaultParser();
 			final CommandLine commandLine = clp.parse(options, args);
-			
+
 			Properties props = new Properties();
 			props.load(Thread.currentThread().getContextClassLoader().getResourceAsStream("connection.properties"));
 
 			//Ihm ihm = new Ihm("Smart Lobby");
 			HomePage homePage = new HomePage();
-			
+
 			//String requestType = commandLine.getOptionValue("requesttype");
 
 			episenClientFileLocation = System.getenv(episenClientJson);
@@ -61,7 +61,7 @@ public class Client {
 			map = mapper.readValue(values,
 					new TypeReference<Map<String, Map<String, String>>>() {});
 
-			
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (ParseException e) {

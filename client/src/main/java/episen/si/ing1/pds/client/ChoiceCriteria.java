@@ -12,19 +12,19 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ChoiceCriteria{
-    private Map<String, String> input = new HashMap<>();
+    private final Map<String, String> input = new HashMap<>();
     private final String page = "criteria";
-    private JButton buttonContinue = new JButton("> Continuer");
-    private JFrame frame;
+    private final JButton buttonContinue = new JButton("> Continuer");
+    private final JFrame frame;
     private JCheckBox checkBoxOpenSpace = new JCheckBox();
     private JCheckBox checkBoxMeetingRoom = new JCheckBox();
     private JCheckBox checkBoxClosedOffice = new JCheckBox();
     private JCheckBox checkBoxSingleOffice = new JCheckBox();
-    private JTextField valueOpenSpace = new JTextField();
-    private JTextField valueClosedOffice = new JTextField();
-    private JTextField valueMeetingRoom = new JTextField();
-    private JTextField valueSingleOffice = new JTextField();
-    private JPanel pageBody = new JPanel();
+    private final JTextField valueOpenSpace = new JTextField();
+    private final JTextField valueClosedOffice = new JTextField();
+    private final JTextField valueMeetingRoom = new JTextField();
+    private final JTextField valueSingleOffice = new JTextField();
+    private final JPanel pageBody = new JPanel();
     private String company_id = "";
 
     public ChoiceCriteria(JFrame f,String id)  {
@@ -56,35 +56,35 @@ public class ChoiceCriteria{
             @Override
             public void actionPerformed(ActionEvent e) {
                 boolean changeValue = false;
-                boolean verifOpenSpace = input.containsKey("numberOpenSpace");
-                boolean verifClosedOffice = input.containsKey("numberClosedOffice");
-                boolean verifSingleOffice = input.containsKey("numberSingleOffice");
-                boolean verifMeetingRoom = input.containsKey("numberMeetingRoom");
+                boolean verifyOpenSpace = input.containsKey("numberOpenSpace");
+                boolean verifyClosedOffice = input.containsKey("numberClosedOffice");
+                boolean verifySingleOffice = input.containsKey("numberSingleOffice");
+                boolean verifyMeetingRoom = input.containsKey("numberMeetingRoom");
                 String sauvOpenSpace = "", sauvClosedOffice = "";
-                if(!verifOpenSpace) input.put("numberOpenSpace", "0");
+                if(!verifyOpenSpace) input.put("numberOpenSpace", "0");
                 else {
                     sauvOpenSpace = input.get("numberOpenSpace");
                 }
-                if(!verifClosedOffice) input.put("numberClosedOffice", "0");
+                if(!verifyClosedOffice) input.put("numberClosedOffice", "0");
                 else {
                     sauvClosedOffice = input.get("numberClosedOffice");
                 }
-                if(!verifSingleOffice) input.put("numberSingleOffice", "0");
-                if(!verifMeetingRoom) input.put("numberMeetingRoom", "0");
+                if(!verifySingleOffice) input.put("numberSingleOffice", "0");
+                if(!verifyMeetingRoom) input.put("numberMeetingRoom", "0");
 
 
                 int nbrEmployee = Integer.parseInt(input.get("numberEmployee"));
                 int somme = (Integer.parseInt(input.get("numberOpenSpace")) * 50) + (Integer.parseInt(input.get("numberClosedOffice")) * 20)
                         + (Integer.parseInt(input.get("numberSingleOffice")));
 
-                if( somme + 50 < Integer.parseInt(input.get("numberEmployee"))) {
+                if( somme + 50 < nbrEmployee) {
                     int newValue = ((Integer.parseInt(input.get("numberEmployee")) - somme) / 50) + 1 + (Integer.parseInt(input.get("numberOpenSpace")));
                     input.replace("numberOpenSpace", newValue+"");
                     changeValue = true;
-                } else if(  somme + 20 < Integer.parseInt(input.get("numberEmployee"))) {
+                } else if(  somme + 20 < nbrEmployee) {
                     input.replace("numberOpenSpace", Integer.parseInt(input.get("numberOpenSpace")) + 1+"" );
                     changeValue = true;
-                } else if( somme < Integer.parseInt(input.get("numberEmployee"))){
+                } else if( somme < nbrEmployee){
                     int newValue = ((Integer.parseInt(input.get("numberEmployee")) - somme) / 20) + 1 +  (Integer.parseInt(input.get("numberClosedOffice")));
                     input.replace("numberClosedOffice", newValue+"");
                     changeValue = true;

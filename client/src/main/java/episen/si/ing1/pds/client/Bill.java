@@ -1,6 +1,5 @@
 package episen.si.ing1.pds.client;
 
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -12,17 +11,17 @@ public class Bill {
     private final String page = "bill";
     private Map<String, String> input = new HashMap<>();
     private JPanel pageBody;
-    private JFrame frame;
-    private Map<String , String> criteria = new HashMap<>();
+    private final JFrame frame;
     private Map<String, Map<String,String>> proposalSelected = new HashMap<>();
     private Map<String, Map<String, String>> configRooms = new HashMap<>();
+    private Map<String, String> listDeviceIdRoom = new HashMap<>();
 
-    public Bill(Map<String, String> in, JFrame f, Map<String , String> c,Map<String, Map<String,String>> p, Map<String, Map<String, String>> config)  {
+    public Bill(Map<String, String> in, JFrame f, Map<String, Map<String,String>> p, Map<String, Map<String, String>> config, Map<String ,String> listIdRoom)  {
         this.input = in;
         this.frame = f;
-        criteria = c;
         proposalSelected = p;
         configRooms = config;
+        listDeviceIdRoom = listIdRoom;
     }
 
     public void confirmation(JPanel pb){
@@ -50,14 +49,14 @@ public class Bill {
         validate.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                prepareRequest();
                 frame.dispose();
                 Menu menu = new Menu("Smart Lobby", input.get("company_id"));
             }
         });
 
         JPanel table = new JPanel(new BorderLayout());
-        table.setBounds(50,100,650,500);
-
+        table.setBounds(50,100,750,400);
 
         String[] columns = {"Salle", "Batiment","Etage","Configuration (Capteur/Equipement)"};
         String[][] dataTest = fillTable();
@@ -104,5 +103,32 @@ public class Bill {
             i++;
         }
         return data;
+    }
+
+    public void prepareRequest(){
+        Client.map.get("requestLocation5").put("company_id", input.get("company_id"));
+        String manager_id = Client.sendBd("requestLocation5");
+
+        Client.map.get("requestLocation4").put("end_date", input.get("end_date"));
+        Client.map.get("requestLocation4").put("start_date", input.get("start_date"));
+        float price = 0;
+        int i = 0;
+        for(Map<String, String> map : proposalSelected.values()){
+            price = price + Float.parseFloat(map.get("price"));
+            Client.map.get("requestLocation4").put("room"+i, map.get("room_id"));
+            i++;
+        }//price of rooms
+        for(Map<String, String> map : configRooms.values()){
+            price = price + Float.parseFloat(map.get("price"));
+        }//price of device in room
+
+        Client.map.get("requestLocation4").put("price", price+"");
+        Client.map.get("requestLocation4").put("gs_manager_id", manager_id);
+
+        for(Map.Entry map : listDeviceIdRoom.entrySet()){
+            Client.map.get("requestLocation4").put(map.getKey()+"" , map.getValue()+"");
+        }
+        System.out.println(Client.map);
+        Client.sendBd("requestLocation4");
     }
 }
