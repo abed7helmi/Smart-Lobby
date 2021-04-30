@@ -51,12 +51,12 @@ public class AcceuilPersonnel {
 
                 String result = Client.sendBd("getpermissions");
                 String company = result.split(",")[0];
-                System.out.println(result);
-                System.out.println(company);
+                //System.out.println(result);
+               // System.out.println(company);
                 choice.setVisible(false);
 
                 pageBody.repaint();
-                changePage();
+                changePageNewBadge(id_company,result);
             }
         });
 
@@ -117,8 +117,8 @@ public class AcceuilPersonnel {
         return choice;
     }
 
-    public void changePage(){
-        NewBadge Badge = new NewBadge(frame);
+    public void changePageNewBadge(String id,String permissions){
+        NewBadge Badge = new NewBadge(frame,id,permissions);
         Badge.choice(pageBody);
     }
 

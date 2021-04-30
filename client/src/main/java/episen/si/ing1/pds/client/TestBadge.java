@@ -58,18 +58,18 @@ public class TestBadge {
 
 
         String[] value = devices.split("#");
-        System.out.println("sa7ayt;");
-        System.out.println(value[0]);
+        //System.out.println("sa7ayt;");
+        //System.out.println(value[0]);
 
         for(int i = 0; i< value.length; i++){
             listEquipment.add(value[i]);
         }
 
-        //String[] devices = {"Fenetre X45","PC 48","Capteur 45"};
+
 
         equipementArray = new String[listEquipment.size()];
         equipementArray = listEquipment.toArray(equipementArray);
-        System.out.println(equipementArray[0]);
+        //System.out.println(equipementArray[0]);
         JComboBox mydevice = new JComboBox(equipementArray);
         mydevice.setEditable(true);
         mydevice.setBounds(570,220, 320, 20);

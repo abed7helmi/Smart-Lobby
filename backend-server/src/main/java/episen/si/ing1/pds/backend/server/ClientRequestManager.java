@@ -8,6 +8,8 @@ import java.net.Socket;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -251,14 +253,26 @@ public class ClientRequestManager {
 
 
 	public void SaveBadge(String values){
-		logger.debug("bravo2");
+		logger.debug("bravo : test save");
 		try {
 			ObjectMapper mapper = new ObjectMapper(new JsonFactory());
 			Map<String, Map<String, String>> map = mapper.readValue(values,
 					new TypeReference<Map<String, Map<String, String>>>() {
 					});
+			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+			String name1 =map.get("requestNewBadge").get("nomemploye");
+			String name2=map.get("requestNewBadge").get("prenomemploye");
+			Date datecontract = dateFormat.parse(map.get("requestNewBadge").get("contract_date"));
+			int id_company=Integer.parseInt(map.get("requestNewBadge").get("company_id"));
+			//System.out.println(name1);System.out.println(name2);System.out.println(datecontract);System.out.println(id_company);
 
-			ResultSet result = c.createStatement().executeQuery("insert into test (name,age) values ('ABEDwaw',13) ;");
+
+			c.createStatement().executeQuery("insert into employee (employee_last_name,employee_first_name,company_id,contract_duration) values ('"+name1+"','"+name2+"','"+id_company+"','"+datecontract +"') ;");
+			ResultSet lastemployee = c.createStatement().executeQuery("select employee.employee_id from employee order by employee.employee_id DESC LIMIT 1; ");
+			int id=lastemployee.getInt(1);
+			System.out.println("genius");
+			System.out.println(id);
+
 			output.println("good");
 		}catch (Exception e){
 			output.println("notgood");
@@ -310,13 +324,13 @@ public class ClientRequestManager {
 					new TypeReference<Map<String, Map<String, String>>>() {
 					});
 			//int company = Integer.parseInt(map.get("getpermissions").get("company_id"));
-			ResultSet result = c.createStatement().executeQuery("select * from permission_badge "+
+			ResultSet result = c.createStatement().executeQuery("select permission_badge.permission_id,permission_badge.name_permission from permission_badge "+
 					"where company_id='" +
 					Integer.parseInt(map.get("getpermissions").get("company_id"))+"';");
 			StringBuilder sb = new StringBuilder();
 			while (result.next()) {
 
-				sb.append("permission_id=" + result.getInt(1) + ",name_permission=" + result.getString(2) + ",company_id=" + result.getInt(3) +"|");
+				sb.append("ID Permission:" + result.getInt(1) + ",Nom Permission:" + result.getString(2) +"#");
 			}
 
 			output.println(sb.toString());

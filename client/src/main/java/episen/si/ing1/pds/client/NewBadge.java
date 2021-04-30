@@ -8,20 +8,26 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.List;
 
 public class NewBadge {
     private Map<String, String> input = new HashMap<>();
     private JFrame frame;
     private JPanel pageBody;
     private JPanel view;
+    private List<String> listPermissions = new ArrayList<>();
+    private String[] permissionsArray;
+    private String allpermissions;
+    private String idcompany;
 
 
-    public NewBadge(JFrame f){
+    public NewBadge(JFrame f,String i,String r){
         input.clear();
+
         this.frame = f;
+        this.idcompany=i;
+        this.allpermissions=r;
 
     }
 
@@ -60,13 +66,31 @@ public class NewBadge {
 
 
         JTextField permissionEmploye = new JTextField("Selectionnez Droits :");
-        permissionEmploye = styleJTextFieldBadge(permissionEmploye, 40, 200, 120, 20);
+        permissionEmploye = styleJTextFieldBadge(permissionEmploye, 20, 200, 120, 20);
 
-        String[] permissions = {"Droit Access aux Fenetres","Droit Equipe Laurent","Droit access aux capteurs"};
-        JComboBox myPermissions = new JComboBox(permissions);
+        String[] value = allpermissions.split("#");
+        for(int i = 0; i< value.length; i++){
+            listPermissions.add(value[i]);
+        }
+
+
+
+        permissionsArray = new String[listPermissions.size()];
+        permissionsArray = listPermissions.toArray(permissionsArray);
+
+
+
+
+
+        //String[] permissions = {"Droit Access aux Fenetres","Droit Equipe Laurent","Droit access aux capteurs"};
+        JComboBox myPermissions = new JComboBox(permissionsArray);
         myPermissions.setEditable(true);
-        myPermissions.setBounds(200,200, 300, 20);
+        myPermissions.setBounds(160,200, 350, 20);
 
+        myPermissions.setEditable(false);
+        myPermissions.setForeground(Color.BLUE);
+        myPermissions.setFont(new Font("Arial", Font.BOLD, 9));
+        myPermissions.setMaximumRowCount(7);
 
         JButton showpermission = new JButton("Detail droits selectionné");
         JButton newpermission = new JButton("Nouveau Droits");
@@ -128,9 +152,24 @@ public class NewBadge {
                 Client.map.get(request).put("prenomemploye", input.get("prenomemploye"));
                 Client.map.get(request).put("puceemploye", input.get("puceemploye"));
                 Client.map.get(request).put("idagent", input.get("idagent"));
+                Client.map.get(request).put("permission", input.get("permission"));
+                Client.map.get(request).put("company_id",idcompany);
+
 
                 String result = Client.sendBd(request);
                 System.out.println("waaaw"+result);
+            }
+        });
+
+
+        myPermissions.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent event) {
+                JComboBox<String> combo = (JComboBox<String>) event.getSource();
+                String selectedPermission = (String) combo.getSelectedItem();
+                input.put("permission", selectedPermission);
+
             }
         });
 
@@ -358,7 +397,7 @@ public class NewBadge {
 
         if((input.containsKey("contract_date") && input.containsKey("badge_date") &&
                 input.containsKey("puceemploye") && input.containsKey("prenomemploye") && input.containsKey("nomemploye")
-                && input.containsKey("idagent")))
+                && input.containsKey("idagent") && input.containsKey("permission")))
             return true;
         else return false;
 
