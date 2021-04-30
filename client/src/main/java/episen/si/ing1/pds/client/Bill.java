@@ -126,7 +126,7 @@ public class Bill {
         int i = 0;
         for(Map<String, String> map : proposalSelected.values()){
             price = price + Float.parseFloat(map.get("price"));
-            Client.map.get("requestLocation6").put("room"+i, map.get("room_id"));
+            Client.map.get("requestLocation4").put("room"+i, map.get("room_id"));
             i++;
         }//price of rooms
         for(Map<String, String> map : configRooms.values()){
@@ -137,14 +137,12 @@ public class Bill {
         Client.map.get("requestLocation4").put("gs_manager_id", manager_id);
 
         for(Map.Entry map : listDeviceIdRoom.entrySet()){
-            Client.map.get("requestLocation7").put(map.getKey()+"" , map.getValue()+"");
+            Client.map.get("requestLocation4").put(map.getKey()+"" , map.getValue()+"");
         }
 
         System.out.println(Client.map);
 
-        //Client.sendBd("requestLocation4");
-        //Client.sendBd("requestLocation6");
-        Client.sendBd("requestLocation7");
+        Client.sendBd("requestLocation4");
 
     }
 }

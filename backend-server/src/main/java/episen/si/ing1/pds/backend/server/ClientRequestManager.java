@@ -47,8 +47,6 @@ public class ClientRequestManager {
 					if(requestType.equals("requestLocation3")) getDisponibility(values);
 					if(requestType.equals("requestLocation5")) getManagerId(values);
 					if(requestType.equals("requestLocation4")) insertReservation(values);
-					if(requestType.equals("requestLocation6")) updateRoom(values);
-					if(requestType.equals("requestLocation7")) updateDevice(values);
 
 					/*switch (requestType) {
 					case "insert":
@@ -367,76 +365,58 @@ public class ClientRequestManager {
 			Map<String, Map<String, String>> map = mapper.readValue(values,
 					new TypeReference<Map<String, Map<String, String>>>() {
 					});
-			String request = "insert into reservation (end_date, start_date, price, gs_manager_id)"+
+			String requestInsert = "insert into reservation (end_date, start_date, price, gs_manager_id)"+
 					"values ('" + map.get("requestLocation4").get("end_date") + "', '"+ map.get("requestLocation4").get("start_date")+
 					"', '"+ map.get("requestLocation4").get("price") + "', '"+ map.get("requestLocation4").get("gs_manager_id")+ "');";
-			System.out.println(request);
-			//ResultSet result = c.createStatement().executeQuery(request);
+			System.out.println(requestInsert);
 
-		}catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-	public void updateRoom(String values){
-		try {
-			ObjectMapper mapper = new ObjectMapper(new JsonFactory());
-			Map<String, Map<String, String>> map = mapper.readValue(values,
-					new TypeReference<Map<String, Map<String, String>>>() {
-					});
+
 			int i = 0;
-			String whereRequest = "where ";
-			if(map.get("requestLocation6").size() != 0){
-				for(Map.Entry m : map.get("requestLocation6").entrySet()) {
-					if (i == (map.get("requestLocation6").size() - 1)) whereRequest = whereRequest + " room_id = " + m.getValue() + ";";
-					else whereRequest = whereRequest + " room_id = " + m.getValue() + " or ";
-					i++;
+			String whereRequestUpdateRoom = "where ";
+			String requestUpdateDevice = "";
+			for(Map.Entry m : map.get("requestLocation4").entrySet()) {
+				if((m.getKey()+"").contains("room")){
+					whereRequestUpdateRoom = whereRequestUpdateRoom + " room_id = " + m.getValue() + " or ";
+				}
 
+				String key = (m.getKey()+"").trim();
+				if( key.matches("\\d+")  ){
+					String whereRequestUpdateDevice =" where";
+
+					System.out.println("clé: "+m.getKey()
+							+ " | valeur: " + m.getValue());
+
+					String deviceId = m.getValue()+"";
+					deviceId = deviceId.replace("[", "");
+					deviceId = deviceId.replace("]","");
+
+					String[] listDeviceId = deviceId.split(",");
+					System.out.println(listDeviceId);
+					for(int y = 0; y < listDeviceId.length; y++){
+						if(y == (listDeviceId.length - 1))  whereRequestUpdateDevice = whereRequestUpdateDevice + " device_id = " + listDeviceId[y]+ ";";
+						else whereRequestUpdateDevice = whereRequestUpdateDevice + " device_id = " + listDeviceId[y]+ " or ";
+					}
+
+					requestUpdateDevice = requestUpdateDevice + " update device "+
+							"set device_status = 'booked', "+
+							"reservation_id = (select max(reservation_id) from reservation), "+
+							" room_id = " + m.getKey()+ " "+ whereRequestUpdateDevice;
 				}
 			}
-			String request = "update room "+
+			StringBuffer correctWhere = new StringBuffer(whereRequestUpdateRoom);
+			correctWhere.delete(correctWhere.length() - 4, correctWhere.length());
+			correctWhere.append(";");
+
+			String requestUpdateRoom = "update room "+
 					"set status = 'booked', "+
-					"    reservation_id = (select max(reservation_id) from reservation)"+ whereRequest;
-			System.out.println(request);
-			//ResultSet result = c.createStatement().executeQuery(request);
+					"    reservation_id = (select max(reservation_id) from reservation)"+ correctWhere;
 
-		}catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-	public void updateDevice(String values){
-		try {
-			ObjectMapper mapper = new ObjectMapper(new JsonFactory());
-			Map<String, Map<String, String>> map = mapper.readValue(values,
-					new TypeReference<Map<String, Map<String, String>>>() {
-					});
-
-			String request = "";
-			for(Map.Entry m : map.get("requestLocation7").entrySet()){
-				String whereRequest =" where";
-
-				System.out.println("clé: "+m.getKey()
-						+ " | valeur: " + m.getValue());
-
-				String deviceId = m.getValue()+"";
-				deviceId = deviceId.replace("[", "");
-				deviceId = deviceId.replace("]","");
-
-				String[] listDeviceId = deviceId.split(",");
-				System.out.println(listDeviceId);
-				for(int i = 0; i < listDeviceId.length; i++){
-					if(i == (listDeviceId.length - 1))  whereRequest = whereRequest + " device_id = " + listDeviceId[i]+ ";";
-					else whereRequest = whereRequest + " device_id = " + listDeviceId[i]+ " or ";
-				}
-
-				request = request + " update device "+
-						"set device_status = 'booked', "+
-						"reservation_id = (select max(reservation_id) from reservation), "+
-						" room_id = " + m.getKey()+ " "+ whereRequest;
-			}
+			System.out.println(requestUpdateRoom);
+			System.out.println(requestUpdateDevice);
 
 
-			System.out.println(request);
-			//ResultSet result = c.createStatement().executeQuery(request);
+
+
 
 		}catch (Exception e) {
 			e.printStackTrace();
