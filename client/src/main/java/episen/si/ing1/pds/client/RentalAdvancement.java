@@ -24,12 +24,11 @@ public class RentalAdvancement {
         Dimension dimAdvancement = new Dimension(950, 70);
         sizeComposant(dimAdvancement, rentalAdvancement);
         rentalAdvancement.setBackground(Color.WHITE);
-        rentalAdvancement.setBorder(BorderFactory.createMatteBorder(0,0,2,0, Color.BLACK));
+        rentalAdvancement.setBorder(BorderFactory.createMatteBorder(0,0,1,0, Color.BLACK));
 
         JTextField criteria= new JTextField("Criteres", 5);
         criteria.setEditable(false);
         criteria.setOpaque(false);
-
 
         criteria.setBorder(BorderFactory.createEmptyBorder(10,20,10,0));
         JTextField choiceField = new JTextField("Choix",5);
@@ -70,14 +69,12 @@ public class RentalAdvancement {
 
         return rentalAdvancement;
     }
-
     public JLabel fleche(){
         ImageIcon iconAdvancement = new ImageIcon(new ImageIcon("C:\\Users\\cedri\\Bureau\\pds\\image\\flecheAdvancement.png")
                 .getImage().getScaledInstance(50,30,Image.SCALE_DEFAULT));
         JLabel flecheAdvancement = new JLabel(iconAdvancement,JLabel.CENTER);
         return flecheAdvancement;
     }
-
     public void sizeComposant(Dimension dim, Component c){
         c.setPreferredSize(dim);
         c.setMaximumSize(dim);

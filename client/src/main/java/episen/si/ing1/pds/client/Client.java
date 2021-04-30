@@ -25,7 +25,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
-import javax.swing.*;
 
 public class Client {
 
@@ -34,26 +33,25 @@ public class Client {
 	private static final String episenClientJson = "CLIENT_JSON";
 	private static String episenClientFileLocation;
 	private static final String configClient = "CONFIG_CLIENT";
-    private static String episenClientConfig;
-    private static ClientConfig config;
-    public static Map<String, Map<String, String>> map;
-	
+	private static String episenClientConfig;
+	private static ClientConfig config;
+	public static Map<String, Map<String, String>> map;
+
 	public static void main(String[] args) {
-		//Ihm window = new Ihm("Smart Lobby");
 		try {
 			final Options options = new Options();
 			final Option requesttype = Option.builder().longOpt("requesttype").hasArg().argName("requesttype").build();
 			options.addOption(requesttype);
-			
+
 			final CommandLineParser clp = new DefaultParser();
 			final CommandLine commandLine = clp.parse(options, args);
-			
+
 			Properties props = new Properties();
 			props.load(Thread.currentThread().getContextClassLoader().getResourceAsStream("connection.properties"));
 
+			//Ihm ihm = new Ihm("Smart Lobby");
+			HomePage homePage = new HomePage();
 
-			Ihm window = new Ihm("Smart Lobby");
-			
 			//String requestType = commandLine.getOptionValue("requesttype");
 
 			episenClientFileLocation = System.getenv(episenClientJson);
@@ -63,19 +61,19 @@ public class Client {
 			map = mapper.readValue(values,
 					new TypeReference<Map<String, Map<String, String>>>() {});
 
-			
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
 	}
-
-	public static void sendBd(String request){
+	public static String sendBd(String request){
 		try{
 			ObjectMapper objectMapper = new ObjectMapper();
 			String data = objectMapper.writeValueAsString(map);
 
+			System.out.println(request+"#"+data);
 
 			episenClientConfig = System.getenv(configClient);
 			final ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
@@ -87,10 +85,10 @@ public class Client {
 			BufferedReader input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
 			output.println(request+"#"+data);
-			System.out.println(input.readLine());
-
+			return input.readLine();
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
+		return "";
 	}
 }

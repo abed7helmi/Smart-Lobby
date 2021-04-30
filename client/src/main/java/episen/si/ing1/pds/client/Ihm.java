@@ -13,28 +13,44 @@ public class Ihm extends JFrame{
     private JPanel pageBody2 ;
     private JPanel pageBody3 ;
     private JPanel pageBody4 ;
+    private String company_id ="";
 
-    public Ihm(String name) {
-        //HomePage home = new HomePage(this);
-        //home.firstPage();
+    public Ihm(String name, String page, String id) {
+        company_id = id;
         frame = this;
         CardLayout pages = new CardLayout();
+
         pageBody.setLayout(pages);
-
-
-        ChoiceCriteria reservation = new ChoiceCriteria(frame);
+        ChoiceCriteria reservation = new ChoiceCriteria(frame, company_id);
         pageBody1 = reservation.realizeReservation();
 
         Mapping m = new Mapping();
-        pageBody2 = m.mappingPanel();
+        pageBody2 = m.getPanel();
 
-        Window window=new Window();
-        pageBody3=window.firstMenu;
+        Indicators indicator = new Indicators();
+        pageBody3 = indicator.getIndicator();
 
-        pageBody.add(pageBody1,"realize");
-        pageBody.add(pageBody2,"consult");
-        pageBody.add(pageBody3,"window");
-        //pageBody.add(pageBody1,"page1");
+
+
+
+        if(page.equals("realize")){
+            pageBody.add(pageBody1,"realize");
+            pageBody.add(pageBody2,"consult");
+            pageBody.add(pageBody3,"indicator");
+            //pageBody.add(pageBody3,"staff");
+            //pageBody.add(pageBody1,"page1");
+        } else if(page.equals("consult")){
+            pageBody.add(pageBody2,"consult");
+            pageBody.add(pageBody1,"realize");
+            pageBody.add(pageBody3,"indicator");
+
+        }
+        else if(page.equals("indicator")){
+            pageBody.add(pageBody3,"indicator");
+            pageBody.add(pageBody2,"consult");
+            pageBody.add(pageBody1,"realize");
+        }
+
 
         frame.add(pageBody, BorderLayout.CENTER);
 
@@ -51,18 +67,17 @@ public class Ihm extends JFrame{
         });
 
         sizeComposant(new Dimension(Integer.MAX_VALUE, 75), realize);
-        realize.setBackground(Color.CYAN);
+        setColor(realize,Color.white,new Color(0, 102,204));
 
         JButton consult = new JButton("Consulter une location");
         consult.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 pages.show(pageBody,"consult");
-
             }
         });
         sizeComposant(new Dimension(Integer.MAX_VALUE, 75), consult);
-        consult.setBackground(Color.CYAN);
+        setColor(consult,Color.white,new Color(0, 102,204));
 
         JButton staff = new JButton("Personnel");
         staff.addActionListener(new ActionListener() {
@@ -72,22 +87,31 @@ public class Ihm extends JFrame{
             }
         });
         sizeComposant(new Dimension(Integer.MAX_VALUE, 75), staff);
-        staff.setBackground(Color.CYAN);
+        setColor(staff,Color.white,new Color(0, 102,204));
 
         JButton configWindow = new JButton("Configurer fenêtre");
-        configWindow.addActionListener(new ActionListener() {
+        staff.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
                 pages.show(pageBody,"window");
             }
         });
-        sizeComposant(new Dimension(Integer.MAX_VALUE, 75), configWindow);
-        configWindow.setBackground(Color.CYAN);
+        JButton indicatorButton = new JButton("Indicateurs et locations");
+        indicatorButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                pages.show(pageBody,"indicator");
+            }
+        });
+        sizeComposant(new Dimension(Integer.MAX_VALUE, 75), indicatorButton);
+        setColor(consult,Color.white,new Color(0, 102,204));
+
+        sizeComposant(new Dimension(Integer.MAX_VALUE, 75), staff);
+        setColor(configWindow,Color.white,new Color(0, 102,204));
 
         JPanel underMenu = new JPanel(new FlowLayout(FlowLayout.LEFT));
         underMenu.setMaximumSize(new Dimension(Integer.MAX_VALUE, 100));
-        underMenu.setBackground(Color.CYAN);
+        underMenu.setBackground(new Color(0, 102,204));
 
         JButton disconnect = new JButton("Deconnecter");
         disconnect.addActionListener(new ActionListener() {
@@ -97,7 +121,7 @@ public class Ihm extends JFrame{
             }
         });
         disconnect.setMaximumSize(new Dimension(100, 100));
-        disconnect.setBackground(Color.CYAN);
+        setColor(disconnect,Color.white,new Color(0, 102,204));
 
         ImageIcon iconHome = new ImageIcon(new ImageIcon("C:\\Users\\cedri\\Bureau\\pds\\image\\maison.png").getImage().getScaledInstance(18,18,Image.SCALE_DEFAULT));
         JButton home = new JButton(iconHome);
@@ -105,7 +129,7 @@ public class Ihm extends JFrame{
             @Override
             public void actionPerformed(ActionEvent e) {}
         });
-        home.setBackground(Color.CYAN);
+        setColor(home,Color.white,new Color(0, 102,204));
 
         ImageIcon iconRefresh = new ImageIcon(new ImageIcon("C:\\Users\\cedri\\Bureau\\pds\\image\\actualiser.png").getImage().getScaledInstance(18,18,Image.SCALE_DEFAULT));
         JButton refresh = new JButton(iconRefresh);
@@ -113,7 +137,7 @@ public class Ihm extends JFrame{
             @Override
             public void actionPerformed(ActionEvent e) {}
         });
-        refresh.setBackground(Color.CYAN);
+        setColor(refresh,Color.white,new Color(0, 102,204));
 
         underMenu.add(disconnect);
         underMenu.add(home);
@@ -121,12 +145,12 @@ public class Ihm extends JFrame{
 
         menu.add(realize);
         menu.add(consult);
-        menu.add(configWindow);
         menu.add(staff);
+        menu.add(indicatorButton);
         menu.add(Box.createGlue());
         menu.add(underMenu);
 
-        menu.setBackground(Color.CYAN);
+        menu.setBackground(new Color(0, 102,204));
         menu.setPreferredSize(new Dimension(250, 800));
 
         frame.add(menu , BorderLayout.WEST);
@@ -134,92 +158,16 @@ public class Ihm extends JFrame{
         frame.setVisible(true);
         frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setResizable(false);
     }
-
-    /*public JPanel menu(){
-        JPanel menu = new JPanel();
-        menu.setLayout(new BoxLayout(menu, BoxLayout.Y_AXIS));
-        menu.add(Box.createVerticalStrut(100));
-
-        JButton realize = new JButton("Realiser une location");
-        realize.addActionListener(test);
-
-        sizeComposant(new Dimension(Integer.MAX_VALUE, 75), realize);
-        realize.setBackground(Color.CYAN);
-
-        JButton consult = new JButton("Consulter une location");
-        consult.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {}
-        });
-        sizeComposant(new Dimension(Integer.MAX_VALUE, 75), consult);
-        consult.setBackground(Color.CYAN);
-
-        JButton staff = new JButton("Personnel");
-        staff.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {}
-        });
-        sizeComposant(new Dimension(Integer.MAX_VALUE, 75), staff);
-        staff.setBackground(Color.CYAN);
-
-        JButton configWindow = new JButton("Configurer fenêtre");
-        staff.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {}
-        });
-        sizeComposant(new Dimension(Integer.MAX_VALUE, 75), staff);
-        configWindow.setBackground(Color.CYAN);
-
-
-
-        JPanel underMenu = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        underMenu.setMaximumSize(new Dimension(Integer.MAX_VALUE, 100));
-        underMenu.setBackground(Color.CYAN);
-
-        JButton disconnect = new JButton("Deconnecter");
-        disconnect.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {}
-        });
-        disconnect.setMaximumSize(new Dimension(100, 100));
-        disconnect.setBackground(Color.CYAN);
-
-        ImageIcon iconHome = new ImageIcon(new ImageIcon("C:\\Users\\cedri\\Bureau\\pds\\image\\maison.png").getImage().getScaledInstance(18,18,Image.SCALE_DEFAULT));
-        JButton home = new JButton(iconHome);
-        home.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {}
-        });
-        home.setBackground(Color.CYAN);
-
-        ImageIcon iconRefresh = new ImageIcon(new ImageIcon("C:\\Users\\cedri\\Bureau\\pds\\image\\actualiser.png").getImage().getScaledInstance(18,18,Image.SCALE_DEFAULT));
-        JButton refresh = new JButton(iconRefresh);
-        refresh.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {}
-        });
-        refresh.setBackground(Color.CYAN);
-
-        underMenu.add(disconnect);
-        underMenu.add(home);
-        underMenu.add(refresh);
-
-        menu.add(realize);
-        menu.add(consult);
-        menu.add(staff);
-        menu.add(Box.createGlue());
-        menu.add(underMenu);
-
-        menu.setBackground(Color.CYAN);
-        menu.setPreferredSize(new Dimension(250, 800));
-
-        return menu;
-    }*/
 
     public void sizeComposant(Dimension dim, Component c){
         c.setPreferredSize(dim);
         c.setMaximumSize(dim);
         c.setMinimumSize(dim);
+    }
+    public void setColor(JButton button,Color font, Color back){
+        button.setForeground(font);
+        button.setBackground(back);
     }
 }
