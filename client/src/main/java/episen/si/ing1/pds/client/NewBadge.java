@@ -79,6 +79,8 @@ public class NewBadge {
         JLabel BadgeLabel = new JLabel("Badge : ");
         BadgeLabel = styleJLabelBadge(BadgeLabel, 20, 300,200,20);
 
+        JTextField Idagent = new JTextField("ID agent :");
+        Idagent = styleJTextFieldBadge(Idagent, 40, 350, 100, 20);
 
         JTextField PuceLabel = new JTextField("Puce :");
         PuceLabel = styleJTextFieldBadge(PuceLabel, 300, 350, 50, 20);
@@ -91,6 +93,9 @@ public class NewBadge {
 
         JTextField valuedatebadge = new JTextField(" ");
         valuedatebadge.setBounds(650, 350, 100, 20);
+
+        JTextField valueidagent = new JTextField(" ");
+        valueidagent.setBounds(130, 350, 100, 20);
 
 
         JButton confirm = new JButton("Confirmer");
@@ -110,6 +115,22 @@ public class NewBadge {
 
                 pageBody.repaint();
                 changePage();
+            }
+        });
+
+        confirm.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String request = "requestNewBadge";
+                Client.map.get(request).put("contract_date", input.get("contract_date"));
+                Client.map.get(request).put("badge_date", input.get("badge_date"));
+                Client.map.get(request).put("nomemploye", input.get("nomemploye"));
+                Client.map.get(request).put("prenomemploye", input.get("prenomemploye"));
+                Client.map.get(request).put("puceemploye", input.get("puceemploye"));
+                Client.map.get(request).put("idagent", input.get("idagent"));
+
+                String result = Client.sendBd(request);
+                System.out.println("waaaw"+result);
             }
         });
 
@@ -140,7 +161,7 @@ public class NewBadge {
                                 input.put("contract_date", ((JTextField)source).getText().trim());
                             ((JTextField)view.getComponentAt(740, 60)).setText(" ");
                             if(verifMap()) confirm.setEnabled(true);
-                            System.out.println(input);
+                            //System.out.println(input);
                         } else {
                             //messageErrorStartDate.setVisible(true);
                             messageErrorStartDate.setText("Veuillez rentrer une date valide");
@@ -171,7 +192,7 @@ public class NewBadge {
                             else input.put("badge_date", ((JTextField)source).getText().trim());
                             messageErrorEndDate.setText(" ");
                             if(verifMap()) confirm.setEnabled(true);
-                            System.out.println(input);
+                            //System.out.println(input);
                         } else {
                             messageErrorEndDate.setText("Veuillez rentrer une date valide");
                             messageErrorEndDate.setForeground(Color.red);
@@ -181,6 +202,29 @@ public class NewBadge {
                     messageErrorEndDate.setText("Veuillez respecter le format");
                     messageErrorEndDate.setForeground(Color.red);
                 }
+            }
+        });
+
+
+
+        JTextField messageErrorIdAgent = styleJTextFieldError(view,130, 325, 100, 20);
+        valueidagent.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {}
+            @Override
+            public void focusLost(FocusEvent e) {
+                Object source = e.getSource();
+                String m = (((JTextField)source).getText()).trim();
+
+                if (m.matches("[1-9]+")) {
+                    input.put("idagent", ((JTextField) source).getText().trim());
+                    messageErrorIdAgent.setText(" ");
+                    if (verifMap()) confirm.setEnabled(true);
+                } else {
+                    messageErrorIdAgent.setText("X");
+                    messageErrorIdAgent.setForeground(Color.red);
+                }
+
             }
         });
 
@@ -272,6 +316,8 @@ public class NewBadge {
         view.add(valuedatebadge);
         view.add(confirm);
         view.add(cancel);
+        view.add(valueidagent);
+        view.add(Idagent);
 
 
         pageBody.add(view, BorderLayout.SOUTH);
@@ -288,7 +334,7 @@ public class NewBadge {
 
 
     public boolean verifMap(){
-        System.out.println(input);
+        //System.out.println(input);
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         try {
             Date contract_date = dateFormat.parse(input.get("contract_date"));
@@ -311,7 +357,8 @@ public class NewBadge {
 
 
         if((input.containsKey("contract_date") && input.containsKey("badge_date") &&
-                input.containsKey("puceemploye") && input.containsKey("prenomemploye") && input.containsKey("nomemploye")))
+                input.containsKey("puceemploye") && input.containsKey("prenomemploye") && input.containsKey("nomemploye")
+                && input.containsKey("idagent")))
             return true;
         else return false;
 

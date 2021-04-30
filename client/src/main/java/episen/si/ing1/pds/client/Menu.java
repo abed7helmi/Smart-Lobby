@@ -5,86 +5,43 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class Menu  {
+public class Menu extends JFrame{
+    private JFrame frame;
+    private String company_id = "";
 
-    public JPanel menu(){
+    public Menu(String name, String id){
+        company_id = id;
+        setTitle(name);
+        frame = this;
+        setSize(500, 500);
+        frame.setLayout(null);
 
-        JPanel menu = new JPanel();
-        menu.setLayout(new BoxLayout(menu, BoxLayout.Y_AXIS));
-        menu.add(Box.createVerticalStrut(100));
+        JTextField title = new JTextField("Menu");
+        title.setBounds(50, 50,  50, 50);
+        title.setEditable(false);
+        title.setBorder(BorderFactory.createLineBorder(Color.white));
 
-        JButton realize = new JButton("Realiser une location");
-        realize.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {}
-        });
-        sizeComposant(new Dimension(Integer.MAX_VALUE, 75), realize);
-        realize.setBackground(Color.CYAN);
+        JButton realizeLocation = new JButton("Realiser une location");
+        menuJButton(realizeLocation,150,160,200,50, "realize");
 
-        JButton consult = new JButton("Consulter une location");
-        consult.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {}
-        });
-        sizeComposant(new Dimension(Integer.MAX_VALUE, 75), consult);
-        consult.setBackground(Color.CYAN);
+        JButton consultLocation = new JButton("Consulter une location");
+        menuJButton(consultLocation,150,210,200,50, "consult");
 
         JButton staff = new JButton("Personnel");
-        staff.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {}
-        });
-        sizeComposant(new Dimension(Integer.MAX_VALUE, 75), staff);
-        staff.setBackground(Color.CYAN);
-
-        JPanel underMenu = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        underMenu.setMaximumSize(new Dimension(Integer.MAX_VALUE, 100));
-        underMenu.setBackground(Color.CYAN);
-
-        JButton disconnect = new JButton("Deconnecter");
-        disconnect.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {}
-        });
-        disconnect.setMaximumSize(new Dimension(100, 100));
-        disconnect.setBackground(Color.CYAN);
-
-        ImageIcon iconHome = new ImageIcon(new ImageIcon("C:\\Users\\Helmi\\Bureau\\PDS2\\images\\maison.png").getImage().getScaledInstance(18,18,Image.SCALE_DEFAULT));
-        JButton home = new JButton(iconHome);
-        home.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {}
-        });
-        home.setBackground(Color.CYAN);
-
-        ImageIcon iconRefresh = new ImageIcon(new ImageIcon("C:\\Users\\Helmi\\Bureau\\PDS2\\images\\actualiser.png").getImage().getScaledInstance(18,18,Image.SCALE_DEFAULT));
-        JButton refresh = new JButton(iconRefresh);
-        refresh.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {}
-        });
-        refresh.setBackground(Color.CYAN);
-
-        underMenu.add(disconnect);
-        underMenu.add(home);
-        underMenu.add(refresh);
-
-        menu.add(realize);
-        menu.add(consult);
-        menu.add(staff);
-        menu.add(Box.createGlue());
-        menu.add(underMenu);
-
-        menu.setBackground(Color.CYAN);
-        menu.setPreferredSize(new Dimension(250, 800));
-
-        return menu;
+        menuJButton(staff,150,260,200,50, "staff");
+        setVisible(true);
+        setLocationRelativeTo(null);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
-
-    public void sizeComposant(Dimension dim, Component c){
-        c.setPreferredSize(dim);
-        c.setMaximumSize(dim);
-        c.setMinimumSize(dim);
+    public void menuJButton(JButton button,int x, int y, int w,int h, String page){
+        button.setBounds(x,y,w,h);
+        button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Ihm ihm = new Ihm("Smart Lobby",page, company_id);
+                frame.dispose();
+            }
+        });
+        frame.add(button);
     }
 }
-

@@ -9,19 +9,21 @@ public class AcceuilPersonnel {
 
     private JFrame frame;
     private JPanel pageBody = new JPanel();
+    private String id_company;
 
 
-    public AcceuilPersonnel(JFrame f)  {
+    public AcceuilPersonnel(JFrame f,String i)  {
 
+        this.id_company=i;
         frame = f;
     }
 
 
 
-    public void acceuil(){
+    public JPanel acceuil(){
         frame.setSize(1200, 800);
         pageBody.setLayout(new BorderLayout());
-        Menu menu = new Menu();
+        //Menu menu = new Menu("Smart Lobby", id);
         TitleBadge title = new TitleBadge();
 
         pageBody.add(title.TitleBadge(), BorderLayout.NORTH);
@@ -44,6 +46,13 @@ public class AcceuilPersonnel {
             @Override
             public void actionPerformed(ActionEvent e) {
 
+                Client.map.get("getpermissions").put("company_id", id_company);
+                String request = "getpermissions";
+
+                String result = Client.sendBd("getpermissions");
+                String company = result.split(",")[0];
+                System.out.println(result);
+                System.out.println(company);
                 choice.setVisible(false);
 
                 pageBody.repaint();
@@ -55,11 +64,18 @@ public class AcceuilPersonnel {
         TestPermission.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                Client.map.get("getdevices").put("company_id", id_company);
+                String request = "getdevices";
+
+                String result = Client.sendBd("getdevices");
+                //String company = result.split(",")[0];
+                System.out.println(result);
+                //System.out.println(company);
 
                 choice.setVisible(false);
 
                 pageBody.repaint();
-                changePageTest();
+                changePageTest(id_company,result);
             }
         });
 
@@ -78,10 +94,12 @@ public class AcceuilPersonnel {
 
         pageBody.add(choice, BorderLayout.SOUTH);
         pageBody.setBackground(Color.WHITE);
-        frame.getContentPane().add(menu.menu(), BorderLayout.WEST);
+        //frame.getContentPane().add(menu.menu("Smart Lobby", id), BorderLayout.WEST);
         frame.getContentPane().add(pageBody, BorderLayout.CENTER);
 
         frame.repaint();
+
+        return pageBody;
     }
 
 
@@ -109,8 +127,8 @@ public class AcceuilPersonnel {
         AllBadges.badgesvue(pageBody);
     }
 
-    public void changePageTest(){
-        TestBadge testBadges = new TestBadge(frame);
+    public void changePageTest(String i,String r){
+        TestBadge testBadges = new TestBadge(frame,i,r);
         testBadges.testbadge(pageBody);
     }
 

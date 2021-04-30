@@ -7,7 +7,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class TestBadge {
@@ -15,9 +17,15 @@ public class TestBadge {
     private JFrame frame;
     private JPanel pageBody = new JPanel();
     private Map<String, String> input = new HashMap<>();
+    private String idcompany;
+    private String devices;
+    private List<String> listEquipment = new ArrayList<>();
+    private String[] equipementArray;
 
-    public TestBadge(JFrame f)  {
+    public TestBadge(JFrame f ,String i,String r)  {
         input.clear();
+        this.idcompany=i;
+        this.devices=r;
 
         frame = f;
     }
@@ -33,28 +41,38 @@ public class TestBadge {
         infoLabel = styleJLabelReservation(infoLabel, 20, 160,600,20);
 
         JTextField NomEmploye = new JTextField("Nom :");
-        NomEmploye = styleJTextFieldReservation(NomEmploye, 100, 220, 50, 20);
+        NomEmploye = styleJTextFieldReservation(NomEmploye, 70, 220, 50, 20);
 
         JTextField valuenom = new JTextField(" ");
-        valuenom.setBounds(170, 220, 100, 20);
+        valuenom.setBounds(140, 220, 100, 20);
 
         JTextField PrenomEmploye = new JTextField("Prenom :");
-        PrenomEmploye = styleJTextFieldReservation(PrenomEmploye, 300, 220, 60, 20);
+        PrenomEmploye = styleJTextFieldReservation(PrenomEmploye, 270, 220, 60, 20);
 
         JTextField valueprenom = new JTextField(" ");
-        valueprenom.setBounds(380, 220, 100, 20);
+        valueprenom.setBounds(350, 220, 100, 20);
 
         JTextField device = new JTextField("Equipement :");
-        device = styleJTextFieldReservation( device, 550, 220, 80, 20);
+        device = styleJTextFieldReservation( device, 470, 220, 80, 20);
 
 
 
+        String[] value = devices.split("#");
+        System.out.println("sa7ayt;");
+        System.out.println(value[0]);
 
+        for(int i = 0; i< value.length; i++){
+            listEquipment.add(value[i]);
+        }
 
-        String[] devices = {"Fenetre X45","PC 48","Capteur 45"};
-        JComboBox mydevice = new JComboBox(devices);
+        //String[] devices = {"Fenetre X45","PC 48","Capteur 45"};
+
+        equipementArray = new String[listEquipment.size()];
+        equipementArray = listEquipment.toArray(equipementArray);
+        System.out.println(equipementArray[0]);
+        JComboBox mydevice = new JComboBox(equipementArray);
         mydevice.setEditable(true);
-        mydevice.setBounds(650,220, 180, 20);
+        mydevice.setBounds(570,220, 320, 20);
 
 
         JButton testbutton = new JButton("Tester");
@@ -110,6 +128,34 @@ public class TestBadge {
 
             }
         });
+
+
+
+
+        testbutton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                Client.map.get("testpermissions").put("company_id",idcompany);
+                Client.map.get("testpermissions").put("employee_last_name",input.get("nomemploye"));
+                Client.map.get("testpermissions").put("employee_first_name",input.get("prenomemploye"));
+                Client.map.get("testpermissions").put("device_id",input.get("end_date"));
+                String request = "testpermissions";
+
+                String result = Client.sendBd("testpermissions");
+                String company = result.split(",")[0];
+                System.out.println(result);
+                System.out.println(company);
+                //choice.setVisible(false);
+
+                pageBody.repaint();
+                //changePage();
+            }
+        });
+
+
+
+
 
         view.add(infoLabel);
         view.add(NomEmploye);
