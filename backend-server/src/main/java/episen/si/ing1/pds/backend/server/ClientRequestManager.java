@@ -253,7 +253,7 @@ public class ClientRequestManager {
 
 
 	public void SaveBadge(String values){
-		logger.debug("bravo : test save");
+		logger.debug("bravo : test save2");
 		try {
 			ObjectMapper mapper = new ObjectMapper(new JsonFactory());
 			Map<String, Map<String, String>> map = mapper.readValue(values,
@@ -266,8 +266,10 @@ public class ClientRequestManager {
 			int id_company=Integer.parseInt(map.get("requestNewBadge").get("company_id"));
 			//System.out.println(name1);System.out.println(name2);System.out.println(datecontract);System.out.println(id_company);
 
+            String requestInsert = "insert into employee (employee_last_name,employee_first_name,company_id,contract_duration) values ('"+name1+"','"+name2+"','"+id_company+"','"+datecontract +"') ;";
 
-			c.createStatement().executeQuery("insert into employee (employee_last_name,employee_first_name,company_id,contract_duration) values ('"+name1+"','"+name2+"','"+id_company+"','"+datecontract +"') ;");
+			System.out.println("genius4");
+			c.createStatement().executeUpdate(requestInsert);
 			ResultSet lastemployee = c.createStatement().executeQuery("select employee.employee_id from employee order by employee.employee_id DESC LIMIT 1; ");
 			int id=lastemployee.getInt(1);
 			System.out.println("genius");
