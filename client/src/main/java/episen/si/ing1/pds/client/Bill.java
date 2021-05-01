@@ -17,6 +17,8 @@ public class Bill {
     private Map<String, Map<String,String>> proposalSelected = new HashMap<>();
     private Map<String, Map<String, String>> configRooms = new HashMap<>();
     private Map<String, String> listDeviceIdRoom = new HashMap<>();
+    private String response ="";
+    private int numberRoom= 0;
 
     public Bill(Map<String, String> in, JFrame f, Map<String, Map<String,String>> p, Map<String, Map<String, String>> config, Map<String ,String> listIdRoom)  {
         this.input = in;
@@ -58,8 +60,12 @@ public class Bill {
             @Override
             public void actionPerformed(ActionEvent e) {
                 prepareRequest();
-                frame.dispose();
-                Menu menu = new Menu("Smart Lobby", input.get("company_id"));
+                if(  !(response.equals("Not done"))  ){
+                    frame.dispose();
+                    Menu menu = new Menu("Smart Lobby", input.get("company_id"));
+                    menu.reservationDone(numberRoom);
+                }
+
             }
         });
 
@@ -130,6 +136,7 @@ public class Bill {
             data[i][3] = data[i][3] + " / " + configRooms.get(m.get("room_id")).get("config_equipment");
             i++;
         }
+        numberRoom = i;
         return data;
     }
 
@@ -153,8 +160,8 @@ public class Bill {
             if( !((map.getValue()+"").equals("")) ) Client.map.get("requestLocation4").put(map.getKey()+"" , map.getValue()+"");
         }
         System.out.println(Client.map);
-        String test = Client.sendBd("requestLocation4");
-        System.out.println(test);
+        String response = Client.sendBd("requestLocation4");
+        System.out.println(response);
     }
     public Float priceTotal(){
         float price = 0;

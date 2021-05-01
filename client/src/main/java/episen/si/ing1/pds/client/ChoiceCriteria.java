@@ -192,10 +192,7 @@ public class ChoiceCriteria{
                     valueMeetingRoom.setText("");
                     valueClosedOffice.setText("");
                     valueSingleOffice.setText("");
-                }else{
-                    messageErrorEmployee.setText("X");
-                    messageErrorEmployee.setForeground(Color.RED);
-                }
+                } else if( !(m.equals("")) ) messageError(messageErrorEmployee);
             }
         });
 
@@ -240,10 +237,7 @@ public class ChoiceCriteria{
                     input.put("numberOpenSpace", ((JTextField)source).getText().trim());
                     messageErrorOpenSpace.setText(" ");
                     if(verifMap()) buttonContinue.setEnabled(true);
-                }else {
-                    messageErrorOpenSpace.setText("X");
-                    messageErrorOpenSpace.setForeground(Color.red);
-                }
+                }else if( !(m.equals("")) ) messageError(messageErrorOpenSpace);
             }
         });
 
@@ -274,10 +268,7 @@ public class ChoiceCriteria{
                     input.put("numberMeetingRoom",((JTextField)source).getText().trim());
                     messageErrorMeetingRoom.setText(" ");
                     if(verifMap()) buttonContinue.setEnabled(true);
-                }else {
-                    messageErrorMeetingRoom.setText("X");
-                    messageErrorMeetingRoom.setForeground(Color.RED);
-                }
+                }else if( !(m.equals("")) ) messageError(messageErrorMeetingRoom);
             }
         });
 
@@ -308,10 +299,7 @@ public class ChoiceCriteria{
                     input.put("numberSingleOffice",((JTextField)source).getText().trim());
                     messageErrorSingleOffice.setText(" ");
                     if(verifMap()) buttonContinue.setEnabled(true);
-                }else {
-                    messageErrorSingleOffice.setText("X");
-                    messageErrorSingleOffice.setForeground(Color.red);
-                }
+                }else if( !(m.equals("")) ) messageError(messageErrorSingleOffice);
             }
         });
 
@@ -348,10 +336,7 @@ public class ChoiceCriteria{
                     input.put("numberClosedOffice",((JTextField)source).getText().trim());
                     messageErrorClosedOffice.setText(" ");
                     if(verifMap()) buttonContinue.setEnabled(true);
-                }else {
-                    messageErrorClosedOffice.setText("X");
-                    messageErrorClosedOffice.setForeground(Color.red);
-                }
+                }else if( !(m.equals("")) ) messageError(messageErrorClosedOffice);
             }
         });
 
@@ -520,5 +505,9 @@ public class ChoiceCriteria{
     public void changePage(String proposals){
         Choice selectChoice = new Choice(input, frame);
         selectChoice.choice(pageBody, proposals);
+    }
+    public void messageError (JTextField message){
+        message.setText("X");
+        message.setForeground(Color.red);
     }
 }
