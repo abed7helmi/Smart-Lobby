@@ -160,26 +160,37 @@ public class ClientRequestManager {
 						"from room r " +
 						"inner join floor f on f.floor_id = r.floor_id " +
 						"inner join building b on b.building_id = f.building_id " +
-						"where status = 'free' and room_type_id = 1 Limit " + numberOpenSpace + ") " +
+						"where status = 'free' and room_type_id = 1 ";
+					if( (map.get("requestLocation1")+"").contains("location") && !(map.get("requestLocation1").get("location").equals("")) )	request	= request + " and position = '" + map.get("requestLocation1").get("location")+"' ";
+					request = request + "Limit " + numberOpenSpace + ")"+
 						"or room_id in "+
 					" (select room_id "+
 						"from room r " +
 						"inner join floor f on f.floor_id = r.floor_id " +
 						"inner join building b on b.building_id = f.building_id " +
-						"where status = 'free' and room_type_id = 3 Limit " + numberClosedOffice + ") "+
+						"where status = 'free' and room_type_id = 3 ";
+					if( (map.get("requestLocation1")+"").contains("location")  && !(map.get("requestLocation1").get("location").equals("")) )	request	= request + " and position = '" + map.get("requestLocation1").get("location")+"' ";
+					request = request + "Limit " + numberClosedOffice + ")"+
 						"or room_id in "+
 					"(select room_id " +
 						"from room r " +
 						"inner join floor f on f.floor_id = r.floor_id " +
 						"inner join building b on b.building_id = f.building_id " +
-						"where status = 'free' and room_type_id = 4 Limit " + numberSingleOffice + ") "+
-						"or room_id in " +
+						"where status = 'free' and room_type_id = 4 " ;
+					if( (map.get("requestLocation1")+"").contains("location") && !(map.get("requestLocation1").get("location").equals(""))  )	request	= request + " and position = '" + map.get("requestLocation1").get("location")+"' ";
+					request = request + "Limit " + numberSingleOffice + ")"+
+					"or room_id in " +
 					"(select room_id " +
 						"from room r " +
 						"inner join floor f on f.floor_id = r.floor_id " +
 						"inner join building b on b.building_id = f.building_id " +
-						"where status = 'free' and room_type_id = 2 Limit " + numberMeetingRoom + ")" +
+						"where status = 'free' and room_type_id = 2 ";
+					if( (map.get("requestLocation1")+"").contains("location")  && !(map.get("requestLocation1").get("location").equals(""))  )	request	= request + " and position = '" + map.get("requestLocation1").get("location")+"' ";
+					request = request +"Limit " + numberMeetingRoom +") " +
 					" order by room_price;";
+
+
+					System.out.println(request);
 			ResultSet result = c.createStatement().executeQuery(request);
 			Map<String, Map<String, String>> roomProposal1 = new HashMap<>();
 			Map<String, Map<String, String>> roomProposal2 = new HashMap<>();

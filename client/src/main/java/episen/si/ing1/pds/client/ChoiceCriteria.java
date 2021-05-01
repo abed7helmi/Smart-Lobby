@@ -99,6 +99,7 @@ public class ChoiceCriteria{
                 advancement.setVisible(false);
                 pageBody.repaint();
 
+
                 String request = "requestLocation1";
 
                 Client.map.get(request).put("end_date", input.get("end_date"));
@@ -108,6 +109,9 @@ public class ChoiceCriteria{
                 Client.map.get(request).put("numberSingleOffice", input.get("numberSingleOffice"));
                 Client.map.get(request).put("numberMeetingRoom", input.get("numberMeetingRoom"));
 
+                if(input.containsKey("location")) Client.map.get(request).put("location", input.get("location"));
+
+                System.out.println(Client.map);
                 String result = Client.sendBd(request);
                 changePage(result);
             }
@@ -478,12 +482,13 @@ public class ChoiceCriteria{
             c.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    input.put("location", data);
+                    System.out.println("test"+data); input.put("location", data); System.out.println("test"+input);
                 }
             });
         }
         c.setBackground(Color.WHITE);
         location.add(c);
+        System.out.println(input);
     }
     public JCheckBox styleJCheckBoxReservation(JCheckBox c, int x, int y, int w, int h){
         c.setBackground(Color.WHITE);
