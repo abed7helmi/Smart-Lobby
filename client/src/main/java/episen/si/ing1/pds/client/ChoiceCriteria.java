@@ -72,7 +72,6 @@ public class ChoiceCriteria{
                 if(!verifySingleOffice) input.put("numberSingleOffice", "0");
                 if(!verifyMeetingRoom) input.put("numberMeetingRoom", "0");
 
-
                 int nbrEmployee = Integer.parseInt(input.get("numberEmployee"));
                 int somme = (Integer.parseInt(input.get("numberOpenSpace")) * 50) + (Integer.parseInt(input.get("numberClosedOffice")) * 20)
                         + (Integer.parseInt(input.get("numberSingleOffice")));
@@ -164,6 +163,10 @@ public class ChoiceCriteria{
 
         //number of employee
         JButton buttonValidate = new JButton("Faire une proposition");
+        buttonValidate.setBackground(new Color(255, 255,255));
+        buttonValidate.setForeground(Color.BLACK);
+        buttonValidate.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+
         JLabel nbEmployee = new JLabel("Nombre de collaborateur :");
         nbEmployee = styleJLabelReservation(nbEmployee,20, 140,250,50);
 

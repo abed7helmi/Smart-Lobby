@@ -13,6 +13,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,10 +60,10 @@ public class ClientRequestManager {
 					case "requestLocation3":
 						getDisponibility(values);
 						break;
-					case "requestLocation4":
+					case "requestLocation5":
 						getManagerId(values);
 						break;
-					case "requestLocation5":
+					case "requestLocation4":
 						insertReservation(values);
 						break;
 					}
@@ -419,25 +421,34 @@ public class ClientRequestManager {
 					whereRequestUpdateRoom = whereRequestUpdateRoom + " room_id = " + m.getValue() + " or ";
 					verifyDataRoom = verifyDataRoom + " room_id = " + m.getValue() + " or ";
 				}
-				String key = (m.getKey()+"").trim();
-				if( key.matches("\\d+")  ){
-					String whereRequestUpdateDevice =" where";
 
-					String deviceId = m.getValue()+"";
-					deviceId = deviceId.replace("[", "");
-					deviceId = deviceId.replace("]","");
+				if( !((m.getKey()+"").equals("")) ){
+					String key = (m.getKey()+"").trim();
+					if( key.matches("\\d+")  ){
 
-					String[] listDeviceId = deviceId.split(",");
-					for(int y = 0; y < listDeviceId.length; y++){
-						verifyDeviceId.add(listDeviceId[y]);
-						if(y == (listDeviceId.length - 1)) whereRequestUpdateDevice = whereRequestUpdateDevice + " device_id = " + listDeviceId[y]+ ";";
-						else whereRequestUpdateDevice = whereRequestUpdateDevice + " device_id = " + listDeviceId[y]+ " or ";
+						String deviceId = m.getValue()+"";
+						deviceId = deviceId.replace("[", "");
+						deviceId = deviceId.replace("]","");
+
+						String[] listDeviceId = deviceId.split(",");
+						if( listDeviceId.length != 1 ){
+							String whereRequestUpdateDevice =" where";
+							System.out.println(listDeviceId.length);
+							for(int y = 0; y < listDeviceId.length; y++){
+								System.out.println(listDeviceId[y]);
+								verifyDeviceId.add(listDeviceId[y]);
+								if(y == (listDeviceId.length - 1)) whereRequestUpdateDevice = whereRequestUpdateDevice + " device_id = " + listDeviceId[y]+ ";";
+								else whereRequestUpdateDevice = whereRequestUpdateDevice + " device_id = " + listDeviceId[y]+ " or ";
+							}
+							requestUpdateDevice = requestUpdateDevice + " update device "+
+									"set device_status = 'booked', "+
+									"reservation_id = (select max(reservation_id) from reservation), "+
+									" room_id = " + m.getKey()+ " "+ whereRequestUpdateDevice;
+						}
 					}
-					requestUpdateDevice = requestUpdateDevice + " update device "+
-							"set device_status = 'booked', "+
-							"reservation_id = (select max(reservation_id) from reservation), "+
-							" room_id = " + m.getKey()+ " "+ whereRequestUpdateDevice;
 				}
+
+
 			}
 			StringBuffer verifyRoom = new StringBuffer(verifyDataRoom);
 			verifyRoom.delete(verifyRoom.length() - 4, verifyRoom.length());
@@ -454,17 +465,18 @@ public class ClientRequestManager {
 			}
 
 			for(int k = 0; k < verifyDeviceId.size(); k++){
-				if(k == (verifyDeviceId.size() - 1)) verifyRequestUpdateDevice = verifyRequestUpdateDevice + " device_id = " + verifyDeviceId.get(k)+ ";";
-				else verifyRequestUpdateDevice = verifyRequestUpdateDevice + " device_id = " + verifyDeviceId.get(k)+ " or ";
+				if( !(verifyDeviceId.get(k).equals("")) ) verifyRequestUpdateDevice = verifyRequestUpdateDevice + " device_id = " + verifyDeviceId.get(k)+ " or ";
 			}
 
-			System.out.println("/////////////");
-			System.out.println(verifyRequestUpdateDevice);
+			if(verifyRequestUpdateDevice.contains("or")){
+				StringBuffer verifyRoomUpdateDevice = new StringBuffer(verifyRequestUpdateDevice);
+				verifyRoomUpdateDevice.delete(verifyRoomUpdateDevice.length() - 4, verifyRoomUpdateDevice.length());
+				verifyRoomUpdateDevice.append(";");
+				ResultSet resultDevice = c.createStatement().executeQuery(verifyRoomUpdateDevice+"");
 
-			ResultSet resultDevice = c.createStatement().executeQuery(verifyRequestUpdateDevice+"");
-
-			while(resultDevice.next()){
-				if(resultDevice.getString(1).equals("booked")) verifyDataDB = false;
+				while(resultDevice.next()){
+					if(resultDevice.getString(1).equals("booked")) verifyDataDB = false;
+				}
 			}
 
 			if(verifyDataDB){

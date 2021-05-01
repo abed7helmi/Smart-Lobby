@@ -31,19 +31,14 @@ public class Ihm extends JFrame{
         pageBody3 = indicator.getIndicator();
 
 
-
-
         if(page.equals("realize")){
             pageBody.add(pageBody1,"realize");
             pageBody.add(pageBody2,"consult");
             pageBody.add(pageBody3,"indicator");
-            //pageBody.add(pageBody3,"staff");
-            //pageBody.add(pageBody1,"page1");
         } else if(page.equals("consult")){
             pageBody.add(pageBody2,"consult");
             pageBody.add(pageBody1,"realize");
             pageBody.add(pageBody3,"indicator");
-
         }
         else if(page.equals("indicator")){
             pageBody.add(pageBody3,"indicator");
@@ -62,6 +57,7 @@ public class Ihm extends JFrame{
         realize.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                System.out.println(company_id);
                 pages.show(pageBody,"realize");
             }
         });
@@ -97,6 +93,7 @@ public class Ihm extends JFrame{
             }
         });
         JButton indicatorButton = new JButton("Indicateurs et locations");
+        setColor(indicatorButton,Color.white,new Color(0, 102,204));
         indicatorButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

@@ -119,14 +119,14 @@ public class Choice{
         while(itrName.hasNext()){
             listName.append(itrName.next()+ ",");
         }
-        listName.deleteCharAt(listName.length());
+        listName.deleteCharAt(listName.length()- 1);
 
         Iterator<String> itrFloor = numberFloor.iterator();
         StringBuilder listFloor = new StringBuilder();
         while(itrFloor.hasNext()){
             listFloor.append(itrFloor.next()+ ",");
         }
-        listFloor.deleteCharAt(listFloor.length());
+        listFloor.deleteCharAt(listFloor.length() - 1);
         JPanel proposal = new JPanel();
         proposal.setLayout(null);
         proposal.setBackground(new Color(150, 75,0));
@@ -170,6 +170,9 @@ public class Choice{
 
     public void selectProposal(JButton button ,int x, int y, int w, int h, int numberProposal, JPanel display, Map<String ,Map<String,String>> proposal){
         button.setBounds(x, y, w,h);
+        button.setBackground(new Color(255, 255,255));
+        button.setForeground(Color.BLACK);
+        button.setBorder(BorderFactory.createLineBorder(Color.BLACK));
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

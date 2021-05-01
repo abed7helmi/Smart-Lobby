@@ -7,10 +7,11 @@ import java.awt.event.ActionListener;
 
 public class Menu extends JFrame{
     private JFrame frame;
-    protected static String company_id = "";
+    public static String company_id = "";
 
     public Menu(String name, String id){
         company_id = id;
+        System.out.println(id);
         setTitle(name);
         frame = this;
         setSize(500, 500);
