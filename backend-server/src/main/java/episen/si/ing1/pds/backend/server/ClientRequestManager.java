@@ -311,7 +311,6 @@ public class ClientRequestManager {
 			ResultSet result = c.createStatement().executeQuery("select company_name,company_id from company " +
 					"where company_name = '"+ map.get("homePage1").get("company_name") +"';");
 
-
 			if(result.next()) {
 				String data = result.getString(1)+ ","+result.getString(2);
 				output.println(data);
