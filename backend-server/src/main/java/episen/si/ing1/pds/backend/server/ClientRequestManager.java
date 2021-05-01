@@ -416,6 +416,7 @@ public class ClientRequestManager {
 
 			String whereRequestUpdateRoom = "where ";
 			String requestUpdateDevice = "";
+			StringBuffer verifyDevice;
 			for(Map.Entry m : map.get("requestLocation4").entrySet()) {
 				if((m.getKey()+"").contains("room")){
 					whereRequestUpdateRoom = whereRequestUpdateRoom + " room_id = " + m.getValue() + " or ";
@@ -437,18 +438,21 @@ public class ClientRequestManager {
 							for(int y = 0; y < listDeviceId.length; y++){
 								System.out.println(listDeviceId[y]);
 								verifyDeviceId.add(listDeviceId[y]);
-								if(y == (listDeviceId.length - 1)) whereRequestUpdateDevice = whereRequestUpdateDevice + " device_id = " + listDeviceId[y]+ ";";
-								else whereRequestUpdateDevice = whereRequestUpdateDevice + " device_id = " + listDeviceId[y]+ " or ";
+								whereRequestUpdateDevice = whereRequestUpdateDevice + " device_id = " + listDeviceId[y]+ " or ";
+							}
+							verifyDevice = new StringBuffer(whereRequestUpdateDevice);
+							System.out.println(verifyDevice+"/////////////////////////");
+							if(whereRequestUpdateDevice.contains("or")){
+								verifyDevice.delete(verifyDevice.length() - 4, verifyDevice.length());
+								verifyDevice.append(";");
 							}
 							requestUpdateDevice = requestUpdateDevice + " update device "+
 									"set device_status = 'booked', "+
 									"reservation_id = (select max(reservation_id) from reservation), "+
-									" room_id = " + m.getKey()+ " "+ whereRequestUpdateDevice;
+									" room_id = " + m.getKey()+ " "+ verifyDevice;
 						}
 					}
 				}
-
-
 			}
 			StringBuffer verifyRoom = new StringBuffer(verifyDataRoom);
 			verifyRoom.delete(verifyRoom.length() - 4, verifyRoom.length());
@@ -469,6 +473,7 @@ public class ClientRequestManager {
 			}
 
 			if(verifyRequestUpdateDevice.contains("or")){
+				System.out.println("test");
 				StringBuffer verifyRoomUpdateDevice = new StringBuffer(verifyRequestUpdateDevice);
 				verifyRoomUpdateDevice.delete(verifyRoomUpdateDevice.length() - 4, verifyRoomUpdateDevice.length());
 				verifyRoomUpdateDevice.append(";");

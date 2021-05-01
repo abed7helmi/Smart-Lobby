@@ -153,7 +153,8 @@ public class Bill {
             if( !((map.getValue()+"").equals("")) ) Client.map.get("requestLocation4").put(map.getKey()+"" , map.getValue()+"");
         }
         System.out.println(Client.map);
-        Client.sendBd("requestLocation4");
+        String test = Client.sendBd("requestLocation4");
+        System.out.println(test);
     }
     public Float priceTotal(){
         float price = 0;

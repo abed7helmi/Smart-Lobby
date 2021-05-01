@@ -11,7 +11,6 @@ public class Menu extends JFrame{
 
     public Menu(String name, String id){
         company_id = id;
-        System.out.println(id);
         setTitle(name);
         frame = this;
         setSize(500, 500);

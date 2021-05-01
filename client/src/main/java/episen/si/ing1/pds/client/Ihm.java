@@ -57,7 +57,6 @@ public class Ihm extends JFrame{
         realize.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println(company_id);
                 pages.show(pageBody,"realize");
             }
         });
