@@ -95,7 +95,7 @@ public class NewBadge {
 
         JButton showpermission = new JButton("Detail droits selectionné");
         JButton newpermission = new JButton("Nouveau Droits");
-
+        showpermission.setVisible(false);
 
         showpermission.setBounds(550, 200, 200, 30);
         newpermission.setBounds(750, 200, 150, 30);
@@ -166,6 +166,28 @@ public class NewBadge {
             }
         });
 
+
+        showpermission.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String request = "requestDetailBadge";
+
+                Client.map.get(request).put("permission", input.get("permission"));
+
+                Client.map.get(request).put("company_id",idcompany);
+
+
+
+
+                String result = Client.sendBd(request);
+                System.out.println("waaaw"+result);
+
+                pageBody.repaint();
+                changePageDetail();
+            }
+        });
+
+
         confirm.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -194,6 +216,7 @@ public class NewBadge {
 
             @Override
             public void actionPerformed(ActionEvent event) {
+                showpermission.setVisible(true);
                 JComboBox<String> combo = (JComboBox<String>) event.getSource();
                 String selectedPermission = (String) combo.getSelectedItem();
                 input.put("permission", selectedPermission);
@@ -453,6 +476,13 @@ public class NewBadge {
     }
 
     public void changePage(){
+
+        view.setVisible(false);
+        MyPermission permission = new MyPermission(frame);
+        permission.choicepermission(pageBody);
+    }
+
+    public void changePageDetail(){
 
         view.setVisible(false);
         MyPermission permission = new MyPermission(frame);

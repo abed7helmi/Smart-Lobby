@@ -50,6 +50,8 @@ public class ClientRequestManager {
 					if(requestType.equals("getpermissions")) getPermissions((values));
 					if(requestType.equals("testpermissions")) testpermissions((values));
 					if(requestType.equals("getdevices")) getdevices((values));
+					if(requestType.equals("requestDetailBadge")) getDetailPermission((values));
+
 
 
 					/*switch (requestType) {
@@ -343,6 +345,47 @@ public class ClientRequestManager {
 		str = str.replaceAll(" +", " ");
 
 		return str;
+	}
+
+
+
+
+
+	public void getDetailPermission(String values){
+		logger.debug("testdetail");
+		try {
+			ObjectMapper mapper = new ObjectMapper(new JsonFactory());
+			Map<String, Map<String, String>> map = mapper.readValue(values,
+					new TypeReference<Map<String, Map<String, String>>>() {
+					});
+
+			int id_company=Integer.parseInt(map.get("requestDetailBadge").get("company_id"));
+			String permission=map.get("requestDetailBadge").get("permission");
+			String per[]=permission.split(",");
+			int idpermission=Integer.parseInt(getNbr(per[0]));
+
+
+
+			ResultSet result = c.createStatement().executeQuery("select device.device_id,device_wording,device_active,device.room_id,permission_device.number_validity_use,equipement_validity_period " +
+					"from permission_device inner join device on device.device_id=permission_device.device_id where permission_device.permission_id='"+ idpermission +"';");
+
+			logger.debug("c bon");
+
+			StringBuilder sb = new StringBuilder();
+			while (result.next()) {
+
+				sb.append("device_id=" + result.getInt(1) + ",device_wording=" + result.getString(2) + ",device_active=" + result.getBoolean(3) + ",room_id=" + result.getInt(4) +",number_validity_use=" + result.getInt(5) +",equipement_validity_period="+ result.getDate(6) +"#");
+			}
+
+			output.println(sb.toString());
+
+
+
+		}catch (Exception e){
+			output.println("notgood");
+			e.printStackTrace();
+		}
+
 	}
 
 
