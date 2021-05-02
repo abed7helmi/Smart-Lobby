@@ -22,6 +22,7 @@ public class TestBadge {
     private List<String> listEquipment = new ArrayList<>();
     private String[] equipementArray;
 
+
     public TestBadge(JFrame f ,String i,String r)  {
         input.clear();
         this.idcompany=i;
@@ -84,6 +85,8 @@ public class TestBadge {
         JTextField result = new JTextField("Resultat :");
         result = styleJTextFieldReservation(result, 400, 350, 60, 20);
 
+        JTextField Valueresult = styleJTextFieldError(view,480, 350, 200, 20);
+
 
 
         JTextField messageErrorNom = styleJTextFieldError(view,170, 195, 100, 20);
@@ -130,6 +133,18 @@ public class TestBadge {
         });
 
 
+        mydevice.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent event) {
+                JComboBox<String> combo = (JComboBox<String>) event.getSource();
+                String selectedPermission = (String) combo.getSelectedItem();
+                input.put("device_id", selectedPermission);
+
+            }
+        });
+
+
 
 
         testbutton.addActionListener(new ActionListener() {
@@ -139,13 +154,17 @@ public class TestBadge {
                 Client.map.get("testpermissions").put("company_id",idcompany);
                 Client.map.get("testpermissions").put("employee_last_name",input.get("nomemploye"));
                 Client.map.get("testpermissions").put("employee_first_name",input.get("prenomemploye"));
-                Client.map.get("testpermissions").put("device_id",input.get("end_date"));
-                String request = "testpermissions";
+                Client.map.get("testpermissions").put("device_id",input.get("device_id"));
+
 
                 String result = Client.sendBd("testpermissions");
-                String company = result.split(",")[0];
+
                 System.out.println(result);
-                System.out.println(company);
+
+                if (result.equals("Good")){
+                    Valueresult.setText(" il a les doits");
+                }else{ Valueresult.setText(" il a pas les doits"); }
+
                 //choice.setVisible(false);
 
                 pageBody.repaint();
@@ -172,6 +191,10 @@ public class TestBadge {
         frame.repaint();
 
     }
+
+
+
+
 
 
     public boolean verifMap(){

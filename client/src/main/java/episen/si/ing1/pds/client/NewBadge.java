@@ -38,7 +38,8 @@ public class NewBadge {
         pageBody.setBackground(Color.WHITE);
         view = view();
         JTextField messageErrorStartDate = styleJTextFieldError(view ,740, 60, 170, 20);
-        JTextField messageErrorEndDate = styleJTextFieldError(view ,670, 330, 170, 20);
+        JTextField messageErrorEndDate = styleJTextFieldError(view ,450, 330, 170, 20);
+        JTextField messageErrorPerDate = styleJTextFieldError(view ,450, 250, 170, 20);
         JLabel infoLabel = new JLabel("INFOS EMPLOYE : ");
         infoLabel = styleJLabelBadge(infoLabel, 20, 20,200,20);
 
@@ -100,26 +101,49 @@ public class NewBadge {
         newpermission.setBounds(750, 200, 150, 30);
 
 
+        JTextField datepermission = new JTextField("Date validite :");
+        datepermission = styleJTextFieldBadge(datepermission, 300, 270, 120, 20);
+
+        JTextField valuedatepermission = new JTextField(" ");
+        valuedatepermission.setBounds(450, 270, 100, 20);
+
+
         JLabel BadgeLabel = new JLabel("Badge : ");
         BadgeLabel = styleJLabelBadge(BadgeLabel, 20, 300,200,20);
 
-        JTextField Idagent = new JTextField("ID agent :");
-        Idagent = styleJTextFieldBadge(Idagent, 40, 350, 100, 20);
+
 
         JTextField PuceLabel = new JTextField("Puce :");
-        PuceLabel = styleJTextFieldBadge(PuceLabel, 300, 350, 50, 20);
+        PuceLabel = styleJTextFieldBadge(PuceLabel, 110, 350, 50, 20);
 
         JTextField valuepuce = new JTextField(" ");
-        valuepuce.setBounds(350, 350, 100, 20);
+        valuepuce.setBounds(200, 350, 100, 20);
 
-        JTextField datebadge = new JTextField("Date fin (YYYY-MM-DD):");
-        datebadge = styleJTextFieldBadge(datebadge, 500, 350, 150, 20);
+        JTextField datebadge = new JTextField("Date validite:");
+        datebadge = styleJTextFieldBadge(datebadge, 320, 350, 100, 20);
 
         JTextField valuedatebadge = new JTextField(" ");
-        valuedatebadge.setBounds(650, 350, 100, 20);
+        valuedatebadge.setBounds(450, 350, 100, 20);
+
+
+
+
+        JLabel InfosAgent = new JLabel("InfosAgent : ");
+        InfosAgent = styleJLabelBadge(InfosAgent, 20, 385,200,20);
+
+        JTextField Idagent = new JTextField("ID agent :");
+        Idagent = styleJTextFieldBadge(Idagent, 110, 430, 100, 20);
 
         JTextField valueidagent = new JTextField(" ");
-        valueidagent.setBounds(130, 350, 100, 20);
+        valueidagent.setBounds(200, 430, 100, 20);
+
+        JTextField mailagent = new JTextField("Email agent :");
+        mailagent = styleJTextFieldBadge(mailagent, 320, 430, 100, 20);
+
+
+        JTextField valuemailagent = new JTextField(" ");
+        valuemailagent.setBounds(450, 430, 100, 20);
+
 
 
         JButton confirm = new JButton("Confirmer");
@@ -153,7 +177,11 @@ public class NewBadge {
                 Client.map.get(request).put("puceemploye", input.get("puceemploye"));
                 Client.map.get(request).put("idagent", input.get("idagent"));
                 Client.map.get(request).put("permission", input.get("permission"));
+                Client.map.get(request).put("emailagent",input.get("emailagent"));
+                Client.map.get(request).put("permission_date",input.get("permission_date"));
                 Client.map.get(request).put("company_id",idcompany);
+
+
 
 
                 String result = Client.sendBd(request);
@@ -246,7 +274,61 @@ public class NewBadge {
 
 
 
-        JTextField messageErrorIdAgent = styleJTextFieldError(view,130, 325, 100, 20);
+        valuedatepermission.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {}
+            @Override
+            public void focusLost(FocusEvent e) {
+                Object source = e.getSource();
+                String m = (((JTextField)source).getText()).trim();
+                if(m.matches("[0-9]{4}-[0-1]{1}[0-9]{1}-[0-1]{1}[0-9]{1}")) {
+                    try {
+                        Date today = dateFormat.parse(dateFormat.format(new Date()));
+                        Date Mydate = dateFormat.parse(m);
+                        if(today.equals(Mydate) || today.before(Mydate)){
+                            if(input.containsKey("permission_date"))input.replace("permission_date", ((JTextField)source).getText().trim());
+                            else input.put("permission_date", ((JTextField)source).getText().trim());
+                            messageErrorPerDate.setText(" ");
+                            if(verifMap()) confirm.setEnabled(true);
+                            //System.out.println(input);
+                        } else {
+                            messageErrorPerDate.setText("Veuillez rentrer une date valide");
+                            messageErrorPerDate.setForeground(Color.red);
+                        }
+                    } catch(Exception a) {a.printStackTrace();}
+                }else {
+                    messageErrorPerDate.setText("Veuillez respecter le format");
+                    messageErrorPerDate.setForeground(Color.red);
+                }
+            }
+        });
+
+
+
+        JTextField messageErroremailAgent = styleJTextFieldError(view,450, 410, 100, 20);
+        valuemailagent.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {}
+            @Override
+            public void focusLost(FocusEvent e) {
+                Object source = e.getSource();
+                String m = (((JTextField)source).getText()).trim();
+
+                if (m.matches("^(.+)@(.+)$")) {
+                    input.put("emailagent", ((JTextField) source).getText().trim());
+                    messageErroremailAgent.setText(" ");
+                    if (verifMap()) confirm.setEnabled(true);
+                } else {
+                    messageErroremailAgent.setText("X");
+                    messageErroremailAgent.setForeground(Color.red);
+                }
+
+            }
+        });
+
+
+
+        JTextField messageErrorIdAgent = styleJTextFieldError(view,200, 410, 100, 20);
         valueidagent.addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {}
@@ -310,7 +392,7 @@ public class NewBadge {
             }
         });
 
-        JTextField messageErrorPuce = styleJTextFieldError(view,350, 330, 200, 20);
+        JTextField messageErrorPuce = styleJTextFieldError(view,200, 330, 200, 20);
         valuepuce.addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {}
@@ -357,6 +439,12 @@ public class NewBadge {
         view.add(cancel);
         view.add(valueidagent);
         view.add(Idagent);
+        view.add(InfosAgent);
+        view.add(mailagent);
+        view.add(valuemailagent);
+        view.add(datepermission);
+        view.add(valuedatepermission);
+
 
 
         pageBody.add(view, BorderLayout.SOUTH);
@@ -378,6 +466,7 @@ public class NewBadge {
         try {
             Date contract_date = dateFormat.parse(input.get("contract_date"));
             Date badge_date = dateFormat.parse(input.get("badge_date"));
+            Date permission_date = dateFormat.parse(input.get("permission_date"));
             if(contract_date.before(badge_date)){
 
                 JOptionPane d = new JOptionPane();
@@ -390,13 +479,25 @@ public class NewBadge {
 
             }
 
+            if(badge_date.before(permission_date)){
+
+                JOptionPane d = new JOptionPane();
+                d.showMessageDialog(view,
+                        "la date de fin de badge doit etre supperieur à la date de validité de permission",
+                        " Attention",
+                        JOptionPane.WARNING_MESSAGE);
+
+                return false;
+
+            }
+
         } catch (ParseException e) {
             e.printStackTrace();
         }
 
 
-        if((input.containsKey("contract_date") && input.containsKey("badge_date") &&
-                input.containsKey("puceemploye") && input.containsKey("prenomemploye") && input.containsKey("nomemploye")
+        if((input.containsKey("contract_date") && input.containsKey("permission_date") &&  input.containsKey("badge_date") &&
+                input.containsKey("puceemploye") && input.containsKey("prenomemploye") && input.containsKey("emailagent") && input.containsKey("nomemploye")
                 && input.containsKey("idagent") && input.containsKey("permission")))
             return true;
         else return false;
