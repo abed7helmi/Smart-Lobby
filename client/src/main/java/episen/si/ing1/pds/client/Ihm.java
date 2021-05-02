@@ -9,6 +9,8 @@ import java.awt.event.ActionListener;
 public class Ihm extends JFrame{
     private JFrame frame = new JFrame();
     private JPanel pageBody = new JPanel();
+    public static JButton buttonVoid = new JButton("Annuler");
+    public  static JButton buttonContinue = new JButton("> Continuer");
     private JPanel pageBody1 ;
     private JPanel pageBody2 ;
     private JPanel pageBody3 ;
@@ -45,6 +47,9 @@ public class Ihm extends JFrame{
             pageBody.add(pageBody2,"consult");
             pageBody.add(pageBody1,"realize");
         }
+
+        buttonVoid = navJButton(buttonVoid,670,10,100,50);
+        buttonContinue = navJButton(buttonContinue, 780,10,100,50);
 
 
         frame.add(pageBody, BorderLayout.CENTER);
@@ -123,7 +128,10 @@ public class Ihm extends JFrame{
         JButton home = new JButton(iconHome);
         home.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {}
+            public void actionPerformed(ActionEvent e) {
+                Menu Menu = new Menu("Smart Lobby", company_id);
+                frame.dispose();
+            }
         });
         setColor(home,Color.white,new Color(0, 102,204));
 
@@ -157,13 +165,28 @@ public class Ihm extends JFrame{
         frame.setResizable(false);
     }
 
-    public void sizeComposant(Dimension dim, Component c){
+    public void setColor(JButton button,Color font, Color back){
+        button.setForeground(font);
+        button.setBackground(back);
+    }
+
+    public static JButton navJButton(JButton button, int x,int y,int w,int h){
+        button.setBounds(x, y, w, h);
+        button.setBackground(new Color(255,255,255));
+        button.setForeground(Color.black);
+        button.setBorder(BorderFactory.createLineBorder(Color.black));
+        return button;
+    }
+    public static void sizeComposant(Dimension dim, Component c){
         c.setPreferredSize(dim);
         c.setMaximumSize(dim);
         c.setMinimumSize(dim);
     }
-    public void setColor(JButton button,Color font, Color back){
-        button.setForeground(font);
-        button.setBackground(back);
+    public static JTextField styleJTextFieldReservation(JTextField t, int x, int y, int w, int h, Color c1, Color c2) {
+        t.setEditable(false);
+        t.setBackground(c1);
+        t.setBorder(BorderFactory.createLineBorder(c2));
+        t.setBounds(x, y, w, h);
+        return t;
     }
 }

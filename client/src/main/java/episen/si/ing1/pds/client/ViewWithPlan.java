@@ -48,18 +48,18 @@ public class ViewWithPlan {
     public JPanel view(){
         JPanel view = new JPanel();
         view.setBackground(Color.WHITE);
-        sizeComposant(new Dimension(950,600), view);
+        Ihm.sizeComposant(new Dimension(950,600), view);
         view.setLayout(null);
 
         JTextField orderSelected = new JTextField("Vous avez choisi l'offre " + order);
-        orderSelected = styleJTextFieldReservation(orderSelected, 10, 10, 320, 50, Color.WHITE, Color.WHITE);
+        orderSelected = styleJTextFieldReservation(orderSelected, 20, 20, 320, 50, Color.WHITE, Color.WHITE);
         orderSelected.setFont(new Font("Serif", Font.BOLD, 20));
         view.add(orderSelected);
 
         JPanel plan = new JPanel();
         plan.setLayout(new BorderLayout());
         plan.setBackground(Color.white);
-        sizeComposant(new Dimension(500, 400), plan);
+        Ihm.sizeComposant(new Dimension(500, 400), plan);
         plan.setBounds(10,100,500,400);
         ImageIcon planImage = new ImageIcon("C:\\Users\\cedri\\Bureau\\pds\\image\\plan.png");
         planImage = new ImageIcon(planImage.getImage().getScaledInstance(plan.getWidth(), plan.getHeight(), Image.SCALE_DEFAULT));
@@ -79,7 +79,6 @@ public class ViewWithPlan {
 
         int x = 10;
         int y = 10;
-
         for(Map<String , String> map : proposalSelected.values()){
             configRoom(map.get("room_wording").split("salle")[0]+" etage "+ map.get("floor_number"), x,y,175,50, configButton, view, map.get("building_name"), map.get("room_id"));
             if(y >= 480) {
@@ -89,11 +88,6 @@ public class ViewWithPlan {
         }
         view.add(configButton);
         view.repaint();
-    }
-    public void sizeComposant(Dimension dim, Component c){
-        c.setPreferredSize(dim);
-        c.setMaximumSize(dim);
-        c.setMinimumSize(dim);
     }
     public JTextField styleJTextFieldReservation(JTextField t, int x, int y, int w, int h, Color c1 , Color c2) {
         t.setEditable(false);
@@ -134,15 +128,11 @@ public class ViewWithPlan {
         for(Map.Entry map : list.entrySet()){
             if( (map.getValue()).equals("unvalidated")) verifContinue = false;
         }
+        oldView.setVisible(true);
         if(verifContinue){
-            JButton buttonContinue = new JButton("> Continuer");
-            buttonContinue.setBackground(new Color(255,255,255));
-            buttonContinue.setForeground(Color.black);
-            buttonContinue.setBorder(BorderFactory.createLineBorder(Color.black));
-            buttonContinue.setEnabled(true);
-            buttonContinue.setBounds(780, 10, 100, 50);
-            oldView.add(buttonContinue);
-            buttonContinue.addActionListener(new ActionListener() {
+            Ihm.buttonContinue.setEnabled(true);
+            oldView.add(Ihm.buttonContinue);
+            Ihm.buttonContinue.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     oldView.setVisible(false);
@@ -151,7 +141,6 @@ public class ViewWithPlan {
                 }
             });
         }
-        oldView.setVisible(true);
         room.repaint();
         pageBody.repaint();
     }

@@ -130,30 +130,29 @@ public class ChoiceCriteria{
         JPanel choice = new JPanel();
         choice.setLayout(null);
         Dimension dimChoice = new Dimension(950, 600);
-        sizeComposant(dimChoice, choice);
+        Ihm.sizeComposant(dimChoice, choice);
         choice.setBackground(Color.WHITE);
         choice.setBorder(BorderFactory.createEmptyBorder(20,20,20,20));
 
         //label of date
         JTextField startDate = new JTextField("Debut de la reservation : (YYYY-MM-DD) ");
-        startDate = styleJTextFieldReservation(startDate, 20, 80, 230, 20);
+        startDate = Ihm.styleJTextFieldReservation(startDate, 20, 80, 230, 20, Color.WHITE, Color.WHITE);
 
         JTextField endDate = new JTextField("Fin de la reservation : (YYYY-MM-DD)");
-        endDate = styleJTextFieldReservation(endDate,20, 110, 230, 20);
-
+        endDate = Ihm.styleJTextFieldReservation(endDate,20, 110, 230, 20, Color.WHITE, Color.WHITE);
 
         Calendar date = Calendar.getInstance();
         date.setTime(new Date());
         Format f = new SimpleDateFormat("yyyy-MM-dd");
 
         JTextField valueStartDate = new JTextField(f.format(date.getTime()));
-        valueStartDate = styleJTextFieldReservation(valueStartDate, 260,80,100,20);
+        valueStartDate = Ihm.styleJTextFieldReservation(valueStartDate, 260,80,100,20, Color.WHITE, Color.WHITE);
         input.put("start_date", (valueStartDate.getText()).trim());
 
         date.add(Calendar.YEAR,1);
 
         JTextField valueEndDate = new JTextField(f.format(date.getTime()));
-        valueEndDate = styleJTextFieldReservation(valueEndDate, 260,110,100,20);
+        valueEndDate = Ihm.styleJTextFieldReservation(valueEndDate, 260,110,100,20, Color.WHITE, Color.WHITE);
         input.put("end_date", (valueEndDate.getText()).trim());
 
         JLabel dateLabel = new JLabel("Date : ");
@@ -175,7 +174,7 @@ public class ChoiceCriteria{
         nbEmployee = styleJLabelReservation(nbEmployee,20, 140,250,50);
 
         JTextField nbEmployeeTextField = new JTextField("Veuillez indiquer un nombre de collaborateurs au maximun : ");
-        nbEmployeeTextField = styleJTextFieldReservation(nbEmployeeTextField, 20, 200, 350, 20);
+        nbEmployeeTextField = Ihm.styleJTextFieldReservation(nbEmployeeTextField, 20, 200, 350, 20, Color.WHITE, Color.WHITE);
 
         JTextField valueEmployee = new JTextField(" ");
         valueEmployee.setBounds(370, 200, 50, 20);
@@ -209,7 +208,7 @@ public class ChoiceCriteria{
         roomLabel = styleJLabelReservation(roomLabel,20, 230,250,50);
 
         JTextField openSpace = new JTextField("Open-space : ");
-        openSpace = styleJTextFieldReservation(openSpace,20, 290, 100, 20);
+        openSpace = Ihm.styleJTextFieldReservation(openSpace,20, 290, 100, 20, Color.WHITE, Color.WHITE);
 
         checkBoxOpenSpace = styleJCheckBoxReservation(checkBoxOpenSpace, 120, 290, 20, 20);
         checkBoxOpenSpace.addItemListener(new ItemListener() {
@@ -220,7 +219,7 @@ public class ChoiceCriteria{
         });
 
         JTextField quantityOpenSpace = new JTextField("- nombre d'open-space : ");
-        quantityOpenSpace = styleJTextFieldReservation(quantityOpenSpace,380, 290, 175, 20);
+        quantityOpenSpace = Ihm.styleJTextFieldReservation(quantityOpenSpace,380, 290, 175, 20, Color.WHITE, Color.WHITE);
 
         valueOpenSpace.setText("");
         valueOpenSpace.setBackground(Color.white);
@@ -246,12 +245,12 @@ public class ChoiceCriteria{
         });
 
         JTextField meetingRoom = new JTextField("Salle de reunion : ");
-        meetingRoom = styleJTextFieldReservation(meetingRoom, 20, 320, 100, 20);
+        meetingRoom = Ihm.styleJTextFieldReservation(meetingRoom, 20, 320, 100, 20, Color.WHITE, Color.WHITE);
 
         checkBoxMeetingRoom = styleJCheckBoxReservation(checkBoxMeetingRoom, 120, 320, 20, 20);
 
         JTextField quantityMeetingRoom = new JTextField("- nombre de salle de reunion : ");
-        quantityMeetingRoom = styleJTextFieldReservation(quantityMeetingRoom,380, 320, 175, 20);
+        quantityMeetingRoom = Ihm.styleJTextFieldReservation(quantityMeetingRoom,380, 320, 175, 20, Color.WHITE, Color.WHITE);
 
         valueMeetingRoom.setText("");
         valueMeetingRoom.setBackground(Color.white );
@@ -277,12 +276,12 @@ public class ChoiceCriteria{
         });
 
         JTextField singleOffice = new JTextField("Bureau individuel : ");
-        singleOffice = styleJTextFieldReservation(singleOffice, 200, 290, 100, 20);
+        singleOffice = Ihm.styleJTextFieldReservation(singleOffice, 200, 290, 100, 20, Color.WHITE, Color.WHITE);
 
         checkBoxSingleOffice = styleJCheckBoxReservation(checkBoxSingleOffice,300, 290, 20, 20);
 
         JTextField quantitySingleOffice = new JTextField("- nombre de bureau individuel : ");
-        quantitySingleOffice = styleJTextFieldReservation(quantitySingleOffice,620, 320, 175, 20);
+        quantitySingleOffice = Ihm.styleJTextFieldReservation(quantitySingleOffice,620, 320, 175, 20, Color.WHITE, Color.WHITE);
 
         valueSingleOffice.setText("");
         valueSingleOffice.setBackground(Color.white);
@@ -308,7 +307,7 @@ public class ChoiceCriteria{
         });
 
         JTextField closedOffice = new JTextField("Bureau ferme : ");
-        closedOffice = styleJTextFieldReservation(closedOffice, 200, 320, 100, 20);
+        closedOffice = Ihm.styleJTextFieldReservation(closedOffice, 200, 320, 100, 20,Color.WHITE, Color.WHITE);
 
         checkBoxClosedOffice = styleJCheckBoxReservation(checkBoxClosedOffice,300, 320, 20, 20);
         checkBoxClosedOffice.addItemListener(new ItemListener() {
@@ -319,7 +318,7 @@ public class ChoiceCriteria{
         });
 
         JTextField quantityClosedOffice = new JTextField("- nombre de bureau ferme : ");
-        quantityClosedOffice = styleJTextFieldReservation(quantityClosedOffice,620, 290, 175, 20);
+        quantityClosedOffice = Ihm.styleJTextFieldReservation(quantityClosedOffice,620, 290, 175, 20, Color.WHITE, Color.WHITE);
 
         valueClosedOffice.setText("");
         valueClosedOffice.setBackground(Color.white);
@@ -444,19 +443,13 @@ public class ChoiceCriteria{
         return choice;
     }
     public JLabel styleJLabelReservation(JLabel l, int x, int y, int w, int h){
-        sizeComposant(new Dimension(200, 200) ,l);
+        Ihm.sizeComposant(new Dimension(200, 200) ,l);
         l.setBorder(BorderFactory.createMatteBorder(0,0, 1, 0, Color.black));
         l.setBounds(x,y,w,h);
         l.setFont(new Font("Serif", Font.BOLD, 20));
         return l;
     }
-    public JTextField styleJTextFieldReservation(JTextField t, int x, int y, int w, int h) {
-        t.setEditable(false);
-        t.setBackground(Color.WHITE);
-        t.setBorder(BorderFactory.createLineBorder(Color.WHITE));
-        t.setBounds(x, y, w, h);
-        return t;
-    }
+
     public JTextField styleJTextFieldError(JPanel choice, int x, int y, int w, int h) {
         JTextField t = new JTextField();
         t.setEditable(false);
@@ -494,11 +487,6 @@ public class ChoiceCriteria{
         c.setBackground(Color.WHITE);
         c.setBounds(x, y, w, h);
         return c;
-    }
-    public void sizeComposant(Dimension dim, Component c){
-        c.setPreferredSize(dim);
-        c.setMaximumSize(dim);
-        c.setMinimumSize(dim);
     }
     public boolean verifMap(){
         if((input.containsKey("start_date") && input.containsKey("end_date") && input.containsKey("numberEmployee"))

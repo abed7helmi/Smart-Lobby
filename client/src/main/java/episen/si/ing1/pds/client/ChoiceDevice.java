@@ -106,20 +106,20 @@ public class ChoiceDevice {
     public JPanel view(){
         JPanel view = new JPanel();
         view.setBackground(Color.WHITE);
-        sizeComposant(new Dimension(950,600), view);
+        Ihm.sizeComposant(new Dimension(950,600), view);
         view.setLayout(null);
 
         JTextField room = new JTextField(roomName);
-        room = styleJTextFieldReservation(room, 50,20,350, 50, Color.white, Color.white);
+        room = Ihm.styleJTextFieldReservation(room, 50,20,350, 50, Color.white, Color.white);
         view.add(room);
 
         JTextField titleEquipment = new JTextField("Choisissez les equipements :");
-        titleEquipment = styleJTextFieldReservation(titleEquipment, 50,100,350, 50, Color.white, Color.white);
+        titleEquipment = Ihm.styleJTextFieldReservation(titleEquipment, 50,100,350, 50, Color.white, Color.white);
         titleEquipment.setFont(new Font("Serif", Font.BOLD, 20));
         view.add(titleEquipment);
 
         JTextField choiceEquipment = new JTextField("- Souhaitez-vous des equipements ? ");
-        choiceEquipment = styleJTextFieldReservation(choiceEquipment, 50, 160, 200, 20,Color.white, Color.white);
+        choiceEquipment = Ihm.styleJTextFieldReservation(choiceEquipment, 50, 160, 200, 20,Color.white, Color.white);
         view.add(choiceEquipment);
 
         ButtonGroup groupEquipment = new ButtonGroup();
@@ -153,7 +153,7 @@ public class ChoiceDevice {
                             System.out.println("price"+price);
 
                             selectionE.setText("Quelle quantite pour "+ text +" ?");
-                            selectionE = styleJTextFieldReservation(selectionE, 50, 500, 300, 20, Color.white, Color.white);
+                            selectionE = Ihm.styleJTextFieldReservation(selectionE, 50, 500, 300, 20, Color.white, Color.white);
                             selectionE.setVisible(true);
 
                             quantityE.setBackground(Color.white);
@@ -215,12 +215,12 @@ public class ChoiceDevice {
         view.add(rNonEquipment);
 
         JTextField titleSensor = new JTextField("Choisissez les capteurs :");
-        titleSensor = styleJTextFieldReservation(titleSensor, 450,100,350, 50, Color.white, Color.white);
+        titleSensor = Ihm.styleJTextFieldReservation(titleSensor, 450,100,350, 50, Color.white, Color.white);
         titleSensor.setFont(new Font("Serif", Font.BOLD, 20));
         view.add(titleSensor);
 
         JTextField choiceSensor = new JTextField("- Souhaitez-vous des capteurs ? ");
-        choiceSensor = styleJTextFieldReservation(choiceSensor, 450, 160, 175, 20,Color.white, Color.white);
+        choiceSensor = Ihm.styleJTextFieldReservation(choiceSensor, 450, 160, 175, 20,Color.white, Color.white);
         view.add(choiceSensor);
 
         ButtonGroup groupSensor = new ButtonGroup();
@@ -252,7 +252,7 @@ public class ChoiceDevice {
                             System.out.println("price"+price);
 
                             selectionS.setText("Quelle quantite pour "+ text +" ?");
-                            selectionS = styleJTextFieldReservation(selectionS, 450, 500, 300, 20, Color.white, Color.white);
+                            selectionS = Ihm.styleJTextFieldReservation(selectionS, 450, 500, 300, 20, Color.white, Color.white);
                             selectionS.setVisible(true);
 
                             quantityS.setBackground(Color.white);
@@ -314,18 +314,7 @@ public class ChoiceDevice {
         view.add(rNoSensor);
         return view;
     }
-    public void sizeComposant(Dimension dim, Component c){
-        c.setPreferredSize(dim);
-        c.setMaximumSize(dim);
-        c.setMinimumSize(dim);
-    }
-    public JTextField styleJTextFieldReservation(JTextField t, int x, int y, int w, int h, Color c1 , Color c2) {
-        t.setEditable(false);
-        t.setBackground(c1);
-        t.setBorder(BorderFactory.createLineBorder(c2));
-        t.setBounds(x, y, w, h);
-        return t;
-    }
+
     public boolean verifMap(){
         if(config.containsKey("config_sensor") && config.containsKey("config_equipment")){
             configRoom.put(room_id, config);

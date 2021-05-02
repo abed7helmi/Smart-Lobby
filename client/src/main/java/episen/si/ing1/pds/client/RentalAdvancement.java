@@ -20,7 +20,7 @@ public class RentalAdvancement {
         JPanel rentalAdvancement = new JPanel();
         rentalAdvancement.setLayout(new FlowLayout(FlowLayout.LEFT, 30, 15));
         Dimension dimAdvancement = new Dimension(950, 70);
-        sizeComposant(dimAdvancement, rentalAdvancement);
+        Ihm.sizeComposant(dimAdvancement, rentalAdvancement);
         rentalAdvancement.setBackground(Color.WHITE);
         rentalAdvancement.setBorder(BorderFactory.createMatteBorder(0,0,1,0, Color.BLACK));
 
@@ -72,10 +72,5 @@ public class RentalAdvancement {
                 .getImage().getScaledInstance(50,30,Image.SCALE_DEFAULT));
         JLabel flecheAdvancement = new JLabel(iconAdvancement,JLabel.CENTER);
         return flecheAdvancement;
-    }
-    public void sizeComposant(Dimension dim, Component c){
-        c.setPreferredSize(dim);
-        c.setMaximumSize(dim);
-        c.setMinimumSize(dim);
     }
 }

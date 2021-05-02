@@ -8,7 +8,7 @@ public class TitleReservation {
         JPanel titlePage = new JPanel();
         titlePage.setLayout(null);
         Dimension dimTitle = new Dimension(950, 100);
-        sizeComposant(dimTitle, titlePage);
+        Ihm.sizeComposant(dimTitle, titlePage);
         titlePage.setBackground(Color.WHITE);
 
         JTextField title = new JTextField("Realisation d'une location : ", 50);
@@ -23,10 +23,5 @@ public class TitleReservation {
         titlePage.add(title);
 
         return titlePage;
-    }
-    public void sizeComposant(Dimension dim, Component c){
-        c.setPreferredSize(dim);
-        c.setMaximumSize(dim);
-        c.setMinimumSize(dim);
     }
 }
