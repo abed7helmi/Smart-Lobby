@@ -8,13 +8,11 @@ import java.awt.event.ActionListener;
 
 public class Ihm extends JFrame{
     private JFrame frame = new JFrame();
-<<<<<<< HEAD
-    JPanel pageBody = new JPanel();
-=======
-    private JPanel pageBody = new JPanel();
+
+    protected JPanel pageBody = new JPanel();
     public static JButton buttonVoid = new JButton("Annuler");
     public  static JButton buttonContinue = new JButton("> Continuer");
->>>>>>> 4f114ceef59c1b267250ccc22ae20f2db091aec5
+
     private JPanel pageBody1 ;
     private JPanel pageBody2 ;
     private JPanel pageBody3 ;
@@ -35,12 +33,10 @@ public class Ihm extends JFrame{
         Indicators indicator = new Indicators();
         pageBody3 = indicator.getIndicator();
 
-<<<<<<< HEAD
         Window window=new Window();
         pageBody4=window.firstMenu;
 
-=======
->>>>>>> 4f114ceef59c1b267250ccc22ae20f2db091aec5
+
         if(page.equals("realize")){
             pageBody.add(pageBody1,"realize");
             pageBody.add(pageBody2,"consult");

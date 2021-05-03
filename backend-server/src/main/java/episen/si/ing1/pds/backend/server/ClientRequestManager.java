@@ -30,6 +30,7 @@ public class ClientRequestManager {
 	private Connection c;
 	private String name = "client-thread";
 	private Thread self;
+	private ObjectMapper mapper = new ObjectMapper(new JsonFactory());
 
 	public ClientRequestManager(Socket socket, Connection connection) throws SQLException, IOException {
 		c = connection;
@@ -44,48 +45,47 @@ public class ClientRequestManager {
 					String requestType = clientInput.split("#")[0];
 					String values = clientInput.split("#")[1];
 
+					Map<String, String> map = mapper.readValue(values,new TypeReference<Map<String, String>>(){});
+
 					switch (requestType) {
-					case "companyReservation":
-						companyReservation(values);
-						break;
-					case "reservationFloor":
-						reservationFloor(values);
-						break;
-					case "floorRoom":
-						floorRoom(values);
-						break;
-					case "roomLocation":
-						roomLocation(values);
-						break;
-					case "locationEquipment":
-						locationEquipment(values);
-						break;
-					case "reservationEquipment":
-						reservationEquipment(values);
-						break;
-					case "setEquipment":
-						setEquipment(values);
-						break;
-					case "homePage1":
-						firstPage(values);
-						break;
-					case "requestLocation1":
-						getChoice(values);
-						break;
-					case "requestLocation2":
-						getDevice((values));
-						break;
-					case "requestLocation3":
-						getDisponibility(values);
-						break;
-					case "requestLocation4":
-						getManagerId(values);
-						break;
-					case "requestLocation5":
-						insertReservation(values);
-						break;
-						case "requestWindow1":
-							getWindow(values);
+						case "companyReservation":
+							companyReservation(map);
+							break;
+						case "reservationFloor":
+							reservationFloor(map);
+							break;
+						case "floorRoom":
+							floorRoom(map);
+							break;
+						case "roomLocation":
+							roomLocation(map);
+							break;
+						case "locationEquipment":
+							locationEquipment(map);
+							break;
+						case "reservationEquipment":
+							reservationEquipment(map);
+							break;
+						case "setEquipment":
+							setEquipment(map);
+							break;
+						case "homePage1":
+							firstPage(map);
+							break;
+						case "requestLocation1":
+							getChoice(map);
+							break;
+						case "requestLocation2":
+							getDevice(map);
+							break;
+						case "requestLocation3":
+							getDisponibility(map);
+							break;
+						case "requestLocation5":
+							getManagerId(map);
+							break;
+						case "requestLocation4":
+							insertReservation(map);
 							break;
 					}
 
@@ -107,7 +107,6 @@ public class ClientRequestManager {
 						}
 						output.println(sb.toString());
 						break;
-
 					case "update":
 						int newAge = Integer.valueOf(map.get("toto").get("age"))+1;
 						output.println(
@@ -137,11 +136,9 @@ public class ClientRequestManager {
 		return self;
 	}
 
-	public void companyReservation(String values) {
+	public void companyReservation(Map<String,String> map) {
 		try {
-			ObjectMapper mapper = new ObjectMapper(new JsonFactory());
-			Map<String, Map<String, String>> map = mapper.readValue(values,new TypeReference<Map<String, Map<String, String>>>(){});
-			String request = "Select reservation_id,start_date,end_date,price,employee_last_name,employee_first_name from reservation inner join employee on (reservation.gs_manager_id = employee.employee_id) where company_id="+map.get("companyReservation").get("company_id");
+			String request = "Select reservation_id,start_date,end_date,price,employee_last_name,employee_first_name from reservation inner join employee on (reservation.gs_manager_id = employee.employee_id) where company_id="+map.get("company_id");
 			ResultSet rs = c.createStatement().executeQuery(request);
 			Map<String,Map<String, String>> result = new HashMap<String,Map<String, String>>();
 			int i=0;
@@ -157,20 +154,12 @@ public class ClientRequestManager {
 			}
 			output.println(mapper.writeValueAsString(result));
 		} catch (JsonMappingException e) {} catch (JsonProcessingException e) {} catch (SQLException e) {}
-		
+
 	}
-<<<<<<< HEAD
-	public void getWindow(String values) throws SQLException {
+
+	public void reservationFloor(Map<String,String> map) {
 		try {
-			ObjectMapper mapper = new ObjectMapper(new JsonFactory());
-			String request="select device.device_id from device inner join windows on(device.device_id=windows.device_id)";
-=======
-	
-	public void reservationFloor(String values) {
-		try {
-			ObjectMapper mapper = new ObjectMapper(new JsonFactory());
-			Map<String, Map<String, String>> map = mapper.readValue(values,new TypeReference<Map<String, Map<String, String>>>(){});
-			String request = "select distinct(floor_id),floor_number,building_name from (room natural join floor) natural join building where reservation_id="+map.get("reservationFloor").get("reservation_id");
+			String request = "select distinct(floor_id),floor_number,building_name from (room natural join floor) natural join building where reservation_id="+map.get("reservation_id");
 			ResultSet rs = c.createStatement().executeQuery(request);
 			Map<String,Map<String, String>> result = new HashMap<String,Map<String, String>>();
 			int i=0;
@@ -183,14 +172,12 @@ public class ClientRequestManager {
 			}
 			output.println(mapper.writeValueAsString(result));
 		} catch (JsonMappingException e) {} catch (JsonProcessingException e) {} catch (SQLException e) {}
-		
+
 	}
-	
-	public void floorRoom(String values) {
+
+	public void floorRoom(Map<String,String> map) {
 		try {
-			ObjectMapper mapper = new ObjectMapper(new JsonFactory());
-			Map<String, Map<String, String>> map = mapper.readValue(values,new TypeReference<Map<String, Map<String, String>>>(){});
-			String request = "select room_id,room_wording,room_type_id from room where reservation_id="+map.get("floorRoom").get("reservation_id")+" and floor_id="+map.get("floorRoom").get("floor_id");
+			String request = "select room_id,room_wording,room_type_id from room where reservation_id="+map.get("reservation_id")+" and floor_id="+map.get("floor_id");
 			ResultSet rs = c.createStatement().executeQuery(request);
 			Map<String,Map<String, String>> result = new HashMap<String,Map<String, String>>();
 			int i=0;
@@ -203,14 +190,12 @@ public class ClientRequestManager {
 			}
 			output.println(mapper.writeValueAsString(result));
 		} catch (JsonMappingException e) {} catch (JsonProcessingException e) {} catch (SQLException e) {}
-		
+
 	}
-	
-	public void roomLocation(String values) {
+
+	public void roomLocation(Map<String,String> map) {
 		try {
-			ObjectMapper mapper = new ObjectMapper(new JsonFactory());
-			Map<String, Map<String, String>> map = mapper.readValue(values,new TypeReference<Map<String, Map<String, String>>>(){});
-			String request = "select location_id,occupied_location,is_sensor,x_position,y_position from location where room_id="+map.get("roomLocation").get("room_id");
+			String request = "select location_id,occupied_location,is_sensor,x_position,y_position from location where room_id="+map.get("room_id");
 			ResultSet rs = c.createStatement().executeQuery(request);
 			Map<String,Map<String, String>> result = new HashMap<String,Map<String, String>>();
 			int i=0;
@@ -225,14 +210,28 @@ public class ClientRequestManager {
 			}
 			output.println(mapper.writeValueAsString(result));
 		} catch (JsonMappingException e) {} catch (JsonProcessingException e) {} catch (SQLException e) {}
-		
+
 	}
-	
-	public void locationEquipment(String values) {
+	public void getWindow(String values) throws SQLException {
+
 		try {
 			ObjectMapper mapper = new ObjectMapper(new JsonFactory());
-			Map<String, Map<String, String>> map = mapper.readValue(values,new TypeReference<Map<String, Map<String, String>>>(){});
-			String request = "select device_id,device_wording,device_active,device_price,reservation_id,is_sensor from device natural join location where location_id="+map.get("locationEquipment").get("location_id");
+			String request="select device.device_id from device inner join windows on(device.device_id=windows.device_id)";
+			ResultSet rs = c.createStatement().executeQuery(request);
+			Map<String,Map<String, String>> result = new HashMap<String,Map<String, String>>();
+			int i=0;
+			while(rs.next()) {
+				Map<String, String> tab = new HashMap<String, String>();
+				tab.put("device_id", rs.getString(1));
+				result.put(""+i++, tab);
+			}
+			output.println(mapper.writeValueAsString(result));
+		} catch (JsonMappingException e) {} catch (JsonProcessingException e) {}
+	}
+
+	public void locationEquipment(Map<String,String> map) {
+		try {
+			String request = "select device_id,device_wording,device_active,device_price,reservation_id,is_sensor from device natural join location where location_id="+map.get("location_id");
 			ResultSet rs = c.createStatement().executeQuery(request);
 			Map<String, String> result = new HashMap<String, String>();
 			while(rs.next()) {
@@ -245,53 +244,40 @@ public class ClientRequestManager {
 			}
 			output.println(mapper.writeValueAsString(result));
 		} catch (JsonMappingException e) {} catch (JsonProcessingException e) {} catch (SQLException e) {}
-		
+
 	}
-	
-	public void reservationEquipment(String values) {
+
+
+	public void reservationEquipment(Map<String,String> map) {
 		try {
-			ObjectMapper mapper = new ObjectMapper(new JsonFactory());
-			Map<String, Map<String, String>> map = mapper.readValue(values,new TypeReference<Map<String, Map<String, String>>>(){});
 			String request = "";
-			if(map.get("reservationEquipment").get("is_sensor").equals("f")) {
-				request = "select device_id,device_wording,device_price from device where device_type_id<11 and location_id is null and reservation_id="+map.get("reservationEquipment").get("reservation_id");
+			if(map.get("is_sensor").equals("f")) {
+				request = "select device_id,device_wording,device_price from device where device_type_id<11 and location_id is null and reservation_id="+map.get("reservation_id");
 			}else {
-				request = "select device_id,device_wording,device_price from device where device_type_id>10 and location_id is null and reservation_id="+map.get("reservationEquipment").get("reservation_id");
+				request = "select device_id,device_wording,device_price from device where device_type_id>10 and location_id is null and reservation_id="+map.get("reservation_id");
 			}
->>>>>>> 4f114ceef59c1b267250ccc22ae20f2db091aec5
 			ResultSet rs = c.createStatement().executeQuery(request);
 			Map<String,Map<String, String>> result = new HashMap<String,Map<String, String>>();
 			int i=0;
 			while(rs.next()) {
 				Map<String, String> resultmap = new HashMap<String, String>();
 				resultmap.put("device_id", rs.getString(1));
-<<<<<<< HEAD
-				result.put(""+i++, resultmap);
-			}
-			output.println(mapper.writeValueAsString(result));
-		} catch (JsonMappingException e) {} catch (JsonProcessingException e) {}
-	}
-
-
-=======
 				resultmap.put("device_wording", rs.getString(2));
 				resultmap.put("device_price", rs.getString(3));
 				result.put(""+i++, resultmap);
 			}
 			output.println(mapper.writeValueAsString(result));
 		} catch (JsonMappingException e) {} catch (JsonProcessingException e) {} catch (SQLException e) {}
-		
+
 	}
-	
-	public void setEquipment(String values) {
+
+	public void setEquipment(Map<String,String> map) {
 		try {
-			
-			ObjectMapper mapper = new ObjectMapper(new JsonFactory());
-			Map<String, Map<String, String>> map = mapper.readValue(values,new TypeReference<Map<String, Map<String, String>>>(){});
-			String location = map.get("setEquipment").get("location_id");
-			String newDevice = map.get("setEquipment").get("new_device_id");
-			String oldDevice = map.get("setEquipment").get("old_device_id");
-	
+
+			String location = map.get("location_id");
+			String newDevice = map.get("new_device_id");
+			String oldDevice = map.get("old_device_id");
+
 			Statement s = c.createStatement();
 			if(oldDevice.isEmpty()) {
 				s.executeUpdate("update device set device_placed='t', location_id="+location+" where device_id="+newDevice);
@@ -303,23 +289,18 @@ public class ClientRequestManager {
 				s.executeUpdate("update device set device_placed='t', location_id="+location+" where device_id="+newDevice);
 				s.executeUpdate("update device set device_placed='f', location_id=null where device_id="+oldDevice);
 			}
-			
-			output.println("Done");
-		} catch (JsonMappingException e) {} catch (JsonProcessingException e) {} catch (SQLException e) {}
-	}
-	
->>>>>>> 4f114ceef59c1b267250ccc22ae20f2db091aec5
-	public void getChoice(String values){
-		try {
-			ObjectMapper mapper = new ObjectMapper(new JsonFactory());
-			Map<String, Map<String, String>> map = mapper.readValue(values,
-					new TypeReference<Map<String, Map<String, String>>>() {
-					});
 
-			int numberOpenSpace = Integer.parseInt(map.get("requestLocation1").get("numberOpenSpace")) * 4;
-			int numberClosedOffice = Integer.parseInt(map.get("requestLocation1").get("numberClosedOffice")) *4;
-			int numberSingleOffice = Integer.parseInt(map.get("requestLocation1").get("numberSingleOffice")) * 4;
-			int numberMeetingRoom = Integer.parseInt(map.get("requestLocation1").get("numberMeetingRoom")) * 4;
+			output.println("Done");
+		} catch (SQLException e) {}
+	}
+
+
+	public void getChoice(Map<String,String> map){
+		try {
+			int numberOpenSpace = Integer.parseInt(map.get("numberOpenSpace")) * 4;
+			int numberClosedOffice = Integer.parseInt(map.get("numberClosedOffice")) *4;
+			int numberSingleOffice = Integer.parseInt(map.get("numberSingleOffice")) * 4;
+			int numberMeetingRoom = Integer.parseInt(map.get("numberMeetingRoom")) * 4;
 
 			String request = "select room_wording, floor_number, building_name, room_price as prix, room_id, room_type_id " +
 					"from room r " +
@@ -327,29 +308,40 @@ public class ClientRequestManager {
 					"inner join building b on b.building_id = f.building_id " +
 					"where room_id in "+
 					"(select room_id " +
-						"from room r " +
-						"inner join floor f on f.floor_id = r.floor_id " +
-						"inner join building b on b.building_id = f.building_id " +
-						"where status = 'free' and room_type_id = 1 Limit " + numberOpenSpace + ") " +
-						"or room_id in "+
+					"from room r " +
+					"inner join floor f on f.floor_id = r.floor_id " +
+					"inner join building b on b.building_id = f.building_id " +
+					"where status = 'free' and room_type_id = 1 ";
+			if( map.keySet().contains("location") && !(map.get("location").equals("")) )	request	= request + " and position = '" + map.get("location")+"' ";
+			request = request + "Limit " + numberOpenSpace + ")"+
+					"or room_id in "+
 					" (select room_id "+
-						"from room r " +
-						"inner join floor f on f.floor_id = r.floor_id " +
-						"inner join building b on b.building_id = f.building_id " +
-						"where status = 'free' and room_type_id = 3 Limit " + numberClosedOffice + ") "+
-						"or room_id in "+
+					"from room r " +
+					"inner join floor f on f.floor_id = r.floor_id " +
+					"inner join building b on b.building_id = f.building_id " +
+					"where status = 'free' and room_type_id = 3 ";
+			if( map.keySet().contains("location")  && !(map.get("location").equals("")) )	request	= request + " and position = '" + map.get("location")+"' ";
+			request = request + "Limit " + numberClosedOffice + ")"+
+					"or room_id in "+
 					"(select room_id " +
-						"from room r " +
-						"inner join floor f on f.floor_id = r.floor_id " +
-						"inner join building b on b.building_id = f.building_id " +
-						"where status = 'free' and room_type_id = 4 Limit " + numberSingleOffice + ") "+
-						"or room_id in " +
+					"from room r " +
+					"inner join floor f on f.floor_id = r.floor_id " +
+					"inner join building b on b.building_id = f.building_id " +
+					"where status = 'free' and room_type_id = 4 " ;
+			if( map.keySet().contains("location") && !(map.get("location").equals(""))  )	request	= request + " and position = '" + map.get("location")+"' ";
+			request = request + "Limit " + numberSingleOffice + ")"+
+					"or room_id in " +
 					"(select room_id " +
-						"from room r " +
-						"inner join floor f on f.floor_id = r.floor_id " +
-						"inner join building b on b.building_id = f.building_id " +
-						"where status = 'free' and room_type_id = 2 Limit " + numberMeetingRoom + ")" +
+					"from room r " +
+					"inner join floor f on f.floor_id = r.floor_id " +
+					"inner join building b on b.building_id = f.building_id " +
+					"where status = 'free' and room_type_id = 2 ";
+			if( map.keySet().contains("location")  && !(map.get("location").equals(""))  )	request	= request + " and position = '" + map.get("location")+"' ";
+			request = request +"Limit " + numberMeetingRoom +") " +
 					" order by room_price;";
+
+
+			System.out.println(request);
 			ResultSet result = c.createStatement().executeQuery(request);
 			Map<String, Map<String, String>> roomProposal1 = new HashMap<>();
 			Map<String, Map<String, String>> roomProposal2 = new HashMap<>();
@@ -357,10 +349,10 @@ public class ClientRequestManager {
 			Map<String, Map<String, String>> roomProposal4 = new HashMap<>();
 			Map<String , Map<String, Map<String ,String>>> proposal = new HashMap<>();
 
-			int numberRoom = Integer.parseInt(map.get("requestLocation1").get("numberClosedOffice"))
-					+ Integer.parseInt(map.get("requestLocation1").get("numberSingleOffice"))
-					+ Integer.parseInt(map.get("requestLocation1").get("numberOpenSpace"))
-					+ Integer.parseInt(map.get("requestLocation1").get("numberMeetingRoom"));
+			int numberRoom = Integer.parseInt(map.get("numberClosedOffice"))
+					+ Integer.parseInt(map.get("numberSingleOffice"))
+					+ Integer.parseInt(map.get("numberOpenSpace"))
+					+ Integer.parseInt(map.get("numberMeetingRoom"));
 
 			int countOpenSpaceProposal1 = 0, countMeetingRoomProposal1 = 0, countClosedOfficeProposal1 = 0, countSingleOfficeProposal1 = 0;
 			int countOpenSpaceProposal2 = 0,countMeetingRoomProposal2 = 0,countClosedOfficeProposal2 = 0,countSingleOfficeProposal2 = 0;
@@ -379,61 +371,61 @@ public class ClientRequestManager {
 				underMap.put("room_type_id",result.getString(6));
 
 				if( result.getInt(6) == 4 ){
-					if(countSingleOfficeProposal1 < Integer.parseInt(map.get("requestLocation1").get("numberSingleOffice") )) {
+					if(countSingleOfficeProposal1 < Integer.parseInt(map.get("numberSingleOffice") )) {
 						roomProposal1.put("roomSingleOffice"+countRoomProposal1,underMap);
 						countSingleOfficeProposal1++;
-					} else if (countSingleOfficeProposal2 < Integer.parseInt(map.get("requestLocation1").get("numberSingleOffice") )) {
+					} else if (countSingleOfficeProposal2 < Integer.parseInt(map.get("numberSingleOffice") )) {
 						roomProposal2.put("roomSingleOffice"+countRoomProposal2,underMap);
 						countSingleOfficeProposal2++;
-					} else if(countSingleOfficeProposal3 < Integer.parseInt(map.get("requestLocation1").get("numberSingleOffice") )) {
+					} else if(countSingleOfficeProposal3 < Integer.parseInt(map.get("numberSingleOffice") )) {
 						roomProposal3.put("roomSingleOffice"+countRoomProposal3,underMap);
 						countSingleOfficeProposal3++;
-					} else if(countSingleOfficeProposal4 < Integer.parseInt(map.get("requestLocation1").get("numberSingleOffice") )) {
+					} else if(countSingleOfficeProposal4 < Integer.parseInt(map.get("numberSingleOffice") )) {
 						roomProposal4.put("roomSingleOffice"+countRoomProposal4,underMap);
 						countSingleOfficeProposal4++;
 					}
 				}
 				if( result.getInt(6) == 3 ){
-					if(countClosedOfficeProposal1 < Integer.parseInt(map.get("requestLocation1").get("numberClosedOffice") )) {
+					if(countClosedOfficeProposal1 < Integer.parseInt(map.get("numberClosedOffice") )) {
 						roomProposal1.put("roomClosedOffice"+countRoomProposal1,underMap);
 						countClosedOfficeProposal1++;
-					}else if (countClosedOfficeProposal2 < Integer.parseInt(map.get("requestLocation1").get("numberClosedOffice") )) {
+					}else if (countClosedOfficeProposal2 < Integer.parseInt(map.get("numberClosedOffice") )) {
 						roomProposal2.put("roomClosedOffice"+countRoomProposal2,underMap);
 						countClosedOfficeProposal2++;
-					}else if(countClosedOfficeProposal3 < Integer.parseInt(map.get("requestLocation1").get("numberClosedOffice") )) {
+					}else if(countClosedOfficeProposal3 < Integer.parseInt(map.get("numberClosedOffice") )) {
 						roomProposal3.put("roomClosedOffice"+countRoomProposal3,underMap);
 						countClosedOfficeProposal3++;
-					}else if(countClosedOfficeProposal4 < Integer.parseInt(map.get("requestLocation1").get("numberClosedOffice") )) {
+					}else if(countClosedOfficeProposal4 < Integer.parseInt(map.get("numberClosedOffice") )) {
 						roomProposal4.put("roomClosedOffice"+countRoomProposal4,underMap);
 						countClosedOfficeProposal4++;
 					}
 				}
 				if( result.getInt(6) == 2 ){
-					if(countMeetingRoomProposal1 < Integer.parseInt(map.get("requestLocation1").get("numberMeetingRoom") )) {
+					if(countMeetingRoomProposal1 < Integer.parseInt(map.get("numberMeetingRoom") )) {
 						roomProposal1.put("roomMeetingRoom"+countRoomProposal1,underMap);
 						countMeetingRoomProposal1++;
-					}else if (countMeetingRoomProposal2 < Integer.parseInt(map.get("requestLocation1").get("numberMeetingRoom") )) {
+					}else if (countMeetingRoomProposal2 < Integer.parseInt(map.get("numberMeetingRoom") )) {
 						roomProposal2.put("roomMeetingRoom"+countRoomProposal2,underMap);
 						countMeetingRoomProposal2++;
-					}else if(countMeetingRoomProposal3 < Integer.parseInt(map.get("requestLocation1").get("numberMeetingRoom") )) {
+					}else if(countMeetingRoomProposal3 < Integer.parseInt(map.get("numberMeetingRoom") )) {
 						roomProposal3.put("roomMeetingRoom"+countRoomProposal3,underMap);
 						countMeetingRoomProposal3++;
-					}else if(countMeetingRoomProposal4 < Integer.parseInt(map.get("requestLocation1").get("numberMeetingRoom") )) {
+					}else if(countMeetingRoomProposal4 < Integer.parseInt(map.get("numberMeetingRoom") )) {
 						roomProposal4.put("roomMeetingRoom"+countRoomProposal4,underMap);
 						countMeetingRoomProposal4++;
 					}
 				}
 				if( result.getInt(6) == 1 ){
-					if(countOpenSpaceProposal1 < Integer.parseInt(map.get("requestLocation1").get("numberOpenSpace") )) {
+					if(countOpenSpaceProposal1 < Integer.parseInt(map.get("numberOpenSpace") )) {
 						roomProposal1.put("roomOpenSpace"+countRoomProposal1,underMap);
 						countOpenSpaceProposal1++;
-					}else if (countOpenSpaceProposal2 < Integer.parseInt(map.get("requestLocation1").get("numberOpenSpace") )) {
+					}else if (countOpenSpaceProposal2 < Integer.parseInt(map.get("numberOpenSpace") )) {
 						roomProposal2.put("roomOpenSpace"+countRoomProposal2,underMap);
 						countOpenSpaceProposal2++;
-					}else if(countOpenSpaceProposal3 < Integer.parseInt(map.get("requestLocation1").get("numberOpenSpace") )) {
+					}else if(countOpenSpaceProposal3 < Integer.parseInt(map.get("numberOpenSpace") )) {
 						roomProposal3.put("roomOpenSpace"+countRoomProposal3,underMap);
 						countOpenSpaceProposal3++;
-					}else if(countOpenSpaceProposal4 < Integer.parseInt(map.get("requestLocation1").get("numberOpenSpace") )) {
+					}else if(countOpenSpaceProposal4 < Integer.parseInt(map.get("numberOpenSpace") )) {
 						roomProposal4.put("roomOpenSpace"+countRoomProposal4,underMap);
 						countOpenSpaceProposal4++;
 					}
@@ -461,15 +453,10 @@ public class ClientRequestManager {
 		}
 	}
 
-	public void firstPage( String values) {
+	public void firstPage(Map<String,String> map) {
 		try {
-			ObjectMapper mapper = new ObjectMapper(new JsonFactory());
-			Map<String, Map<String, String>> map = mapper.readValue(values,
-					new TypeReference<Map<String, Map<String, String>>>() {
-					});
 			ResultSet result = c.createStatement().executeQuery("select company_name,company_id from company " +
-					"where company_name = '"+ map.get("homePage1").get("company_name") +"';");
-
+					"where company_name = '"+ map.get("company_name") +"';");
 
 			if(result.next()) {
 				String data = result.getString(1)+ ","+result.getString(2);
@@ -480,13 +467,9 @@ public class ClientRequestManager {
 		}
 	}
 
-	public void getDevice(String values){
+	public void getDevice(Map<String,String> map){
 		try {
-			ObjectMapper mapper = new ObjectMapper(new JsonFactory());
-			Map<String, Map<String, String>> map = mapper.readValue(values,
-					new TypeReference<Map<String, Map<String, String>>>() {
-					});
-			int room_id = Integer.parseInt(map.get("requestLocation2").get("room_id"));
+			int room_id = Integer.parseInt(map.get("room_id"));
 			String request = "select distinct device_wording, device_type_wording, device_price " +
 					"from device d " +
 					"inner join device_type dt on dt.device_type_id = d.device_type_id "+
@@ -508,18 +491,14 @@ public class ClientRequestManager {
 		}
 	}
 
-	public void getDisponibility(String values){
+	public void getDisponibility(Map<String,String> map){
 		try {
-			ObjectMapper mapper = new ObjectMapper(new JsonFactory());
-			Map<String, Map<String, String>> map = mapper.readValue(values,
-					new TypeReference<Map<String, Map<String, String>>>() {
-					});
-			int quantity = Integer.parseInt(map.get("requestLocation3").get("quantity"));
-			String device = map.get("requestLocation3").get("device_wording");
+			int quantity = Integer.parseInt(map.get("quantity"));
+			String device = map.get("device_wording");
 
 			String exceptId = " ";
-			if(map.get("requestLocation3").size() > 2){
-				for(Map.Entry m : map.get("requestLocation3").entrySet()){
+			if(map.size() > 2){
+				for(Map.Entry m : map.entrySet()){
 					if( !((m.getKey()+"").equals("device_wording")) && !((m.getKey()+"").equals("quantity")) ){
 						exceptId = exceptId + " and device_id <> " + m.getValue() + " ";
 					}
@@ -545,16 +524,12 @@ public class ClientRequestManager {
 		}
 	}
 
-	public void getManagerId(String values){
+	public void getManagerId(Map<String,String> map){
 		try {
-			ObjectMapper mapper = new ObjectMapper(new JsonFactory());
-			Map<String, Map<String, String>> map = mapper.readValue(values,
-					new TypeReference<Map<String, Map<String, String>>>() {
-					});
 			String request = "select gs_manager_id " +
 					"from general_services_manager g " +
 					"inner join employee e on g.gs_manager_id = e.employee_id " +
-					"where company_id = "+ map.get("requestLocation5").get("company_id") +";";
+					"where company_id = "+ map.get("company_id") +";";
 			ResultSet result = c.createStatement().executeQuery(request);
 
 			String companyId ="";
@@ -567,17 +542,13 @@ public class ClientRequestManager {
 		}
 	}
 
-	public void insertReservation(String values){
+	public void insertReservation(Map<String,String> map){
 		try {
 			c.setAutoCommit(true);
 
-			ObjectMapper mapper = new ObjectMapper(new JsonFactory());
-			Map<String, Map<String, String>> map = mapper.readValue(values,
-					new TypeReference<Map<String, Map<String, String>>>() {
-					});
 			String requestInsert = " insert into reservation (end_date, start_date, price, gs_manager_id) "+
-					" values ('" + map.get("requestLocation4").get("end_date") + "', '"+ map.get("requestLocation4").get("start_date")+
-					"', '"+ map.get("requestLocation4").get("price") + "', '"+ map.get("requestLocation4").get("gs_manager_id")+ "'); ";
+					" values ('" + map.get("end_date") + "', '"+ map.get("start_date")+
+					"', '"+ map.get("price") + "', '"+ map.get("gs_manager_id")+ "'); ";
 
 			int i = 0;
 			String verifyDataRoom =" select status from room where ";
@@ -586,29 +557,42 @@ public class ClientRequestManager {
 
 			String whereRequestUpdateRoom = "where ";
 			String requestUpdateDevice = "";
-			for(Map.Entry m : map.get("requestLocation4").entrySet()) {
+			StringBuffer verifyDevice;
+			for(Map.Entry m : map.entrySet()) {
 				if((m.getKey()+"").contains("room")){
 					whereRequestUpdateRoom = whereRequestUpdateRoom + " room_id = " + m.getValue() + " or ";
 					verifyDataRoom = verifyDataRoom + " room_id = " + m.getValue() + " or ";
 				}
-				String key = (m.getKey()+"").trim();
-				if( key.matches("\\d+")  ){
-					String whereRequestUpdateDevice =" where";
 
-					String deviceId = m.getValue()+"";
-					deviceId = deviceId.replace("[", "");
-					deviceId = deviceId.replace("]","");
+				if( !((m.getKey()+"").equals("")) ){
+					String key = (m.getKey()+"").trim();
+					if( key.matches("\\d+")  ){
 
-					String[] listDeviceId = deviceId.split(",");
-					for(int y = 0; y < listDeviceId.length; y++){
-						verifyDeviceId.add(listDeviceId[y]);
-						if(y == (listDeviceId.length - 1)) whereRequestUpdateDevice = whereRequestUpdateDevice + " device_id = " + listDeviceId[y]+ ";";
-						else whereRequestUpdateDevice = whereRequestUpdateDevice + " device_id = " + listDeviceId[y]+ " or ";
+						String deviceId = m.getValue()+"";
+						deviceId = deviceId.replace("[", "");
+						deviceId = deviceId.replace("]","");
+
+						String[] listDeviceId = deviceId.split(",");
+						if( listDeviceId.length != 1 ){
+							String whereRequestUpdateDevice =" where";
+							System.out.println(listDeviceId.length);
+							for(int y = 0; y < listDeviceId.length; y++){
+								System.out.println(listDeviceId[y]);
+								verifyDeviceId.add(listDeviceId[y]);
+								whereRequestUpdateDevice = whereRequestUpdateDevice + " device_id = " + listDeviceId[y]+ " or ";
+							}
+							verifyDevice = new StringBuffer(whereRequestUpdateDevice);
+							System.out.println(verifyDevice+"/////////////////////////");
+							if(whereRequestUpdateDevice.contains("or")){
+								verifyDevice.delete(verifyDevice.length() - 4, verifyDevice.length());
+								verifyDevice.append(";");
+							}
+							requestUpdateDevice = requestUpdateDevice + " update device "+
+									"set device_status = 'booked', "+
+									"reservation_id = (select max(reservation_id) from reservation), "+
+									" room_id = " + m.getKey()+ " "+ verifyDevice;
+						}
 					}
-					requestUpdateDevice = requestUpdateDevice + " update device "+
-							"set device_status = 'booked', "+
-							"reservation_id = (select max(reservation_id) from reservation), "+
-							" room_id = " + m.getKey()+ " "+ whereRequestUpdateDevice;
 				}
 			}
 			StringBuffer verifyRoom = new StringBuffer(verifyDataRoom);
@@ -626,17 +610,19 @@ public class ClientRequestManager {
 			}
 
 			for(int k = 0; k < verifyDeviceId.size(); k++){
-				if(k == (verifyDeviceId.size() - 1)) verifyRequestUpdateDevice = verifyRequestUpdateDevice + " device_id = " + verifyDeviceId.get(k)+ ";";
-				else verifyRequestUpdateDevice = verifyRequestUpdateDevice + " device_id = " + verifyDeviceId.get(k)+ " or ";
+				if( !(verifyDeviceId.get(k).equals("")) ) verifyRequestUpdateDevice = verifyRequestUpdateDevice + " device_id = " + verifyDeviceId.get(k)+ " or ";
 			}
 
-			System.out.println("/////////////");
-			System.out.println(verifyRequestUpdateDevice);
+			if(verifyRequestUpdateDevice.contains("or")){
+				System.out.println("test");
+				StringBuffer verifyRoomUpdateDevice = new StringBuffer(verifyRequestUpdateDevice);
+				verifyRoomUpdateDevice.delete(verifyRoomUpdateDevice.length() - 4, verifyRoomUpdateDevice.length());
+				verifyRoomUpdateDevice.append(";");
+				ResultSet resultDevice = c.createStatement().executeQuery(verifyRoomUpdateDevice+"");
 
-			ResultSet resultDevice = c.createStatement().executeQuery(verifyRequestUpdateDevice+"");
-
-			while(resultDevice.next()){
-				if(resultDevice.getString(1).equals("booked")) verifyDataDB = false;
+				while(resultDevice.next()){
+					if(resultDevice.getString(1).equals("booked")) verifyDataDB = false;
+				}
 			}
 
 			if(verifyDataDB){
