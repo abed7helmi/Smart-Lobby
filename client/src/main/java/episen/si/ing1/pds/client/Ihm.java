@@ -9,7 +9,7 @@ import java.awt.event.ActionListener;
 public class Ihm extends JFrame{
     private JFrame frame = new JFrame();
     private JPanel pageBody = new JPanel();
-    public static JButton buttonVoid = new JButton("Annuler");
+    public  static JButton buttonVoid = new JButton("Annuler");
     public  static JButton buttonContinue = new JButton("> Continuer");
     private JPanel pageBody1 ;
     private JPanel pageBody2 ;
