@@ -32,7 +32,6 @@ public class Ihm extends JFrame{
         Indicators indicator = new Indicators();
         pageBody3 = indicator.getIndicator();
 
-
         if(page.equals("realize")){
             pageBody.add(pageBody1,"realize");
             pageBody.add(pageBody2,"consult");
