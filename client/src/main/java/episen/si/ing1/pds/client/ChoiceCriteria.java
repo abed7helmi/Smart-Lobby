@@ -72,7 +72,6 @@ public class ChoiceCriteria{
                 if(!verifySingleOffice) input.put("numberSingleOffice", "0");
                 if(!verifyMeetingRoom) input.put("numberMeetingRoom", "0");
 
-
                 int nbrEmployee = Integer.parseInt(input.get("numberEmployee"));
                 int somme = (Integer.parseInt(input.get("numberOpenSpace")) * 50) + (Integer.parseInt(input.get("numberClosedOffice")) * 20)
                         + (Integer.parseInt(input.get("numberSingleOffice")));
@@ -100,6 +99,7 @@ public class ChoiceCriteria{
                 advancement.setVisible(false);
                 pageBody.repaint();
 
+
                 String request = "requestLocation1";
 
                 Client.map.get(request).put("end_date", input.get("end_date"));
@@ -109,6 +109,9 @@ public class ChoiceCriteria{
                 Client.map.get(request).put("numberSingleOffice", input.get("numberSingleOffice"));
                 Client.map.get(request).put("numberMeetingRoom", input.get("numberMeetingRoom"));
 
+                if(input.containsKey("location")) Client.map.get(request).put("location", input.get("location"));
+
+                System.out.println(Client.map);
                 String result = Client.sendBd(request);
                 changePage(result);
             }
@@ -164,6 +167,10 @@ public class ChoiceCriteria{
 
         //number of employee
         JButton buttonValidate = new JButton("Faire une proposition");
+        buttonValidate.setBackground(new Color(255, 255,255));
+        buttonValidate.setForeground(Color.BLACK);
+        buttonValidate.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+
         JLabel nbEmployee = new JLabel("Nombre de collaborateur :");
         nbEmployee = styleJLabelReservation(nbEmployee,20, 140,250,50);
 
@@ -189,10 +196,7 @@ public class ChoiceCriteria{
                     valueMeetingRoom.setText("");
                     valueClosedOffice.setText("");
                     valueSingleOffice.setText("");
-                }else{
-                    messageErrorEmployee.setText("X");
-                    messageErrorEmployee.setForeground(Color.RED);
-                }
+                } else if( !(m.equals("")) ) messageError(messageErrorEmployee);
             }
         });
 
@@ -237,10 +241,7 @@ public class ChoiceCriteria{
                     input.put("numberOpenSpace", ((JTextField)source).getText().trim());
                     messageErrorOpenSpace.setText(" ");
                     if(verifMap()) buttonContinue.setEnabled(true);
-                }else {
-                    messageErrorOpenSpace.setText("X");
-                    messageErrorOpenSpace.setForeground(Color.red);
-                }
+                }else if( !(m.equals("")) ) messageError(messageErrorOpenSpace);
             }
         });
 
@@ -271,10 +272,7 @@ public class ChoiceCriteria{
                     input.put("numberMeetingRoom",((JTextField)source).getText().trim());
                     messageErrorMeetingRoom.setText(" ");
                     if(verifMap()) buttonContinue.setEnabled(true);
-                }else {
-                    messageErrorMeetingRoom.setText("X");
-                    messageErrorMeetingRoom.setForeground(Color.RED);
-                }
+                }else if( !(m.equals("")) ) messageError(messageErrorMeetingRoom);
             }
         });
 
@@ -305,10 +303,7 @@ public class ChoiceCriteria{
                     input.put("numberSingleOffice",((JTextField)source).getText().trim());
                     messageErrorSingleOffice.setText(" ");
                     if(verifMap()) buttonContinue.setEnabled(true);
-                }else {
-                    messageErrorSingleOffice.setText("X");
-                    messageErrorSingleOffice.setForeground(Color.red);
-                }
+                }else if( !(m.equals("")) ) messageError(messageErrorSingleOffice);
             }
         });
 
@@ -345,10 +340,7 @@ public class ChoiceCriteria{
                     input.put("numberClosedOffice",((JTextField)source).getText().trim());
                     messageErrorClosedOffice.setText(" ");
                     if(verifMap()) buttonContinue.setEnabled(true);
-                }else {
-                    messageErrorClosedOffice.setText("X");
-                    messageErrorClosedOffice.setForeground(Color.red);
-                }
+                }else if( !(m.equals("")) ) messageError(messageErrorClosedOffice);
             }
         });
 
@@ -490,12 +482,13 @@ public class ChoiceCriteria{
             c.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    input.put("location", data);
+                    System.out.println("test"+data); input.put("location", data); System.out.println("test"+input);
                 }
             });
         }
         c.setBackground(Color.WHITE);
         location.add(c);
+        System.out.println(input);
     }
     public JCheckBox styleJCheckBoxReservation(JCheckBox c, int x, int y, int w, int h){
         c.setBackground(Color.WHITE);
@@ -517,5 +510,9 @@ public class ChoiceCriteria{
     public void changePage(String proposals){
         Choice selectChoice = new Choice(input, frame);
         selectChoice.choice(pageBody, proposals);
+    }
+    public void messageError (JTextField message){
+        message.setText("X");
+        message.setForeground(Color.red);
     }
 }

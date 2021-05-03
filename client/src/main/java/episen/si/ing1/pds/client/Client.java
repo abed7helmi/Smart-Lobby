@@ -63,7 +63,7 @@ public class Client {
 			ObjectMapper objectMapper = new ObjectMapper();
 			String data = objectMapper.writeValueAsString(map);
 
-			System.out.println(request+"#"+data);
+			//System.out.println(request+"#"+data);
 
 			episenClientConfig = System.getenv(configClient);
 			final ObjectMapper mapper = new ObjectMapper(new YAMLFactory());

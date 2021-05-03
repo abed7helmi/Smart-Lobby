@@ -16,7 +16,7 @@ public class ChoiceDevice {
     private String room_id ="";
     private final JFrame frame;
     private Map<String , String> input = new HashMap<>();
-    private final JButton buttonValidate = new JButton("Valider");
+    private final JButton buttonValidate = new JButton("> Valider");
     private JPanel pageBody;
     private final String page = "device";
     private JTextField selectionE = new JTextField();
@@ -78,6 +78,11 @@ public class ChoiceDevice {
         JPanel advancement = rentalAdvancement.rentalAdvancement();
         pageBody.add(advancement, BorderLayout.CENTER);
         buttonValidate.setBounds(780, 10, 100, 50);
+        buttonValidate.setBackground(new Color(255, 255,255));
+        buttonValidate.setForeground(Color.BLACK);
+        buttonValidate.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+
+        buttonValidate.setEnabled(false);
         buttonValidate.setEnabled(false);
         buttonValidate.addActionListener(new ActionListener() {
             @Override
