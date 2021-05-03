@@ -20,7 +20,7 @@ public class HomePage extends JFrame {
         title.setBackground(Color.CYAN);
         title.add(l1);
 
-        JLabel l2 = new JLabel("Deja inscrite : ");
+        JLabel l2 = new JLabel("Saisir le nom : ");
         JTextField companyName = new JTextField(10);
         companyName.setBounds(150, 150,  200, 50);
         l2.setBounds(50, 165, 100, 20);

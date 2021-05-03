@@ -13,7 +13,6 @@ public class Choice{
     private final String page = "choice";
     private Map<String, String> input = new HashMap<>();
     private final JFrame frame;
-    private final JButton buttonContinue = new JButton("> Continuer");
     private JTextField selected = new JTextField("Vous avez choisi : ");
     private JPanel pageBody;
     private Map<String , Map<String, Map<String ,String>>> mapProposals = new HashMap<>();
@@ -32,13 +31,8 @@ public class Choice{
         RentalAdvancement rentalAdvancement = new RentalAdvancement(page);
         JPanel advancement = rentalAdvancement.rentalAdvancement();
 
-        buttonContinue.setBounds(780, 10, 100, 50);
-        buttonContinue.setBackground(new Color(255,255,255));
-        buttonContinue.setForeground(Color.black);
-        buttonContinue.setBorder(BorderFactory.createLineBorder(Color.black));
-
-        buttonContinue.setEnabled(false);
-        buttonContinue.addActionListener(new ActionListener() {
+        Ihm.buttonContinue.setEnabled(false);
+        Ihm.buttonContinue.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String order = (selected.getText().split(":")[1]).trim();
@@ -47,7 +41,19 @@ public class Choice{
                 changePage(order,proposalSelected);
             }
         });
-        view.add(buttonContinue);
+
+        Ihm.buttonVoid.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println(input);
+                Menu Menu = new Menu("Smart Lobby", input.get("company_id"));
+                input.clear();
+                frame.dispose();
+            }
+        });
+        view.add(Ihm.buttonVoid);
+        view.add(Ihm.buttonContinue);
+
         pageBody.add(advancement, BorderLayout.CENTER);
         pageBody.add(view, BorderLayout.SOUTH);
         pageBody.repaint();
@@ -65,22 +71,18 @@ public class Choice{
 
         JPanel view = new JPanel();
         view.setBackground(Color.WHITE);
-        sizeComposant(new Dimension(950,600), view);
+        Ihm.sizeComposant(new Dimension(950,600), view);
         view.setLayout(null);
 
         JTextField order = new JTextField("Choisissez une offre : ");
-        order = styleJTextFieldReservation(order, 20, 10, 320, 50, Color.white, Color.white);
+        order = Ihm.styleJTextFieldReservation(order, 20, 10, 320, 50, Color.WHITE, Color.white);
         order.setFont(new Font("Serif", Font.BOLD, 20));
         order.setForeground(Color.black);
         view.add(order);
 
-        selected = styleJTextFieldReservation(selected, 360, 10, 150, 50, Color.WHITE, Color.WHITE);
+        selected = Ihm.styleJTextFieldReservation(selected, 360, 10, 150, 50, Color.WHITE, Color.white);
         selected.setForeground(Color.black);
         view.add(selected);
-
-        System.out.println("///////////////");
-        System.out.println(mapProposals.get("proposal1").size());
-        System.out.println(input);
 
         int nbRoom = Integer.parseInt(input.get("numberMeetingRoom")) + Integer.parseInt(input.get("numberSingleOffice")) +
                 Integer.parseInt(input.get("numberOpenSpace")) + Integer.parseInt(input.get("numberClosedOffice"));
@@ -132,8 +134,9 @@ public class Choice{
         }
 
         JPanel proposal = new JPanel();
+        proposal.setBorder(new BorderPanel());
+        proposal.setBackground(Color.white);
         proposal.setLayout(null);
-        proposal.setBackground(new Color(150, 75,0));
         if( nameBuildings.size() != 0){
             Iterator<String> itrName = nameBuildings.iterator();
             StringBuilder listName = new StringBuilder();
@@ -141,9 +144,8 @@ public class Choice{
                 listName.append(itrName.next()+ ",");
             }
             listName.deleteCharAt(listName.length()- 1);
-
             JTextField building = new JTextField("Batiment : ");
-            building = styleJTextFieldReservation(building, 20, 20, 350, 20, new Color(150, 75,0), new Color(150, 75,0));
+            building = Ihm.styleJTextFieldReservation(building, 20, 20, 350, 20, Color.WHITE, Color.white);
             building.setText(building.getText() +listName);
 
             proposal.add(building);
@@ -158,32 +160,19 @@ public class Choice{
             listFloor.deleteCharAt(listFloor.length() - 1);
 
             JTextField floor = new JTextField("Etage(s) : ");
-            floor = styleJTextFieldReservation(floor, 20, 80, 350, 20, new Color(150, 75,0), new Color(150, 75,0));
+            floor = Ihm.styleJTextFieldReservation(floor, 20, 80, 350, 20, Color.WHITE, Color.white);
             floor.setText(floor.getText() +listFloor);
 
             proposal.add(floor);
 
             JTextField price = new JTextField("Prix sans euipement : ");
-            price = styleJTextFieldReservation(price, 20, 140, 350, 20, new Color(150, 75,0), new Color(150, 75,0));
+            price = Ihm.styleJTextFieldReservation(price, 20, 140, 350, 20, Color.WHITE, Color.white);
             price.setText(price.getText() + priceProposal);
 
             proposal.add(price);
         }
 
         return proposal;
-    }
-    public void sizeComposant(Dimension dim, Component c){
-        c.setPreferredSize(dim);
-        c.setMaximumSize(dim);
-        c.setMinimumSize(dim);
-    }
-    public JTextField styleJTextFieldReservation(JTextField t, int x, int y, int w, int h, Color c1 , Color c2) {
-        t.setForeground(Color.white);
-        t.setEditable(false);
-        t.setBackground(c1);
-        t.setBorder(BorderFactory.createLineBorder(c2));
-        t.setBounds(x, y, w, h);
-        return t;
     }
 
     public void changePage(String order, Map<String ,Map<String ,String>> proposalSelected){
@@ -201,7 +190,7 @@ public class Choice{
             public void actionPerformed(ActionEvent e) {
                 selected.setText("Vous avez choisi : " + numberProposal);
                 proposalSelected = proposal;
-                buttonContinue.setEnabled(true);
+                Ihm.buttonContinue.setEnabled(true);
             }
         });
         display.add(button);

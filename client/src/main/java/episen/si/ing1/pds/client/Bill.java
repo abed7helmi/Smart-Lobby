@@ -26,12 +26,6 @@ public class Bill {
         proposalSelected = p;
         configRooms = config;
         listDeviceIdRoom = listIdRoom;
-        System.out.println(":::::::::::::::::::::::");
-        System.out.println(configRooms);
-        System.out.println(":::::::::::::::::::::::");
-        System.out.println(input);
-        System.out.println(":::::::::::::::::::::::");
-        System.out.println(proposalSelected);
     }
 
     public void confirmation(JPanel pb){
@@ -59,16 +53,20 @@ public class Bill {
         validate.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                prepareRequest();
-                if(  !(response.equals("Not done"))  ){
+                response = prepareRequest();
+                if(  !(response.equals("Not done") && !(response.equals("")))  ){
                     frame.dispose();
                     Menu menu = new Menu("Smart Lobby", input.get("company_id"));
+                    restartData();
                     menu.reservationDone(numberRoom);
+                } else{
+                    Ihm ihm = new Ihm("Smart Lobby","realize", input.get("company_id"));
+                    restartData();
+                    frame.dispose();
+                    JOptionPane.showMessageDialog(null,"Nous sommes desoles mais l'offre n'est plus disponible. Veuillez reessayer.");
                 }
-
             }
         });
-
         JPanel table = new JPanel(new BorderLayout());
         table.setBounds(20,100,700,400);
 
@@ -93,7 +91,7 @@ public class Bill {
         table.add(scroll, BorderLayout.CENTER);
 
         JTextField bill = new JTextField("Voici un recapitulatif de votre commande : ");
-        styleJTextFieldReservation(bill, 20,20,600,50,Color.white, Color.white, view);
+        bill = Ihm.styleJTextFieldReservation(bill, 20,20,600,50,Color.white, Color.white);
         bill.setBorder(BorderFactory.createMatteBorder(0,0, 1, 0, Color.black));
         bill.setFont(new Font("Serif", Font.BOLD, 20));
 
@@ -104,8 +102,10 @@ public class Bill {
         JTextField valuePrice = new JTextField(priceTotal()+"");
         valuePrice.setForeground(Color.BLACK);
 
-        styleJTextFieldReservation(priceJTextField, 750,100,65,50, Color.WHITE,Color.white, view);
-        styleJTextFieldReservation(valuePrice, 825,100,100,50, Color.WHITE,Color.white, view);
+        priceJTextField = Ihm.styleJTextFieldReservation(priceJTextField, 750,100,65,50, Color.WHITE,Color.white);
+        valuePrice = Ihm.styleJTextFieldReservation(valuePrice, 825,100,100,50, Color.WHITE,Color.white);
+        view.add(priceJTextField);
+        view.add(valuePrice);
 
         view.add(table);
         view.add(validate);
@@ -116,13 +116,6 @@ public class Bill {
         c.setPreferredSize(dim);
         c.setMaximumSize(dim);
         c.setMinimumSize(dim);
-    }
-    public void styleJTextFieldReservation(JTextField t, int x, int y, int w, int h, Color c1 , Color c2, JPanel view) {
-        t.setEditable(false);
-        t.setBackground(c1);
-        t.setBorder(BorderFactory.createLineBorder(c2));
-        t.setBounds(x, y, w, h);
-        view.add(t);
     }
 
     public String[][] fillTable(){
@@ -140,7 +133,7 @@ public class Bill {
         return data;
     }
 
-    public void prepareRequest(){
+    public String prepareRequest(){
         Client.map.get("requestLocation5").put("company_id", input.get("company_id"));
         String manager_id = Client.sendBd("requestLocation5");
         System.out.println(input);
@@ -160,8 +153,9 @@ public class Bill {
             if( !((map.getValue()+"").equals("")) ) Client.map.get("requestLocation4").put(map.getKey()+"" , map.getValue()+"");
         }
         System.out.println(Client.map);
-        String response = Client.sendBd("requestLocation4");
+        response = Client.sendBd("requestLocation4");
         System.out.println(response);
+        return response;
     }
     public Float priceTotal(){
         float price = 0;
@@ -174,5 +168,12 @@ public class Bill {
 
         Client.map.get("requestLocation4").put("price", price+"");
         return price;
+    }
+
+    public void restartData(){
+        input.clear();
+        configRooms.clear();
+        proposalSelected.clear();
+        listDeviceIdRoom.clear();
     }
 }

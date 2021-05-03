@@ -16,6 +16,7 @@ import java.net.Socket;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -46,6 +47,24 @@ public class ClientRequestManager {
 					switch (requestType) {
 					case "companyReservation":
 						companyReservation(values);
+						break;
+					case "reservationFloor":
+						reservationFloor(values);
+						break;
+					case "floorRoom":
+						floorRoom(values);
+						break;
+					case "roomLocation":
+						roomLocation(values);
+						break;
+					case "locationEquipment":
+						locationEquipment(values);
+						break;
+					case "reservationEquipment":
+						reservationEquipment(values);
+						break;
+					case "setEquipment":
+						setEquipment(values);
 						break;
 					case "homePage1":
 						firstPage(values);
@@ -140,16 +159,113 @@ public class ClientRequestManager {
 		} catch (JsonMappingException e) {} catch (JsonProcessingException e) {} catch (SQLException e) {}
 		
 	}
+<<<<<<< HEAD
 	public void getWindow(String values) throws SQLException {
 		try {
 			ObjectMapper mapper = new ObjectMapper(new JsonFactory());
 			String request="select device.device_id from device inner join windows on(device.device_id=windows.device_id)";
+=======
+	
+	public void reservationFloor(String values) {
+		try {
+			ObjectMapper mapper = new ObjectMapper(new JsonFactory());
+			Map<String, Map<String, String>> map = mapper.readValue(values,new TypeReference<Map<String, Map<String, String>>>(){});
+			String request = "select distinct(floor_id),floor_number,building_name from (room natural join floor) natural join building where reservation_id="+map.get("reservationFloor").get("reservation_id");
+			ResultSet rs = c.createStatement().executeQuery(request);
+			Map<String,Map<String, String>> result = new HashMap<String,Map<String, String>>();
+			int i=0;
+			while(rs.next()) {
+				Map<String, String> resultmap = new HashMap<String, String>();
+				resultmap.put("floor_id", rs.getString(1));
+				resultmap.put("floor_number", rs.getString(2));
+				resultmap.put("building_name", rs.getString(3));
+				result.put(""+i++, resultmap);
+			}
+			output.println(mapper.writeValueAsString(result));
+		} catch (JsonMappingException e) {} catch (JsonProcessingException e) {} catch (SQLException e) {}
+		
+	}
+	
+	public void floorRoom(String values) {
+		try {
+			ObjectMapper mapper = new ObjectMapper(new JsonFactory());
+			Map<String, Map<String, String>> map = mapper.readValue(values,new TypeReference<Map<String, Map<String, String>>>(){});
+			String request = "select room_id,room_wording,room_type_id from room where reservation_id="+map.get("floorRoom").get("reservation_id")+" and floor_id="+map.get("floorRoom").get("floor_id");
+			ResultSet rs = c.createStatement().executeQuery(request);
+			Map<String,Map<String, String>> result = new HashMap<String,Map<String, String>>();
+			int i=0;
+			while(rs.next()) {
+				Map<String, String> resultmap = new HashMap<String, String>();
+				resultmap.put("room_id", rs.getString(1));
+				resultmap.put("room_wording", rs.getString(2));
+				resultmap.put("room_type_id", rs.getString(3));
+				result.put(""+i++, resultmap);
+			}
+			output.println(mapper.writeValueAsString(result));
+		} catch (JsonMappingException e) {} catch (JsonProcessingException e) {} catch (SQLException e) {}
+		
+	}
+	
+	public void roomLocation(String values) {
+		try {
+			ObjectMapper mapper = new ObjectMapper(new JsonFactory());
+			Map<String, Map<String, String>> map = mapper.readValue(values,new TypeReference<Map<String, Map<String, String>>>(){});
+			String request = "select location_id,occupied_location,is_sensor,x_position,y_position from location where room_id="+map.get("roomLocation").get("room_id");
+			ResultSet rs = c.createStatement().executeQuery(request);
+			Map<String,Map<String, String>> result = new HashMap<String,Map<String, String>>();
+			int i=0;
+			while(rs.next()) {
+				Map<String, String> resultmap = new HashMap<String, String>();
+				resultmap.put("location_id", rs.getString(1));
+				resultmap.put("occupied_location", rs.getString(2));
+				resultmap.put("is_sensor", rs.getString(3));
+				resultmap.put("x_position", rs.getString(4));
+				resultmap.put("y_position", rs.getString(5));
+				result.put(""+i++, resultmap);
+			}
+			output.println(mapper.writeValueAsString(result));
+		} catch (JsonMappingException e) {} catch (JsonProcessingException e) {} catch (SQLException e) {}
+		
+	}
+	
+	public void locationEquipment(String values) {
+		try {
+			ObjectMapper mapper = new ObjectMapper(new JsonFactory());
+			Map<String, Map<String, String>> map = mapper.readValue(values,new TypeReference<Map<String, Map<String, String>>>(){});
+			String request = "select device_id,device_wording,device_active,device_price,reservation_id,is_sensor from device natural join location where location_id="+map.get("locationEquipment").get("location_id");
+			ResultSet rs = c.createStatement().executeQuery(request);
+			Map<String, String> result = new HashMap<String, String>();
+			while(rs.next()) {
+				result.put("device_id", rs.getString(1));
+				result.put("device_wording", rs.getString(2));
+				result.put("device_active", rs.getString(3));
+				result.put("device_price", rs.getString(4));
+				result.put("reservation_id", rs.getString(5));
+				result.put("is_sensor", rs.getString(6));
+			}
+			output.println(mapper.writeValueAsString(result));
+		} catch (JsonMappingException e) {} catch (JsonProcessingException e) {} catch (SQLException e) {}
+		
+	}
+	
+	public void reservationEquipment(String values) {
+		try {
+			ObjectMapper mapper = new ObjectMapper(new JsonFactory());
+			Map<String, Map<String, String>> map = mapper.readValue(values,new TypeReference<Map<String, Map<String, String>>>(){});
+			String request = "";
+			if(map.get("reservationEquipment").get("is_sensor").equals("f")) {
+				request = "select device_id,device_wording,device_price from device where device_type_id<11 and location_id is null and reservation_id="+map.get("reservationEquipment").get("reservation_id");
+			}else {
+				request = "select device_id,device_wording,device_price from device where device_type_id>10 and location_id is null and reservation_id="+map.get("reservationEquipment").get("reservation_id");
+			}
+>>>>>>> 4f114ceef59c1b267250ccc22ae20f2db091aec5
 			ResultSet rs = c.createStatement().executeQuery(request);
 			Map<String,Map<String, String>> result = new HashMap<String,Map<String, String>>();
 			int i=0;
 			while(rs.next()) {
 				Map<String, String> resultmap = new HashMap<String, String>();
 				resultmap.put("device_id", rs.getString(1));
+<<<<<<< HEAD
 				result.put(""+i++, resultmap);
 			}
 			output.println(mapper.writeValueAsString(result));
@@ -157,6 +273,42 @@ public class ClientRequestManager {
 	}
 
 
+=======
+				resultmap.put("device_wording", rs.getString(2));
+				resultmap.put("device_price", rs.getString(3));
+				result.put(""+i++, resultmap);
+			}
+			output.println(mapper.writeValueAsString(result));
+		} catch (JsonMappingException e) {} catch (JsonProcessingException e) {} catch (SQLException e) {}
+		
+	}
+	
+	public void setEquipment(String values) {
+		try {
+			
+			ObjectMapper mapper = new ObjectMapper(new JsonFactory());
+			Map<String, Map<String, String>> map = mapper.readValue(values,new TypeReference<Map<String, Map<String, String>>>(){});
+			String location = map.get("setEquipment").get("location_id");
+			String newDevice = map.get("setEquipment").get("new_device_id");
+			String oldDevice = map.get("setEquipment").get("old_device_id");
+	
+			Statement s = c.createStatement();
+			if(oldDevice.isEmpty()) {
+				s.executeUpdate("update device set device_placed='t', location_id="+location+" where device_id="+newDevice);
+				s.executeUpdate("update location set occupied_location='t' where location_id="+location);
+			}else if(newDevice.isEmpty()) {
+				s.executeUpdate("update device set device_placed='f', location_id=null where device_id="+oldDevice);
+				s.executeUpdate("update location set occupied_location='f' where location_id="+location);
+			}else {
+				s.executeUpdate("update device set device_placed='t', location_id="+location+" where device_id="+newDevice);
+				s.executeUpdate("update device set device_placed='f', location_id=null where device_id="+oldDevice);
+			}
+			
+			output.println("Done");
+		} catch (JsonMappingException e) {} catch (JsonProcessingException e) {} catch (SQLException e) {}
+	}
+	
+>>>>>>> 4f114ceef59c1b267250ccc22ae20f2db091aec5
 	public void getChoice(String values){
 		try {
 			ObjectMapper mapper = new ObjectMapper(new JsonFactory());
