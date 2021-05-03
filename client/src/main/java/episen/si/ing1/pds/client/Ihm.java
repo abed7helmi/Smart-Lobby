@@ -8,17 +8,16 @@ import java.awt.event.ActionListener;
 
 public class Ihm extends JFrame{
     private JFrame frame = new JFrame();
-    private JPanel pageBody = new JPanel();
+    JPanel pageBody = new JPanel();
     private JPanel pageBody1 ;
     private JPanel pageBody2 ;
     private JPanel pageBody3 ;
     private JPanel pageBody4 ;
     private String company_id ="";
-
+    CardLayout pages = new CardLayout();
     public Ihm(String name, String page, String id) {
         company_id = id;
         frame = this;
-        CardLayout pages = new CardLayout();
 
         pageBody.setLayout(pages);
         ChoiceCriteria reservation = new ChoiceCriteria(frame, company_id);
@@ -30,25 +29,33 @@ public class Ihm extends JFrame{
         Indicators indicator = new Indicators();
         pageBody3 = indicator.getIndicator();
 
-
-
+        Window window=new Window();
+        pageBody4=window.firstMenu;
 
         if(page.equals("realize")){
             pageBody.add(pageBody1,"realize");
             pageBody.add(pageBody2,"consult");
+            pageBody.add(pageBody4,"window");
             pageBody.add(pageBody3,"indicator");
             //pageBody.add(pageBody3,"staff");
             //pageBody.add(pageBody1,"page1");
         } else if(page.equals("consult")){
             pageBody.add(pageBody2,"consult");
             pageBody.add(pageBody1,"realize");
+            pageBody.add(pageBody4,"window");
             pageBody.add(pageBody3,"indicator");
-
         }
         else if(page.equals("indicator")){
             pageBody.add(pageBody3,"indicator");
             pageBody.add(pageBody2,"consult");
             pageBody.add(pageBody1,"realize");
+            pageBody.add(pageBody4,"window");
+        } else if(page.equals("window")){
+            pageBody.add(pageBody4,"window");
+            pageBody.add(pageBody2,"consult");
+            pageBody.add(pageBody1,"realize");
+            pageBody.add(pageBody3,"indicator");
+
         }
 
 
@@ -90,12 +97,16 @@ public class Ihm extends JFrame{
         setColor(staff,Color.white,new Color(0, 102,204));
 
         JButton configWindow = new JButton("Configurer fenêtre");
-        staff.addActionListener(new ActionListener() {
+        configWindow.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 pages.show(pageBody,"window");
+
             }
         });
+        sizeComposant(new Dimension(Integer.MAX_VALUE, 75), configWindow);
+        setColor(configWindow,Color.white,new Color(0, 102,204));
+
         JButton indicatorButton = new JButton("Indicateurs et locations");
         indicatorButton.addActionListener(new ActionListener() {
             @Override
@@ -146,6 +157,7 @@ public class Ihm extends JFrame{
         menu.add(realize);
         menu.add(consult);
         menu.add(staff);
+        menu.add(configWindow);
         menu.add(indicatorButton);
         menu.add(Box.createGlue());
         menu.add(underMenu);

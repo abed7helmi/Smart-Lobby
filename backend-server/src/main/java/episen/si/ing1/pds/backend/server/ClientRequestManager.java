@@ -1,5 +1,13 @@
 package episen.si.ing1.pds.backend.server;
 
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -12,13 +20,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class ClientRequestManager {
 
@@ -64,6 +65,9 @@ public class ClientRequestManager {
 					case "requestLocation5":
 						insertReservation(values);
 						break;
+						case "requestWindow1":
+							getWindow(values);
+							break;
 					}
 
 					/*switch (requestType) {
@@ -136,7 +140,23 @@ public class ClientRequestManager {
 		} catch (JsonMappingException e) {} catch (JsonProcessingException e) {} catch (SQLException e) {}
 		
 	}
-	
+	public void getWindow(String values) throws SQLException {
+		try {
+			ObjectMapper mapper = new ObjectMapper(new JsonFactory());
+			String request="select device.device_id from device inner join windows on(device.device_id=windows.device_id)";
+			ResultSet rs = c.createStatement().executeQuery(request);
+			Map<String,Map<String, String>> result = new HashMap<String,Map<String, String>>();
+			int i=0;
+			while(rs.next()) {
+				Map<String, String> resultmap = new HashMap<String, String>();
+				resultmap.put("device_id", rs.getString(1));
+				result.put(""+i++, resultmap);
+			}
+			output.println(mapper.writeValueAsString(result));
+		} catch (JsonMappingException e) {} catch (JsonProcessingException e) {}
+	}
+
+
 	public void getChoice(String values){
 		try {
 			ObjectMapper mapper = new ObjectMapper(new JsonFactory());
