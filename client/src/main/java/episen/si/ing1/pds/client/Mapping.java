@@ -265,7 +265,7 @@ public class Mapping {
 			ObjectMapper mapper = new ObjectMapper(new JsonFactory());
 			Map<String, String> equipmentPlaced = mapper.readValue(Client.sendBd("locationEquipment"),new TypeReference<Map<String, String>>(){});
 			JLabel info = new JLabel();
-			info.setFont(titlefont);
+			
 			selection4.add(info);
 			if(equipmentPlaced.size()>0) {
 				info.setText("L'emplacement N°"+location_id+" est actuellement occupé par:");
@@ -287,6 +287,7 @@ public class Mapping {
 				selection6.revalidate();
 			}else {
 				info.setText("L'emplacement N°"+location_id+" est actuellement libre.");
+				info.setFont(titlefont);
 			}
 			selection4.revalidate();
 			
