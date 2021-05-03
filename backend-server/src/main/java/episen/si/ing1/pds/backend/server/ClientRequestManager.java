@@ -363,6 +363,7 @@ public class ClientRequestManager {
 			String permission=map.get("requestDetailBadge").get("permission");
 			String per[]=permission.split(",");
 			int idpermission=Integer.parseInt(getNbr(per[0]));
+			String namepermission=per[1].split(":")[1];
 
 
 
@@ -372,12 +373,31 @@ public class ClientRequestManager {
 			logger.debug("c bon");
 
 			StringBuilder sb = new StringBuilder();
+
+			sb.append(namepermission);
+
+			sb.append("//");
+
+
+
 			while (result.next()) {
 
-				sb.append("device_id=" + result.getInt(1) + ",device_wording=" + result.getString(2) + ",device_active=" + result.getBoolean(3) + ",room_id=" + result.getInt(4) +",number_validity_use=" + result.getInt(5) +",equipement_validity_period="+ result.getDate(6) +"#");
+				///sb.append("device_id=" + result.getInt(1) + ",device_wording=" + result.getString(2) + ",device_active=" + result.getBoolean(3) + ",room_id=" + result.getInt(4) +",number_validity_use=" + result.getInt(5) +",equipement_validity_period="+ result.getDate(6) +"#");
+				sb.append(result.getInt(1) + "," + result.getString(2) + "," + result.getBoolean(3) + "," + result.getInt(4) +"," + result.getInt(5) +","+ result.getDate(6) +","+result.getInt(1)+"#");
 			}
 
-			output.println(sb.toString());
+			logger.debug("c bon 3");
+
+            ResultSet result2 = c.createStatement().executeQuery("select device.device_id,device.device_wording,device.room_id from device inner join reservation on reservation.reservation_id=device.reservation_id inner join general_services_manager on general_services_manager.gs_manager_id=reservation.gs_manager_id inner join employee on employee.employee_id=general_services_manager.gs_manager_id where employee.company_id='" + id_company+"';");
+
+            sb.append("//");
+
+            while (result2.next()) {
+
+                sb.append("device_id=" + result2.getInt(1) + ",device_wording=" + result2.getString(2) + ",room_id=" + result2.getInt(3) +"#");
+            }
+
+            output.println(sb.toString());
 
 
 
