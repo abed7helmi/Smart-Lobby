@@ -49,7 +49,6 @@ public class Client {
 			Properties props = new Properties();
 			props.load(Thread.currentThread().getContextClassLoader().getResourceAsStream("connection.properties"));
 
-			//Ihm ihm = new Ihm("Smart Lobby");
 			HomePage homePage = new HomePage();
 
 			//String requestType = commandLine.getOptionValue("requesttype");
@@ -57,10 +56,13 @@ public class Client {
 			episenClientFileLocation = System.getenv(episenClientJson);
 			String values = Files.readString(Path.of(episenClientFileLocation));
 
-			ObjectMapper mapper = new ObjectMapper(new JsonFactory());
-			map = mapper.readValue(values,
+			ObjectMapper jmapper = new ObjectMapper(new JsonFactory());
+			map = jmapper.readValue(values,
 					new TypeReference<Map<String, Map<String, String>>>() {});
 
+			episenClientConfig = System.getenv(configClient);
+			final ObjectMapper ymapper = new ObjectMapper(new YAMLFactory());
+			config = ymapper.readValue(new File(episenClientConfig), ClientConfig.class);
 
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -72,17 +74,22 @@ public class Client {
 		try{
 			ObjectMapper objectMapper = new ObjectMapper();
 			String data = objectMapper.writeValueAsString(map.get(request));
+<<<<<<< HEAD
 
 			episenClientConfig = System.getenv(configClient);
 			final ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
 			config = mapper.readValue(new File(episenClientConfig), ClientConfig.class);
 
+=======
+>>>>>>> 9a7a43551380600b39b7ba24ede8745975758cfd
 			Socket socket = new Socket(config.getIpAddress(), config.getPort());
-
 			PrintWriter output = new PrintWriter(socket.getOutputStream(), true);
 			BufferedReader input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> 9a7a43551380600b39b7ba24ede8745975758cfd
 			output.println(request+"#"+data);
 			return input.readLine();
 		} catch(Exception e) {
