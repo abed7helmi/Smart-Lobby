@@ -2,9 +2,13 @@ package episen.si.ing1.pds.client;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class MyPermission {
@@ -13,17 +17,29 @@ public class MyPermission {
     private JPanel view;
     private JButton confirm;
 
+    private String idcompany;
+    private String result;
+    private List<String> listEquipment = new ArrayList<>();
+    private List<String> listPermission = new ArrayList<>();
+    private String[] equipementArray;
+    private String[] permissionArray;
+
     private Map<String, String> input = new HashMap<>();
 
 
-    public MyPermission(JFrame f){
+    public MyPermission(JFrame f,String id,String result){
         input.clear();
         this.frame = f;
+        this.idcompany=id;
+        this.result=result;
 
     }
 
 
     public void choicepermission(JPanel pb){
+
+
+
         this.pageBody = pb;
         pageBody.setBackground(Color.WHITE);
         view = view();
@@ -66,22 +82,60 @@ public class MyPermission {
         device = styleJTextFieldBadge( device, 50, 50, 140, 20);
         panneau1.add(device);
 
-        String[] devices = {"Fenetre X45","PC 48","Capteur 45"};
-        JComboBox mydevice = new JComboBox(devices);
-        mydevice.setEditable(true);
-        mydevice.setBounds(200,50, 180, 20);
+
+
+        String devices=result.split("//")[2];
+
+        String[] value = devices.split("#");
+        //System.out.println("sa7ayt;");
+        //System.out.println(value[0]);
+
+        for(int i = 0; i< value.length; i++){
+            listEquipment.add(value[i]);
+        }
+
+
+
+        equipementArray = new String[listEquipment.size()];
+        equipementArray = listEquipment.toArray(equipementArray);
+
+
+       // String[] devices = {"Fenetre X45","PC 48","Capteur 45"};
+        JComboBox mydevice = new JComboBox(equipementArray);
+        mydevice.setEditable(false);
+        mydevice.setForeground(Color.BLUE);
+        mydevice.setFont(new Font("Arial", Font.BOLD, 9));
+        mydevice.setMaximumRowCount(5);
+        mydevice.setBounds(200,50, 300, 20);
         panneau1.add(mydevice);
+
+
+
+
+        mydevice.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent event) {
+                /*mydevice.setVisible(true);
+                JComboBox<String> combo = (JComboBox<String>) event.getSource();
+                String selectedPermission = (String) combo.getSelectedItem();
+                input.put("permission", selectedPermission);*/
+
+            }
+        });
+
+
 
 
         JTextField PermissionName = new JTextField("Libelle droit:");
         PermissionName = styleJTextFieldBadge(PermissionName, 350, 15, 80, 20);
 
         JTextField valuePermissionName = new JTextField(" ");
-        valuePermissionName.setBounds(440, 15, 100, 20);
+        valuePermissionName.setBounds(440, 15, 250, 20);
 
 
         confirm = new JButton("Confirmer");
-        confirm.setEnabled(false);
+        confirm.setEnabled(true);
         JButton cancel = new JButton("Annuler");
 
 
@@ -98,7 +152,30 @@ public class MyPermission {
 
 
 
-        Object[][] donnees = {
+
+        String namepermission=result.split("//")[0];
+
+
+        valuePermissionName.setText(namepermission);
+
+
+        String permissions=result.split("//")[1];
+        String[] permissionvalue = permissions.split("#");
+
+        for(int i = 0; i< permissionvalue.length; i++){
+            listPermission.add(permissionvalue[i]);
+        }
+
+        permissionArray = new String[listPermission.size()];
+        permissionArray = listPermission.toArray(permissionArray);
+
+        for (int i = 0; i < permissionArray.length; i++) {
+                System.out.println(permissionArray[i]);
+        }
+
+        //Object[][] donnees =permissionArray;
+
+        /*Object[][] donnees = {
                 {"952596", "Sykes", "Acces fenetres",true,"Sykes", "952596"},
                 {"9465", "Van de Kampf","Acces fenetres",true,"Sykes", "9465"},
                 {"4556", "Cuthbert", "Acces fenetres", true,"Sykes", "4556"},
@@ -106,18 +183,28 @@ public class MyPermission {
                 {"8456", "Schrödinger", "Acces fenetres", false,"Sykes", "8456"},
                 {"4556", "Duke", "Acces capteurs", false,"Sykes", "4556"},
                 {"788", "Trump", "Acces PC", true,"Sykes", "788"},
-        };
+        };*/
 
-        String[] entetes = {"Equipement", "Active", "Nb utilisation", "Durée","Salle","Suppression equipement"};
+       Object[][] donnees= new Object[permissionArray.length][7];
+
+        for (int i = 0; i < permissionArray.length; i++) {
+            for (int j = 0; j < 7; j++) {
+               // System.out.println(String.format("Entrez a[%d][%d] : ", i, j));
+                //System.out.println(permissionArray[i].split(",")[j]);
+                donnees[i][j] = permissionArray[i].split(",")[j];
+            }
+        }
+
+        String[] entetes = {"Equipement","Nom" ,"Active", "Salle", "Nb utilisation","Durée","Suppression equipement"};
 
         JTable tableau = new JTable(donnees, entetes);
 
 
 
 
-        tableau.getColumnModel().getColumn(5).setCellRenderer(new ButtonRenderer());
+        tableau.getColumnModel().getColumn(6).setCellRenderer(new ButtonRenderer());
 
-        tableau.getColumnModel().getColumn(5).setCellEditor(new ButtonEditor(new JTextField()));
+        tableau.getColumnModel().getColumn(6).setCellEditor(new ButtonEditor(new JTextField()));
 
 
 
@@ -129,7 +216,7 @@ public class MyPermission {
 
        JTextField messageErrorLib = styleJTextFieldError(panneau3,570, 15, 30, 20);
 
-        valuePermissionName.addFocusListener(new FocusListener() {
+        /*valuePermissionName.addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {}
             @Override
@@ -147,7 +234,7 @@ public class MyPermission {
                     messageErrorLib.setForeground(Color.red);
                 }
             }
-        });
+        });*/
 
 
         //panneau2.add(viewtable);

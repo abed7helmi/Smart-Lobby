@@ -179,11 +179,12 @@ public class NewBadge {
 
 
 
+
                 String result = Client.sendBd(request);
                 System.out.println("waaaw"+result);
 
                 pageBody.repaint();
-                changePageDetail();
+                changePageDetail(idcompany,result);
             }
         });
 
@@ -478,14 +479,14 @@ public class NewBadge {
     public void changePage(){
 
         view.setVisible(false);
-        MyPermission permission = new MyPermission(frame);
-        permission.choicepermission(pageBody);
+       // MyPermission permission = new MyPermission(frame);
+       // permission.choicepermission(pageBody);
     }
 
-    public void changePageDetail(){
+    public void changePageDetail(String id,String result){
 
         view.setVisible(false);
-        MyPermission permission = new MyPermission(frame);
+        MyPermission permission = new MyPermission(frame,id,result);
         permission.choicepermission(pageBody);
     }
 
