@@ -71,9 +71,7 @@ public class Client {
 	public static String sendBd(String request){
 		try{
 			ObjectMapper objectMapper = new ObjectMapper();
-			String data = objectMapper.writeValueAsString(map);
-
-			System.out.println(request+"#"+data);
+			String data = objectMapper.writeValueAsString(map.get(request));
 
 			episenClientConfig = System.getenv(configClient);
 			final ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
@@ -83,6 +81,7 @@ public class Client {
 
 			PrintWriter output = new PrintWriter(socket.getOutputStream(), true);
 			BufferedReader input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+
 
 			output.println(request+"#"+data);
 			return input.readLine();
