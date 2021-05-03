@@ -155,11 +155,38 @@ public class Ihm extends JFrame implements ActionListener {
 
 
         JButton staff = new JButton("Personnel");
-        staff.addActionListener(this);
-        staff.setMinimumSize(new Dimension(Integer.MAX_VALUE, 75));
-        staff.setPreferredSize(new Dimension(Integer.MAX_VALUE, 75));
-        staff.setMaximumSize(new Dimension(Integer.MAX_VALUE, 75));
-        staff.setBackground(Color.CYAN);
+        staff.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                pages.show(pageBody, "staff");
+            }
+        });
+        sizeComposant(new Dimension(Integer.MAX_VALUE, 75), staff);
+        setColor(staff,Color.white,new Color(0, 102,204));
+
+        JButton configWindow = new JButton("Configurer fenêtre");
+        configWindow.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                pages.show(pageBody,"window");
+
+            }
+        });
+        sizeComposant(new Dimension(Integer.MAX_VALUE, 75), configWindow);
+        setColor(configWindow,Color.white,new Color(0, 102,204));
+
+        JButton indicatorButton = new JButton("Indicateurs et locations");
+        indicatorButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                pages.show(pageBody,"indicator");
+            }
+        });
+        sizeComposant(new Dimension(Integer.MAX_VALUE, 75), indicatorButton);
+        setColor(consult,Color.white,new Color(0, 102,204));
+
+        sizeComposant(new Dimension(Integer.MAX_VALUE, 75), staff);
+        setColor(configWindow,Color.white,new Color(0, 102,204));
 
         JPanel underMenu = new JPanel(new FlowLayout(FlowLayout.LEFT));
         underMenu.setMaximumSize(new Dimension(Integer.MAX_VALUE, 100));
