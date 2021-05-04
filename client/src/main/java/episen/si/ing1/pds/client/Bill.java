@@ -67,6 +67,13 @@ public class Bill {
                 }
             }
         });
+
+        JButton cancel = new JButton("Annuler");
+        cancel.setBounds(680, 10, 100, 50);
+        cancel.setBackground(Color.WHITE);
+        view.add(cancel);
+
+
         JPanel table = new JPanel(new BorderLayout());
         table.setBounds(20,100,700,400);
 
@@ -91,9 +98,9 @@ public class Bill {
         table.add(scroll, BorderLayout.CENTER);
 
         JTextField bill = new JTextField("Voici un recapitulatif de votre commande : ");
-        bill = Ihm.styleJTextFieldReservation(bill, 20,20,600,50,Color.white, Color.white);
+        bill = Ihm.styleJTextFieldReservation(bill, 20,20,700,50,Color.white, Color.white);
         bill.setBorder(BorderFactory.createMatteBorder(0,0, 1, 0, Color.black));
-        bill.setFont(new Font("Serif", Font.BOLD, 20));
+        bill.setFont(new Font("Serif", Font.BOLD, 18));
 
         bill.setText(bill.getText() + input.get("start_date") + "/"+ input.get("end_date"));
 
@@ -122,7 +129,9 @@ public class Bill {
         String[][] data= new String[configRooms.size()][4];
         int i = 0;
         for(Map<String, String> m : proposalSelected.values()){
-            data[i][0] = (m.get("room_wording")).split("salle")[0];
+            if(m.get("room_wording").contains("reunion")){
+                data[i][0] = (m.get("room_wording")).split("reunion")[0] + "reunion";
+            } else data[i][0] = (m.get("room_wording")).split("salle")[0];
             data[i][1] = m.get("building_name");
             data[i][2] = m.get("floor_number");
             data[i][3] = configRooms.get(m.get("room_id")).get("config_sensor");

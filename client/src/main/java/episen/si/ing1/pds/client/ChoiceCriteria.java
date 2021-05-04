@@ -276,9 +276,9 @@ public class ChoiceCriteria{
         });
 
         JTextField singleOffice = new JTextField("Bureau individuel : ");
-        singleOffice = Ihm.styleJTextFieldReservation(singleOffice, 200, 290, 100, 20, Color.WHITE, Color.WHITE);
+        singleOffice = Ihm.styleJTextFieldReservation(singleOffice, 200, 290, 110, 20, Color.WHITE, Color.WHITE);
 
-        checkBoxSingleOffice = styleJCheckBoxReservation(checkBoxSingleOffice,300, 290, 20, 20);
+        checkBoxSingleOffice = styleJCheckBoxReservation(checkBoxSingleOffice,310, 290, 20, 20);
 
         JTextField quantitySingleOffice = new JTextField("- nombre de bureau individuel : ");
         quantitySingleOffice = Ihm.styleJTextFieldReservation(quantitySingleOffice,620, 320, 175, 20, Color.WHITE, Color.WHITE);
@@ -307,9 +307,9 @@ public class ChoiceCriteria{
         });
 
         JTextField closedOffice = new JTextField("Bureau ferme : ");
-        closedOffice = Ihm.styleJTextFieldReservation(closedOffice, 200, 320, 100, 20,Color.WHITE, Color.WHITE);
+        closedOffice = Ihm.styleJTextFieldReservation(closedOffice, 200, 320, 110, 20,Color.WHITE, Color.WHITE);
 
-        checkBoxClosedOffice = styleJCheckBoxReservation(checkBoxClosedOffice,300, 320, 20, 20);
+        checkBoxClosedOffice = styleJCheckBoxReservation(checkBoxClosedOffice,310, 320, 20, 20);
         checkBoxClosedOffice.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {

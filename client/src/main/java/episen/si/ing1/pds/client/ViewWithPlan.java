@@ -1,9 +1,11 @@
 package episen.si.ing1.pds.client;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -61,11 +63,14 @@ public class ViewWithPlan {
         plan.setBackground(Color.white);
         Ihm.sizeComposant(new Dimension(500, 400), plan);
         plan.setBounds(10,100,500,400);
-        ImageIcon planImage = new ImageIcon("C:\\Users\\cedri\\Bureau\\pds\\image\\plan.png");
-        planImage = new ImageIcon(planImage.getImage().getScaledInstance(plan.getWidth(), plan.getHeight(), Image.SCALE_DEFAULT));
-        JLabel planLabel = new JLabel(planImage, JLabel.CENTER);
-        plan.add(planLabel, BorderLayout.CENTER);
-        view.add(plan);
+        try{
+            ImageIcon planImage = new ImageIcon(ImageIO.read(new File(Ihm.path+"plan.png")));
+            planImage = new ImageIcon(planImage.getImage().getScaledInstance(plan.getWidth(), plan.getHeight(), Image.SCALE_DEFAULT));
+            JLabel planLabel = new JLabel(planImage, JLabel.CENTER);
+            plan.add(planLabel, BorderLayout.CENTER);
+            view.add(plan);
+        } catch(Exception e){}
+
 
         JPanel config = new JPanel();
 
@@ -80,7 +85,13 @@ public class ViewWithPlan {
         int x = 10;
         int y = 10;
         for(Map<String , String> map : proposalSelected.values()){
-            configRoom(map.get("room_wording").split("salle")[0]+" etage "+ map.get("floor_number"), x,y,175,50, configButton, view, map.get("building_name"), map.get("room_id"));
+            if(map.get("room_wording").contains("reunion")){
+                configRoom(map.get("room_wording").split("reunion")[0]+" reunion etage "+ map.get("floor_number"),
+                        x,y,175,50, configButton, view, "batiment : " + map.get("building_name") +", etage : "+
+                                map.get("floor_number")  +" numero de salle "+ map.get("room_wording").split("reunion")[1], map.get("room_id"));
+            } else configRoom(map.get("room_wording").split("salle")[0]+" etage "+ map.get("floor_number"),
+                    x,y,175,50, configButton, view, "batiment : " + map.get("building_name") +", etage : "+
+                            map.get("floor_number")  +" numero de salle "+ map.get("room_wording").split("salle")[1], map.get("room_id"));
             if(y >= 480) {
                 y = 10;
                 x = 195;

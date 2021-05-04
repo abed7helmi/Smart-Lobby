@@ -1,9 +1,12 @@
 package episen.si.ing1.pds.client;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
 
 public class RentalAdvancement {
+    private JPanel rentalAdvancement = new JPanel();
     public String getPage() {
         return page;
     }
@@ -13,6 +16,7 @@ public class RentalAdvancement {
     public RentalAdvancement(String page) {
         this.page = page;
     }
+
 
     private String page;
 
@@ -58,19 +62,21 @@ public class RentalAdvancement {
         }
 
         rentalAdvancement.add(criteria);
-        rentalAdvancement.add(fleche());
+        fleche();
         rentalAdvancement.add(choiceField);
-        rentalAdvancement.add(fleche());
+        fleche();
         rentalAdvancement.add(equipment);
-        rentalAdvancement.add(fleche());
+        fleche();
         rentalAdvancement.add(bill);
-
+        fleche();
         return rentalAdvancement;
     }
-    public JLabel fleche(){
-        ImageIcon iconAdvancement = new ImageIcon(new ImageIcon("C:\\Users\\cedri\\Bureau\\pds\\image\\flecheAdvancement.png")
-                .getImage().getScaledInstance(50,30,Image.SCALE_DEFAULT));
-        JLabel flecheAdvancement = new JLabel(iconAdvancement,JLabel.CENTER);
-        return flecheAdvancement;
+    public void fleche(){
+        try{
+            ImageIcon iconAdvancement = new ImageIcon(ImageIO.read(new File(Ihm.path+"flecheAdvancement.png")));
+            iconAdvancement = new ImageIcon(iconAdvancement.getImage().getScaledInstance(50, 30, Image.SCALE_DEFAULT));
+            JLabel flecheAdvancement = new JLabel(iconAdvancement,JLabel.CENTER);
+            rentalAdvancement.add(flecheAdvancement);
+        } catch(Exception e) {}
     }
 }

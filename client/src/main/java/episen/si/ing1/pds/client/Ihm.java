@@ -1,9 +1,11 @@
 package episen.si.ing1.pds.client;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 
 
 public class Ihm extends JFrame{
@@ -16,6 +18,8 @@ public class Ihm extends JFrame{
     private JPanel pageBody3 ;
     private JPanel pageBody4 ;
     private String company_id ="";
+    protected static String path = System.getenv("PDSIMG");
+
 
     public Ihm(String name, String page, String id) {
         company_id = id;
@@ -123,28 +127,34 @@ public class Ihm extends JFrame{
         disconnect.setMaximumSize(new Dimension(100, 100));
         setColor(disconnect,Color.white,new Color(0, 102,204));
 
-        ImageIcon iconHome = new ImageIcon(new ImageIcon("C:\\Users\\cedri\\Bureau\\pds\\image\\maison.png").getImage().getScaledInstance(18,18,Image.SCALE_DEFAULT));
-        JButton home = new JButton(iconHome);
-        home.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Menu Menu = new Menu("Smart Lobby", company_id);
-                frame.dispose();
-            }
-        });
-        setColor(home,Color.white,new Color(0, 102,204));
+        try{
+            ImageIcon iconHome = new ImageIcon(ImageIO.read(new File(path+"maison.png")));
+            iconHome = new ImageIcon(iconHome.getImage().getScaledInstance(18, 18, Image.SCALE_DEFAULT));
+            JButton home = new JButton(iconHome);
+            home.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    Menu Menu = new Menu("Smart Lobby", company_id);
+                    frame.dispose();
+                }
+            });
+            setColor(home,Color.white,new Color(0, 102,204));
+            underMenu.add(home);
+        } catch(Exception e){}
 
-        ImageIcon iconRefresh = new ImageIcon(new ImageIcon("C:\\Users\\cedri\\Bureau\\pds\\image\\actualiser.png").getImage().getScaledInstance(18,18,Image.SCALE_DEFAULT));
-        JButton refresh = new JButton(iconRefresh);
-        refresh.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {}
-        });
-        setColor(refresh,Color.white,new Color(0, 102,204));
+        try{
+            ImageIcon iconRefresh = new ImageIcon(ImageIO.read(new File(path+"actualiser.png")));
+            iconRefresh = new ImageIcon(iconRefresh.getImage().getScaledInstance(18, 18, Image.SCALE_DEFAULT));
+            JButton refresh = new JButton(iconRefresh);
+            refresh.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {}
+            });
+            setColor(refresh,Color.white,new Color(0, 102,204));
+            underMenu.add(refresh);
+         } catch(Exception e){}
 
         underMenu.add(disconnect);
-        underMenu.add(home);
-        underMenu.add(refresh);
 
         menu.add(realize);
         menu.add(consult);
