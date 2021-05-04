@@ -181,10 +181,10 @@ public class NewBadge {
 
 
                 String result = Client.sendBd(request);
-                System.out.println("waaaw"+result);
+
 
                 pageBody.repaint();
-                changePageDetail(idcompany,result);
+                changePageDetail(idcompany,result,input.get("permission"));
             }
         });
 
@@ -483,10 +483,10 @@ public class NewBadge {
        // permission.choicepermission(pageBody);
     }
 
-    public void changePageDetail(String id,String result){
+    public void changePageDetail(String id,String result,String per){
 
         view.setVisible(false);
-        MyPermission permission = new MyPermission(frame,id,result);
+        MyPermission permission = new MyPermission(frame,id,result,per);
         permission.choicepermission(pageBody);
     }
 

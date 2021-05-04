@@ -8,9 +8,8 @@ public class testclass {
         //Pattern pattern = Pattern.compile("\\d+");
         //Matcher matcher = pattern.matcher("permission54");
         //int idpermission =Integer.parseInt(matcher.group(1));
-        String ch= "dmkfl=45, dfisjk=12";
-        String per[]=ch.split(",");
-        int x=Integer.parseInt(getNbr(per[0]));
+        String ch= "ID Badge:555551";
+        String x=ch.substring(9,15);
         System.out.println(x);
     }
 

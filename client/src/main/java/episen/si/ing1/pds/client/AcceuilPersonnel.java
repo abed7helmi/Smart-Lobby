@@ -9,7 +9,7 @@ public class AcceuilPersonnel {
 
     private JFrame frame;
     private JPanel pageBody = new JPanel();
-    private String id_company;
+    public static String id_company;
 
 
     public AcceuilPersonnel(JFrame f,String i)  {
@@ -86,7 +86,7 @@ public class AcceuilPersonnel {
                 choice.setVisible(false);
 
                 pageBody.repaint();
-                changePageAll();
+                changePageAll(id_company);
             }
         });
 
@@ -122,8 +122,8 @@ public class AcceuilPersonnel {
         Badge.choice(pageBody);
     }
 
-    public void changePageAll(){
-        AllBadge AllBadges = new AllBadge(frame);
+    public void changePageAll(String id){
+        AllBadge AllBadges = new AllBadge(frame,id);
         AllBadges.badgesvue(pageBody);
     }
 

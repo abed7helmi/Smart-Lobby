@@ -23,15 +23,18 @@ public class MyPermission {
     private List<String> listPermission = new ArrayList<>();
     private String[] equipementArray;
     private String[] permissionArray;
+    private String namepermission;
+    private String mypermission;
 
     private Map<String, String> input = new HashMap<>();
 
 
-    public MyPermission(JFrame f,String id,String result){
+    public MyPermission(JFrame f,String id,String result,String per){
         input.clear();
         this.frame = f;
         this.idcompany=id;
         this.result=result;
+        this.mypermission=per;
 
     }
 
@@ -84,7 +87,7 @@ public class MyPermission {
 
 
 
-        String devices=result.split("//")[2];
+        String devices=result.split("//")[3];
 
         String[] value = devices.split("#");
         //System.out.println("sa7ayt;");
@@ -110,16 +113,50 @@ public class MyPermission {
         panneau1.add(mydevice);
 
 
+        input.put("idcompany", idcompany);
 
+        String idpermission=result.split("//")[0];
+        input.put("idpermission", idpermission);
+
+        namepermission=result.split("//")[1];
+        input.put("permission", namepermission);
 
         mydevice.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent event) {
-                /*mydevice.setVisible(true);
+
+                String request = "requestadddevice";
+                mydevice.setVisible(true);
                 JComboBox<String> combo = (JComboBox<String>) event.getSource();
-                String selectedPermission = (String) combo.getSelectedItem();
-                input.put("permission", selectedPermission);*/
+                String selecteddevice = (String) combo.getSelectedItem();
+                input.put("device", selecteddevice);
+
+                Client.map.get(request).put("device", input.get("device"));
+                Client.map.get(request).put("idcompany", input.get("idcompany"));
+                Client.map.get(request).put("permission", input.get("permission"));
+                Client.map.get(request).put("idpermission", input.get("idpermission"));
+
+
+                String result = Client.sendBd(request);
+                System.out.println("waaaw"+result);
+
+
+                String request2 = "requestDetailBadge";
+
+                Client.map.get(request2).put("permission", input.get("permission"));
+
+                Client.map.get(request2).put("company_id",idcompany);
+
+
+
+
+
+                String result2 = Client.sendBd(request2);
+
+                pageBody.repaint();
+
+                reloadpage(idcompany,result2,mypermission);
 
             }
         });
@@ -153,13 +190,13 @@ public class MyPermission {
 
 
 
-        String namepermission=result.split("//")[0];
+        namepermission=result.split("//")[1];
 
 
         valuePermissionName.setText(namepermission);
 
 
-        String permissions=result.split("//")[1];
+        String permissions=result.split("//")[2];
         String[] permissionvalue = permissions.split("#");
 
         for(int i = 0; i< permissionvalue.length; i++){
@@ -273,7 +310,12 @@ public class MyPermission {
         }
     }
 
+    public void reloadpage(String id,String result,String per){
 
+        view.setVisible(false);
+        MyPermission permission = new MyPermission(frame,id,result,per);
+        permission.choicepermission(pageBody);
+    }
 
 
     public JPanel view(){

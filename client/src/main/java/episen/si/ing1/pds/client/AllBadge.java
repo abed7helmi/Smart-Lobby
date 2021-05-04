@@ -5,20 +5,28 @@ import javax.swing.table.TableCellRenderer;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
 
 public class AllBadge {
     private JPanel pageBody;
     private JFrame frame;
     private JPanel view;
+    private String idcompany;
 
-    public AllBadge(JFrame f){
 
+    public AllBadge(JFrame f,String id){
+        this.idcompany=id;
         this.frame = f;
 
     }
 
 
     public void badgesvue(JPanel pb){
+
+
+
+
 
         this.pageBody = pb;
         pageBody.setBackground(Color.WHITE);
@@ -142,7 +150,26 @@ public class AllBadge {
     }
 
     public void changePageManage(){
-        BadgePermissions Badge = new BadgePermissions(frame);
+
+        String request = "requestallbadges";
+
+        Client.map.get(request).put("company_id",idcompany);
+
+        String result = Client.sendBd(request);
+
+        System.out.println(result);
+
+
+        String request2 = "getpermissions";
+        Client.map.get(request2).put("company_id",idcompany);
+
+        String result2 = Client.sendBd(request2);
+        System.out.println("waaw");
+        System.out.println(result2);
+        pageBody.repaint();
+
+
+        BadgePermissions Badge = new BadgePermissions(frame,result,result2);
         Badge.choice(pageBody);
     }
 

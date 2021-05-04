@@ -44,13 +44,19 @@ public class ClientRequestManager {
 					String values = clientInput.split("#")[1];
 
 					if(requestType.equals("homePage1")) firstPage(values);
-					if(requestType.equals("requestLocation1")) getChoice(values);
-					if(requestType.equals("requestLocation2")) getDevice((values));
+
+
 					if(requestType.equals("requestNewBadge")) SaveBadge((values));
 					if(requestType.equals("getpermissions")) getPermissions((values));
 					if(requestType.equals("testpermissions")) testpermissions((values));
 					if(requestType.equals("getdevices")) getdevices((values));
 					if(requestType.equals("requestDetailBadge")) getDetailPermission((values));
+
+					if(requestType.equals("requestadddevice")) adddevicepermission((values));
+					if(requestType.equals("requestallbadges")) getallemployees((values));
+					if(requestType.equals("requestManyNewBadge")) saveallemployees((values));
+
+
 
 
 
@@ -100,158 +106,6 @@ public class ClientRequestManager {
 
 	public Thread getSelf() {
 		return self;
-	}
-
-	public void getChoice(String values){
-		try {
-			ObjectMapper mapper = new ObjectMapper(new JsonFactory());
-			Map<String, Map<String, String>> map = mapper.readValue(values,
-					new TypeReference<Map<String, Map<String, String>>>() {
-					});
-
-			int numberOpenSpace = Integer.parseInt(map.get("requestLocation1").get("numberOpenSpace")) * 4;
-			int numberClosedOffice = Integer.parseInt(map.get("requestLocation1").get("numberClosedOffice")) *4;
-			int numberSingleOffice = Integer.parseInt(map.get("requestLocation1").get("numberSingleOffice")) * 4;
-			int numberMeetingRoom = Integer.parseInt(map.get("requestLocation1").get("numberMeetingRoom")) * 4;
-
-			String request = "select room_wording, floor_number, building_name, room_price as prix, room_id, room_type_id " +
-					"from room r " +
-					"inner join floor f on f.floor_id = r.floor_id " +
-					"inner join building b on b.building_id = f.building_id " +
-					"where room_id in "+
-					"(select room_id " +
-					"from room r " +
-					"inner join floor f on f.floor_id = r.floor_id " +
-					"inner join building b on b.building_id = f.building_id " +
-					"where status = 'free' and room_type_id = 1 Limit " + numberOpenSpace + ") " +
-					"or room_id in "+
-					" (select room_id "+
-					"from room r " +
-					"inner join floor f on f.floor_id = r.floor_id " +
-					"inner join building b on b.building_id = f.building_id " +
-					"where status = 'free' and room_type_id = 3 Limit " + numberClosedOffice + ") "+
-					"or room_id in "+
-					"(select room_id " +
-					"from room r " +
-					"inner join floor f on f.floor_id = r.floor_id " +
-					"inner join building b on b.building_id = f.building_id " +
-					"where status = 'free' and room_type_id = 4 Limit " + numberSingleOffice + ") "+
-					"or room_id in " +
-					"(select room_id " +
-					"from room r " +
-					"inner join floor f on f.floor_id = r.floor_id " +
-					"inner join building b on b.building_id = f.building_id " +
-					"where status = 'free' and room_type_id = 2 Limit " + numberMeetingRoom + ")" +
-					" order by room_price;";
-			ResultSet result = c.createStatement().executeQuery(request);
-			Map<String, Map<String, String>> roomProposal1 = new HashMap<>();
-			Map<String, Map<String, String>> roomProposal2 = new HashMap<>();
-			Map<String, Map<String, String>> roomProposal3 = new HashMap<>();
-			Map<String, Map<String, String>> roomProposal4 = new HashMap<>();
-			Map<String , Map<String, Map<String ,String>>> proposal = new HashMap<>();
-
-			int numberRoom = Integer.parseInt(map.get("requestLocation1").get("numberClosedOffice"))
-					+ Integer.parseInt(map.get("requestLocation1").get("numberSingleOffice"))
-					+ Integer.parseInt(map.get("requestLocation1").get("numberOpenSpace"))
-					+ Integer.parseInt(map.get("requestLocation1").get("numberMeetingRoom"));
-
-			int countOpenSpaceProposal1 = 0, countMeetingRoomProposal1 = 0, countClosedOfficeProposal1 = 0, countSingleOfficeProposal1 = 0;
-			int countOpenSpaceProposal2 = 0,countMeetingRoomProposal2 = 0,countClosedOfficeProposal2 = 0,countSingleOfficeProposal2 = 0;
-			int countOpenSpaceProposal3 = 0,countMeetingRoomProposal3 = 0,countClosedOfficeProposal3 = 0,countSingleOfficeProposal3 = 0;
-			int countOpenSpaceProposal4 = 0,countMeetingRoomProposal4 = 0,countClosedOfficeProposal4 = 0,countSingleOfficeProposal4 = 0;
-
-			int countRoomProposal1 =1,countRoomProposal2 =1,countRoomProposal3 =1,countRoomProposal4 =1;
-
-			while(result.next()){
-				Map<String, String> underMap = new HashMap<>();
-				underMap.put("room_wording",result.getString(1));
-				underMap.put("floor_number",result.getInt(2)+"");
-				underMap.put("building_name",result.getString(3));
-				underMap.put("price",result.getString(4));
-				underMap.put("room_id",result.getString(5));
-				underMap.put("room_type_id",result.getString(6));
-
-				if( result.getInt(6) == 4 ){
-					if(countSingleOfficeProposal1 < Integer.parseInt(map.get("requestLocation1").get("numberSingleOffice") )) {
-						roomProposal1.put("roomSingleOffice"+countRoomProposal1,underMap);
-						countSingleOfficeProposal1++;
-					} else if (countSingleOfficeProposal2 < Integer.parseInt(map.get("requestLocation1").get("numberSingleOffice") )) {
-						roomProposal2.put("roomSingleOffice"+countRoomProposal2,underMap);
-						countSingleOfficeProposal2++;
-					} else if(countSingleOfficeProposal3 < Integer.parseInt(map.get("requestLocation1").get("numberSingleOffice") )) {
-						roomProposal3.put("roomSingleOffice"+countRoomProposal3,underMap);
-						countSingleOfficeProposal3++;
-					} else if(countSingleOfficeProposal4 < Integer.parseInt(map.get("requestLocation1").get("numberSingleOffice") )) {
-						roomProposal4.put("roomSingleOffice"+countRoomProposal4,underMap);
-						countSingleOfficeProposal4++;
-					}
-				}
-				if( result.getInt(6) == 3 ){
-					if(countClosedOfficeProposal1 < Integer.parseInt(map.get("requestLocation1").get("numberClosedOffice") )) {
-						roomProposal1.put("roomClosedOffice"+countRoomProposal1,underMap);
-						countClosedOfficeProposal1++;
-					}else if (countClosedOfficeProposal2 < Integer.parseInt(map.get("requestLocation1").get("numberClosedOffice") )) {
-						roomProposal2.put("roomClosedOffice"+countRoomProposal2,underMap);
-						countClosedOfficeProposal2++;
-					}else if(countClosedOfficeProposal3 < Integer.parseInt(map.get("requestLocation1").get("numberClosedOffice") )) {
-						roomProposal3.put("roomClosedOffice"+countRoomProposal3,underMap);
-						countClosedOfficeProposal3++;
-					}else if(countClosedOfficeProposal4 < Integer.parseInt(map.get("requestLocation1").get("numberClosedOffice") )) {
-						roomProposal4.put("roomClosedOffice"+countRoomProposal4,underMap);
-						countClosedOfficeProposal4++;
-					}
-				}
-				if( result.getInt(6) == 2 ){
-					if(countMeetingRoomProposal1 < Integer.parseInt(map.get("requestLocation1").get("numberMeetingRoom") )) {
-						roomProposal1.put("roomMeetingRoom"+countRoomProposal1,underMap);
-						countMeetingRoomProposal1++;
-					}else if (countMeetingRoomProposal2 < Integer.parseInt(map.get("requestLocation1").get("numberMeetingRoom") )) {
-						roomProposal2.put("roomMeetingRoom"+countRoomProposal2,underMap);
-						countMeetingRoomProposal2++;
-					}else if(countMeetingRoomProposal3 < Integer.parseInt(map.get("requestLocation1").get("numberMeetingRoom") )) {
-						roomProposal3.put("roomMeetingRoom"+countRoomProposal3,underMap);
-						countMeetingRoomProposal3++;
-					}else if(countMeetingRoomProposal4 < Integer.parseInt(map.get("requestLocation1").get("numberMeetingRoom") )) {
-						roomProposal4.put("roomMeetingRoom"+countRoomProposal4,underMap);
-						countMeetingRoomProposal4++;
-					}
-				}
-				if( result.getInt(6) == 1 ){
-					if(countOpenSpaceProposal1 < Integer.parseInt(map.get("requestLocation1").get("numberOpenSpace") )) {
-						roomProposal1.put("roomOpenSpace"+countRoomProposal1,underMap);
-						countOpenSpaceProposal1++;
-					}else if (countOpenSpaceProposal2 < Integer.parseInt(map.get("requestLocation1").get("numberOpenSpace") )) {
-						roomProposal2.put("roomOpenSpace"+countRoomProposal2,underMap);
-						countOpenSpaceProposal2++;
-					}else if(countOpenSpaceProposal3 < Integer.parseInt(map.get("requestLocation1").get("numberOpenSpace") )) {
-						roomProposal3.put("roomOpenSpace"+countRoomProposal3,underMap);
-						countOpenSpaceProposal3++;
-					}else if(countOpenSpaceProposal4 < Integer.parseInt(map.get("requestLocation1").get("numberOpenSpace") )) {
-						roomProposal4.put("roomOpenSpace"+countRoomProposal4,underMap);
-						countOpenSpaceProposal4++;
-					}
-				}
-				if(countRoomProposal1 == numberRoom) countRoomProposal1 = 1;
-				else countRoomProposal1++;
-				if(countRoomProposal2 == numberRoom) countRoomProposal2 = 1;
-				else countRoomProposal2++;
-				if(countRoomProposal3 == numberRoom) countRoomProposal3 = 1;
-				else countRoomProposal3++;
-				if(countRoomProposal4 == numberRoom) countRoomProposal4 = 1;
-				else countRoomProposal4++;
-			}
-			proposal.put("proposal1", roomProposal1);
-			proposal.put("proposal2", roomProposal2);
-			proposal.put("proposal3", roomProposal3);
-			proposal.put("proposal4", roomProposal4);
-
-			ObjectMapper objectMapper = new ObjectMapper();
-			String proposals = objectMapper.writeValueAsString(proposal);
-
-			output.println(proposals);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 	}
 
 
@@ -337,13 +191,10 @@ public class ClientRequestManager {
 
 	static String getNbr(String str)
 	{
-		// Remplacer chaque nombre non numérique par un espace
-		str = str.replaceAll("[^\\d]", " ");
-		// Supprimer les espaces de début et de fin
-		str = str.trim();
-		// Remplacez les espaces consécutifs par un seul espace
-		str = str.replaceAll(" +", " ");
 
+		str = str.replaceAll("[^\\d]", " ");
+		str = str.trim();
+		str = str.replaceAll(" +", " ");
 		return str;
 	}
 
@@ -374,8 +225,10 @@ public class ClientRequestManager {
 
 			StringBuilder sb = new StringBuilder();
 
-			sb.append(namepermission);
+			sb.append(idpermission);
 
+			sb.append("//");
+			sb.append(namepermission);
 			sb.append("//");
 
 
@@ -386,7 +239,7 @@ public class ClientRequestManager {
 				sb.append(result.getInt(1) + "," + result.getString(2) + "," + result.getBoolean(3) + "," + result.getInt(4) +"," + result.getInt(5) +","+ result.getDate(6) +","+result.getInt(1)+"#");
 			}
 
-			logger.debug("c bon 3");
+
 
             ResultSet result2 = c.createStatement().executeQuery("select device.device_id,device.device_wording,device.room_id from device inner join reservation on reservation.reservation_id=device.reservation_id inner join general_services_manager on general_services_manager.gs_manager_id=reservation.gs_manager_id inner join employee on employee.employee_id=general_services_manager.gs_manager_id where employee.company_id='" + id_company+"';");
 
@@ -419,6 +272,8 @@ public class ClientRequestManager {
 					});
 
 
+
+
 			ResultSet result = c.createStatement().executeQuery("select device.device_id,device.device_wording,device.room_id from device inner join reservation on reservation.reservation_id=device.reservation_id\n" +
 					"inner join general_services_manager on general_services_manager.gs_manager_id=reservation.gs_manager_id\n" +
 					"inner join employee on employee.employee_id=general_services_manager.gs_manager_id where employee.company_id='" +
@@ -442,6 +297,60 @@ public class ClientRequestManager {
 		}
 
 	}
+
+
+
+
+	public void adddevicepermission(String values){
+		logger.debug("test add3");
+
+
+		try {
+			ObjectMapper mapper = new ObjectMapper(new JsonFactory());
+			Map<String, Map<String, String>> map = mapper.readValue(values,
+					new TypeReference<Map<String, Map<String, String>>>() {
+					});
+
+			//int id_company=Integer.parseInt(map.get("requestadddevice").get("idcompany"));
+			String namepermission=map.get("requestadddevice").get("permission");
+			//logger.debug(namepermission);
+			String device=map.get("requestadddevice").get("device");
+			//logger.debug(device);
+
+			String dev[]=device.split(",");
+			int idpermission=Integer.parseInt(map.get("requestadddevice").get("idpermission"));
+			//logger.debug(" waw "+idpermission);
+			int iddevice=Integer.parseInt(getNbr(dev[0]));
+
+
+			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+			Date today = dateFormat.parse(dateFormat.format(new Date()));
+
+			int x=3;
+
+			String requestInsert = "insert into permission_device (device_id,permission_id,equipement_validity_period,number_validity_use) values ('"+    iddevice     +"','"+  idpermission   +    " ','"+     today     +"','"+  x    +"'                                   ) ;";
+
+
+			 c.createStatement().executeUpdate(requestInsert);
+
+
+
+
+
+			output.println("bravo");
+
+
+
+		}catch (Exception e){
+			output.println("notgood");
+			e.printStackTrace();
+		}
+
+	}
+
+
+
+
 
 	public void getPermissions(String values){
 		logger.debug("bravo2");
@@ -474,6 +383,33 @@ public class ClientRequestManager {
 
 
 
+	public void getallemployees(String values){
+		logger.debug("requestallbadges test");
+		try {
+			ObjectMapper mapper = new ObjectMapper(new JsonFactory());
+			Map<String, Map<String, String>> map = mapper.readValue(values,
+					new TypeReference<Map<String, Map<String, String>>>() {
+					});
+			//int company = Integer.parseInt(map.get("requestallbadges").get("company_id"));
+			ResultSet result = c.createStatement().executeQuery("select  badge.badge_id,employee.employee_last_name,employee.employee_last_name from employee inner join badge on employee.employee_id=badge.employee_id where company_id='" + Integer.parseInt(map.get("requestallbadges").get("company_id"))+"';");
+			StringBuilder sb = new StringBuilder();
+			while (result.next()) {
+
+				sb.append("ID Badge:" + result.getInt(1) + ",Nom:" + result.getString(2) +",Prenom:" + result.getString(2) +"#");
+			}
+
+			output.println(sb.toString());
+
+
+
+		}catch (Exception e){
+			output.println("notgood");
+			e.printStackTrace();
+		}
+
+	}
+
+
 
 	public void firstPage( String values) {
 		try {
@@ -494,7 +430,69 @@ public class ClientRequestManager {
 		}
 	}
 
- /*22 | gd                 | dsq */
+
+	public void saveallemployees( String values) {
+		logger.debug("test save all employees2");
+		try {
+			ObjectMapper mapper = new ObjectMapper(new JsonFactory());
+			Map<String, Map<String, String>> map = mapper.readValue(values,
+					new TypeReference<Map<String, Map<String, String>>>() {
+					});
+
+
+			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+			int idcompany =Integer.parseInt(map.get("requestManyNewBadge").get("company_id"));
+			logger.debug("waaw"+idcompany);
+			String permission=map.get("requestManyNewBadge").get("permission");
+
+			String per[]=permission.split(",");
+			int idpermission=Integer.parseInt(getNbr(per[0]));
+			//String employees=map.get("requestManyNewBadge").get("permission");
+			logger.debug("waaw"+idpermission);
+			String empls =map.get("requestManyNewBadge").get("employees");
+			String [] employees = empls.split("&");
+
+			Date datepermission = dateFormat.parse(map.get("requestManyNewBadge").get("date"));
+
+			logger.debug("waaw"+empls);
+			logger.debug("waaw2"+employees[0]);
+
+			logger.debug("llee"+employees.length);
+
+
+
+			for (int i = 0; i < employees.length; i++) {
+				logger.debug(employees[i]);
+				String emp[]=employees[i].split(",");
+				//int idbadge=Integer.parseInt(getNbr(emp[0]));
+				String idbadge=emp[0].substring(9,15);
+				logger.debug("sdss"+idbadge);
+				String insertrequest = "update permission_access set permission_id='" + idpermission + " ', permission_validity_period='" + datepermission +" 'where badge_id like'"+ idbadge +  "'                    ;";
+
+				try {
+					c.createStatement().executeUpdate(insertrequest);
+				}catch (Exception e){
+					output.println("notgood save");
+				}
+
+			}
+
+
+
+
+
+
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+
+
+
+
 
 	public void testpermissions( String values) {
 		logger.debug("tesssssttttt");
@@ -514,6 +512,7 @@ public class ClientRequestManager {
 			System.out.println(device_id);
 
 
+
 			ResultSet result = c.createStatement().executeQuery("select employee.employee_id from employee inner join badge on badge.employee_id=employee.employee_id inner join permission_access on\n" +
 					"permission_access.badge_id=badge.badge_id inner join permission_badge on permission_badge.permission_id=permission_access.permission_id inner join\n" +
 					"permission_device on permission_device.permission_id=permission_badge.permission_id where (employee_last_name='"+ name1  +"' and employee_first_name='"+name2+  "' and device_id='"+device_id+ "'                 );");
@@ -530,34 +529,4 @@ public class ClientRequestManager {
 	}
 
 
-
-	public void getDevice(String values){
-		try {
-			ObjectMapper mapper = new ObjectMapper(new JsonFactory());
-			Map<String, Map<String, String>> map = mapper.readValue(values,
-					new TypeReference<Map<String, Map<String, String>>>() {
-					});
-			int room_id = Integer.parseInt(map.get("requestLocation2").get("room_id"));
-			String request = "select distinct device_wording, device_type_wording " +
-					"from device d " +
-					"inner join device_type dt on dt.device_type_id = d.device_type_id "+
-					"where d.device_type_id in(" +
-					"select dt.device_type_id " +
-					"from device_type dt " +
-					"inner join could_configure cc on cc.device_type_id = dt.device_type_id " +
-					"inner join room_type rt on rt.room_type_id = cc.room_type_id " +
-					"inner join room r on r.room_type_id = rt.room_type_id " +
-					"where room_id = "+ room_id +");";
-
-			ResultSet result = c.createStatement().executeQuery(request);
-			StringBuilder sb = new StringBuilder();
-			while(result.next()) sb.append(result.getString(1)+ " /  "+ result.getString(2)+ ",");
-
-			System.out.println(sb.toString());
-
-			output.println(sb.toString());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
 }
