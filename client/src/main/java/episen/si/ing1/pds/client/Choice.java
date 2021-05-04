@@ -11,16 +11,14 @@ import java.util.*;
 
 public class Choice{
     private final String page = "choice";
-    private Map<String, String> input = new HashMap<>();
     private final JFrame frame;
     private JTextField selected = new JTextField("Vous avez choisi : ");
     private JPanel pageBody;
-    private Map<String , Map<String, Map<String ,String>>> mapProposals = new HashMap<>();
-    private Map<String ,Map<String,String>> proposalSelected = new HashMap<>();
+    protected static Map<String , Map<String, Map<String ,String>>> mapProposals = new HashMap<>();
+    protected static Map<String ,Map<String,String>> proposalSelected = new HashMap<>();
 
     //keep for link with the previous page
-    public Choice(Map<String, String> input,JFrame f) {
-        this.input = input;
+    public Choice(JFrame f) {
         this.frame = f;
     }
 
@@ -38,16 +36,15 @@ public class Choice{
                 String order = (selected.getText().split(":")[1]).trim();
                 view.setVisible(false);
                 advancement.setVisible(false);
-                changePage(order,proposalSelected);
+                changePage(order);
             }
         });
 
         Ihm.buttonVoid.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println(input);
-                Menu Menu = new Menu("Smart Lobby", input.get("company_id"));
-                input.clear();
+                Menu Menu = new Menu("Smart Lobby", ChoiceCriteria.input.get("company_id"));
+                ChoiceCriteria.input.clear();
                 frame.dispose();
             }
         });
@@ -84,8 +81,8 @@ public class Choice{
         selected.setForeground(Color.black);
         view.add(selected);
 
-        int nbRoom = Integer.parseInt(input.get("numberMeetingRoom")) + Integer.parseInt(input.get("numberSingleOffice")) +
-                Integer.parseInt(input.get("numberOpenSpace")) + Integer.parseInt(input.get("numberClosedOffice"));
+        int nbRoom = Integer.parseInt(ChoiceCriteria.input.get("numberMeetingRoom")) + Integer.parseInt(ChoiceCriteria.input.get("numberSingleOffice")) +
+                Integer.parseInt(ChoiceCriteria.input.get("numberOpenSpace")) + Integer.parseInt(ChoiceCriteria.input.get("numberClosedOffice"));
 
         if(nbRoom == mapProposals.get("proposal1").size()){
             JPanel display1 = proposal(mapProposals.get("proposal1"));
@@ -175,8 +172,8 @@ public class Choice{
         return proposal;
     }
 
-    public void changePage(String order, Map<String ,Map<String ,String>> proposalSelected){
-        ViewWithPlan viewPlan = new ViewWithPlan(frame, input , order, proposalSelected);
+    public void changePage(String order){
+        ViewWithPlan viewPlan = new ViewWithPlan(frame, order);
         viewPlan.viewWithPlan(pageBody);
     }
 

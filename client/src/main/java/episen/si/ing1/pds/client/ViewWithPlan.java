@@ -14,26 +14,22 @@ import java.util.List;
 public class ViewWithPlan {
     private final String page = "device";
     private final JFrame frame;
-    private Map<String , String> input = new HashMap<>();
     private JPanel pageBody;
     private String order;
     private String floorNumber;
     private final JPanel configButton = new JPanel();
-    private final Map<JButton, String> listButton = new HashMap<>();
-    private Map<String ,Map<String,String>> proposalSelected = new HashMap<>();
-    private Map<String,Map<String, String>> configRoom = new HashMap<>();
-    private List listDeviceId = new ArrayList();
-    private Map<String, String> listDeviceIdRoom = new HashMap<>();
 
-    public ViewWithPlan(JFrame frame, Map<String, String> input){
+    protected static Map<JButton, String> listButton = new HashMap<>();
+    protected static Map<String,Map<String, String>> configRoom = new HashMap<>();
+    protected static List listDeviceId = new ArrayList();
+    protected static Map<String, String> listDeviceIdRoom = new HashMap<>();
+
+    public ViewWithPlan(JFrame frame){
         this.frame = frame;
-        this.input = input;
     }
-    public ViewWithPlan(JFrame frame, Map<String, String> input, String o,  Map<String ,Map<String,String>>  ps) {
+    public ViewWithPlan(JFrame frame, String o) {
         this.frame = frame;
-        this.input = input;
         this.order = o;
-        proposalSelected = ps;
     }
     public void viewWithPlan(JPanel pb){
         this.pageBody = pb;
@@ -84,7 +80,7 @@ public class ViewWithPlan {
 
         int x = 10;
         int y = 10;
-        for(Map<String , String> map : proposalSelected.values()){
+        for(Map<String , String> map : Choice.proposalSelected.values()){
             if(map.get("room_wording").contains("reunion")){
                 configRoom(map.get("room_wording").split("reunion")[0]+" reunion etage "+ map.get("floor_number"),
                         x,y,175,50, configButton, view, "batiment : " + map.get("building_name") +", etage : "+
@@ -119,24 +115,20 @@ public class ViewWithPlan {
             @Override
             public void actionPerformed(ActionEvent e) {
                 view.setVisible(false);
-                changePage(view, room, listButton, room_id);
+                changePage(view, room, room_id);
             }
         });
         listButton.put(room, "unvalidated");
         configButton.add(room);
     }
-    public void changePage(JPanel view, JButton room, Map<JButton, String> listButton, String room_id){
-        ChoiceDevice device = new ChoiceDevice(frame, input,room_id, configRoom, proposalSelected, listDeviceId, listDeviceIdRoom);
-        device.choice(pageBody, view, room, listButton);
+    public void changePage(JPanel view, JButton room, String room_id){
+        ChoiceDevice device = new ChoiceDevice(frame,room_id);
+        device.choice(pageBody, view, room);
     }
-    public void back(JPanel oldView, JPanel pb, JButton room, Map<JButton, String> list, Map<String, Map<String, String>> configurationRoom , Map<String, Map<String, String>> ps, List lDI,Map<String, String> listIdRoom ){
-        configRoom = configurationRoom;
-        proposalSelected = ps;
-        listDeviceId = lDI;
-        listDeviceIdRoom = listIdRoom;
+    public void back(JPanel oldView, JPanel pb, JButton room){
         this.pageBody = pb;
         boolean verifContinue = true;
-        for(Map.Entry map : list.entrySet()){
+        for(Map.Entry map : listButton.entrySet()){
             if( (map.getValue()).equals("unvalidated")) verifContinue = false;
         }
         oldView.setVisible(true);
@@ -147,7 +139,7 @@ public class ViewWithPlan {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     oldView.setVisible(false);
-                    Bill bill = new Bill(input, frame, proposalSelected, configRoom, listDeviceIdRoom);
+                    Bill bill = new Bill(frame);
                     bill.confirmation(pageBody);
                 }
             });

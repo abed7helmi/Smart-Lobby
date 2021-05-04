@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ChoiceCriteria{
-    private final Map<String, String> input = new HashMap<>();
+    protected static Map<String, String> input = new HashMap<>();
     private final String page = "criteria";
     private final JButton buttonContinue = new JButton("> Continuer");
     private final JFrame frame;
@@ -28,11 +28,10 @@ public class ChoiceCriteria{
     private String company_id = "";
 
     public ChoiceCriteria(JFrame f,String id)  {
-        input.clear();
+        restartData();
         frame = f;
         company_id = id;
         input.put("company_id", company_id);
-        System.out.println(input);
     }
 
     public JPanel realizeReservation(){
@@ -496,11 +495,21 @@ public class ChoiceCriteria{
         else return false;
     }
     public void changePage(String proposals){
-        Choice selectChoice = new Choice(input, frame);
+        Choice selectChoice = new Choice(frame);
         selectChoice.choice(pageBody, proposals);
     }
     public void messageError (JTextField message){
         message.setText("X");
         message.setForeground(Color.red);
+    }
+    public static void restartData(){
+        ChoiceCriteria.input.clear();
+        Choice.proposalSelected.clear();
+        Choice.mapProposals.clear();
+        ViewWithPlan.listDeviceIdRoom.clear();
+        ViewWithPlan.configRoom.clear();
+        ViewWithPlan.listButton.clear();
+        ViewWithPlan.listDeviceId.clear();
+        ChoiceDevice.config.clear();
     }
 }

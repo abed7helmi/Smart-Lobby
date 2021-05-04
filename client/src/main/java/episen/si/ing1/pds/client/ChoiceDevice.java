@@ -4,6 +4,7 @@ import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.text.View;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -33,25 +34,18 @@ public class ChoiceDevice {
     private final List<String> listSensor = new ArrayList<>();
     private String[] equipmentArray;
     private String[] sensorArray;
-    private Map<String ,Map<String,String>> configRoom = new HashMap<>();
-    private Map<String, Map<String,String>> proposalSelected = new HashMap<>();
-    private final Map<String, String> config = new HashMap<>();
+
+
+    protected static Map<String, String> config = new HashMap<>();
     private final List keyConfigSensor  = new ArrayList();
     private final List keyConfigEquipment  = new ArrayList();
-    private List listDeviceId = new ArrayList();
-    private Map<String, String> listDeviceIdRoom = new HashMap<>();
     private final List deviceIdInRoom = new ArrayList();
 
-    public ChoiceDevice(JFrame frame, Map<String, String> input, String id, Map<String, Map<String,String>> configRoom, Map<String, Map<String,String>> ps, List ldI, Map<String, String> listIdRoom) {
+    public ChoiceDevice(JFrame frame, String id) {
         this.frame = frame;
-        this.input = input;
         this.room_id = id;
-        this.configRoom = configRoom;
-        listDeviceIdRoom = listIdRoom;
-        proposalSelected = ps;
-        listDeviceId = ldI;
 
-        System.out.println("test"+ listDeviceId);
+        System.out.println("test"+ ViewWithPlan.listDeviceId);
         Client.map.get("requestLocation2").put("room_id", room_id);
         resultRequest = Client.sendBd("requestLocation2");
 
@@ -67,7 +61,7 @@ public class ChoiceDevice {
         sensorArray = listSensor.toArray(sensorArray);
     }
 
-    public void choice(JPanel pb, JPanel oldView, JButton room, Map<JButton,String> listButton){
+    public void choice(JPanel pb, JPanel oldView, JButton room){
         roomName = room.getText();
 
         this.pageBody = pb;
@@ -88,13 +82,13 @@ public class ChoiceDevice {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String list = deviceIdInRoom.toString();
-                listDeviceIdRoom.put(room_id, list);
+                ViewWithPlan.listDeviceIdRoom.put(room_id, list);
                 advancement.setVisible(false);
-                listButton.replace(room, "validated");
+                ViewWithPlan.listButton.replace(room, "validated");
                 view.setVisible(false);
                 room.setBackground(Color.green);
-                ViewWithPlan backViewPlan = new ViewWithPlan(frame, input);
-                backViewPlan.back(oldView,pb,room,listButton, configRoom, proposalSelected, listDeviceId, listDeviceIdRoom);
+                ViewWithPlan backViewPlan = new ViewWithPlan(frame);
+                backViewPlan.back(oldView,pb,room);
             }
         });
         view.add(buttonValidate);
@@ -317,7 +311,7 @@ public class ChoiceDevice {
 
     public boolean verifMap(){
         if(config.containsKey("config_sensor") && config.containsKey("config_equipment")){
-            configRoom.put(room_id, config);
+            ViewWithPlan.configRoom.put(room_id, config);
             return true;
         }
         else return false;
@@ -346,8 +340,8 @@ public class ChoiceDevice {
             Client.map.get("requestLocation3").put("device_wording",text.trim());
             Client.map.get("requestLocation3").put("quantity",str);
 
-            for(int i = 0; i < listDeviceId.size(); i++){
-                Client.map.get("requestLocation3").put("device"+i, listDeviceId.get(i)+"");
+            for(int i = 0; i < ViewWithPlan.listDeviceId.size(); i++){
+                Client.map.get("requestLocation3").put("device"+i, ViewWithPlan.listDeviceId.get(i)+"");
             }
 
             String verifyDispo = Client.sendBd("requestLocation3");
@@ -378,7 +372,7 @@ public class ChoiceDevice {
     public void stockDevice(String[] value, List deviceIdInRoom, String text, String str, JTextField messageError, String price){
         int count = 0;
         for(int i = 0; i < value.length; i++) {
-            listDeviceId.add(value[i]);
+            ViewWithPlan.listDeviceId.add(value[i]);
             deviceIdInRoom.add(value[i]);
         }
 
