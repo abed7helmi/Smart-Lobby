@@ -324,8 +324,6 @@ public class ClientRequestManager {
 					request = request +"Limit " + numberMeetingRoom +") " +
 					" order by room_price;";
 
-
-					System.out.println(request);
 			ResultSet result = c.createStatement().executeQuery(request);
 			Map<String, Map<String, String>> roomProposal1 = new HashMap<>();
 			Map<String, Map<String, String>> roomProposal2 = new HashMap<>();

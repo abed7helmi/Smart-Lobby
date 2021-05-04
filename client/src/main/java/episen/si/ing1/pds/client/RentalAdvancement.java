@@ -62,21 +62,18 @@ public class RentalAdvancement {
         }
 
         rentalAdvancement.add(criteria);
-        fleche();
+        rentalAdvancement.add(fleche());
         rentalAdvancement.add(choiceField);
-        fleche();
+        rentalAdvancement.add(fleche());
         rentalAdvancement.add(equipment);
-        fleche();
+        rentalAdvancement.add(fleche());
         rentalAdvancement.add(bill);
-        fleche();
         return rentalAdvancement;
     }
-    public void fleche(){
-        try{
-            ImageIcon iconAdvancement = new ImageIcon(ImageIO.read(new File(Ihm.path+"flecheAdvancement.png")));
-            iconAdvancement = new ImageIcon(iconAdvancement.getImage().getScaledInstance(50, 30, Image.SCALE_DEFAULT));
-            JLabel flecheAdvancement = new JLabel(iconAdvancement,JLabel.CENTER);
-            rentalAdvancement.add(flecheAdvancement);
-        } catch(Exception e) {}
+    public JLabel fleche(){
+        ImageIcon iconAdvancement = new ImageIcon(new ImageIcon(Ihm.path+"flecheAdvancement.png").getImage().getScaledInstance(50, 30, Image.SCALE_DEFAULT));
+        JLabel flecheAdvancement = new JLabel(iconAdvancement,JLabel.CENTER);
+        flecheAdvancement.setVisible(true);
+        return flecheAdvancement;
     }
 }

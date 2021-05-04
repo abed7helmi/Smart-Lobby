@@ -18,11 +18,15 @@ public class ViewWithPlan {
     private String order;
     private String floorNumber;
     private final JPanel configButton = new JPanel();
-
+    protected static JTextField consign = new JTextField("**Veuillez configurer les salles qui sont rouges. " +
+            "Les salles vertes sont configurees.");
     protected static Map<JButton, String> listButton = new HashMap<>();
     protected static Map<String,Map<String, String>> configRoom = new HashMap<>();
     protected static List listDeviceId = new ArrayList();
     protected static Map<String, String> listDeviceIdRoom = new HashMap<>();
+    private JPanel view = new JPanel();
+    protected static JPanel advancement = new JPanel();
+    protected static JTextField orderSelected = new JTextField();
 
     public ViewWithPlan(JFrame frame){
         this.frame = frame;
@@ -34,44 +38,38 @@ public class ViewWithPlan {
     public void viewWithPlan(JPanel pb){
         this.pageBody = pb;
         pageBody.setBackground(Color.WHITE);
-        JPanel view = view();
-        JPanel advancement;
+        view = view();
         RentalAdvancement rentalAdvancement = new RentalAdvancement(page);
         advancement = rentalAdvancement.rentalAdvancement();
+        advancement.setVisible(true);
         pageBody.add(advancement, BorderLayout.CENTER);
         pageBody.add(view, BorderLayout.SOUTH);
         pageBody.repaint();
         frame.repaint();
     }
     public JPanel view(){
-        JPanel view = new JPanel();
+        view = new JPanel();
         view.setBackground(Color.WHITE);
         Ihm.sizeComposant(new Dimension(950,600), view);
         view.setLayout(null);
 
-        JTextField orderSelected = new JTextField("Vous avez choisi l'offre " + order);
+        orderSelected = new JTextField("Vous avez choisi l'offre " + order);
         orderSelected = styleJTextFieldReservation(orderSelected, 20, 20, 320, 50, Color.WHITE, Color.WHITE);
         orderSelected.setFont(new Font("Serif", Font.BOLD, 20));
         view.add(orderSelected);
 
-        JPanel plan = new JPanel();
-        plan.setLayout(new BorderLayout());
-        plan.setBackground(Color.white);
-        Ihm.sizeComposant(new Dimension(500, 400), plan);
-        plan.setBounds(10,100,500,400);
-        try{
-            ImageIcon planImage = new ImageIcon(ImageIO.read(new File(Ihm.path+"plan.png")));
-            planImage = new ImageIcon(planImage.getImage().getScaledInstance(plan.getWidth(), plan.getHeight(), Image.SCALE_DEFAULT));
-            JLabel planLabel = new JLabel(planImage, JLabel.CENTER);
-            plan.add(planLabel, BorderLayout.CENTER);
-            view.add(plan);
-        } catch(Exception e){}
-
-
-        JPanel config = new JPanel();
+        JPanel planPanel = new JPanel();
+        planPanel.setBounds(10,100,500,400);
+        ImageIcon planImage = new ImageIcon(Ihm.path+"plan.png");
+        planImage = new ImageIcon(planImage.getImage().getScaledInstance(planPanel.getWidth(), planPanel.getHeight(), Image.SCALE_DEFAULT));
+        JLabel planLabel = new JLabel(planImage, JLabel.CENTER);
+        planPanel.add(planLabel);
+        view.add(planPanel);
 
         createButton(view);
-        view.add(config);
+
+        consign = styleJTextFieldReservation(consign, 20, 550, 500, 50, Color.WHITE, Color.WHITE);
+        view.add(consign);
         return view;
     }
     public void createButton(JPanel view){
@@ -115,6 +113,7 @@ public class ViewWithPlan {
             @Override
             public void actionPerformed(ActionEvent e) {
                 view.setVisible(false);
+                view.remove(consign);
                 changePage(view, room, room_id);
             }
         });
@@ -127,11 +126,13 @@ public class ViewWithPlan {
     }
     public void back(JPanel oldView, JPanel pb, JButton room){
         this.pageBody = pb;
+        pageBody.repaint();
         boolean verifContinue = true;
         for(Map.Entry map : listButton.entrySet()){
             if( (map.getValue()).equals("unvalidated")) verifContinue = false;
         }
         oldView.setVisible(true);
+        pb.setVisible(false);
         if(verifContinue){
             Ihm.buttonContinue.setEnabled(true);
             oldView.add(Ihm.buttonContinue);
@@ -139,12 +140,13 @@ public class ViewWithPlan {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     oldView.setVisible(false);
+                    orderSelected.setText("");
                     Bill bill = new Bill(frame);
                     bill.confirmation(pageBody);
+                    frame.update(frame.getGraphics());
                 }
             });
         }
         room.repaint();
-        pageBody.repaint();
     }
 }

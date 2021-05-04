@@ -162,7 +162,7 @@ public class Choice{
 
             proposal.add(floor);
 
-            JTextField price = new JTextField("Prix sans euipement : ");
+            JTextField price = new JTextField("Prix sans equipement : ");
             price = Ihm.styleJTextFieldReservation(price, 20, 140, 350, 20, Color.WHITE, Color.white);
             price.setText(price.getText() + priceProposal);
 

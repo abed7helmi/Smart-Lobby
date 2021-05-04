@@ -1,5 +1,7 @@
 package episen.si.ing1.pds.client;
 
+import com.sun.tools.javac.util.StringUtils;
+
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
@@ -45,7 +47,6 @@ public class ChoiceDevice {
         this.frame = frame;
         this.room_id = id;
 
-        System.out.println("test"+ ViewWithPlan.listDeviceId);
         Client.map.get("requestLocation2").put("room_id", room_id);
         resultRequest = Client.sendBd("requestLocation2");
 
@@ -103,13 +104,16 @@ public class ChoiceDevice {
         Ihm.sizeComposant(new Dimension(950,600), view);
         view.setLayout(null);
 
+        roomName = roomName.substring(0,1).toUpperCase() + roomName.substring(1);
         JTextField room = new JTextField(roomName);
-        room = Ihm.styleJTextFieldReservation(room, 50,20,350, 50, Color.white, Color.white);
+        room = Ihm.styleJTextFieldReservation(room, 50,20,350, 50, Color.white, Color.WHITE);
+        room.setBorder(BorderFactory.createMatteBorder(0,0, 1, 0, Color.black));
+        room.setFont(new Font("Serif", Font.BOLD, 20));
         view.add(room);
 
         JTextField titleEquipment = new JTextField("Choisissez les equipements :");
         titleEquipment = Ihm.styleJTextFieldReservation(titleEquipment, 50,100,350, 50, Color.white, Color.white);
-        titleEquipment.setFont(new Font("Serif", Font.BOLD, 20));
+        titleEquipment.setFont(new Font("Serif", Font.BOLD, 18));
         view.add(titleEquipment);
 
         JTextField choiceEquipment = new JTextField("- Souhaitez-vous des equipements ? ");
@@ -144,7 +148,6 @@ public class ChoiceDevice {
                             String equipment = ((String)listE.getSelectedValue()).split("/")[0];
                             String text = (equipment.split("--")[0]).trim();
                             String price = (equipment.split("--")[1].trim()).split("euros")[0].trim();
-                            System.out.println("price"+price);
 
                             selectionE.setText("Quelle quantite pour "+ text +" ?");
                             selectionE = Ihm.styleJTextFieldReservation(selectionE, 50, 500, 300, 20, Color.white, Color.white);
@@ -210,7 +213,7 @@ public class ChoiceDevice {
 
         JTextField titleSensor = new JTextField("Choisissez les capteurs :");
         titleSensor = Ihm.styleJTextFieldReservation(titleSensor, 450,100,350, 50, Color.white, Color.white);
-        titleSensor.setFont(new Font("Serif", Font.BOLD, 20));
+        titleSensor.setFont(new Font("Serif", Font.BOLD, 18));
         view.add(titleSensor);
 
         JTextField choiceSensor = new JTextField("- Souhaitez-vous des capteurs ? ");
@@ -243,7 +246,6 @@ public class ChoiceDevice {
                             String sensor = ((String)listS.getSelectedValue()).split("/")[0];
                             String text = (sensor.split("--")[0]).trim();
                             String price = (sensor.split("--")[1].trim()).split("euros")[0].trim();
-                            System.out.println("price"+price);
 
                             selectionS.setText("Quelle quantite pour "+ text +" ?");
                             selectionS = Ihm.styleJTextFieldReservation(selectionS, 450, 500, 300, 20, Color.white, Color.white);
