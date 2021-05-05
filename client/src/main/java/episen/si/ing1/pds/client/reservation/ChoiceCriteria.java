@@ -1,6 +1,7 @@
 package episen.si.ing1.pds.client.reservation;
 
 import episen.si.ing1.pds.client.Client;
+import episen.si.ing1.pds.client.Ihm;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -513,3 +514,4 @@ public class ChoiceCriteria{
         ChoiceDevice.config.clear();
     }
 }
+
