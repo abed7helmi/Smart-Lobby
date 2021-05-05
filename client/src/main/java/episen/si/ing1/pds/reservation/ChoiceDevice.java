@@ -1,7 +1,6 @@
 package episen.si.ing1.pds.reservation;
 
 import episen.si.ing1.pds.client.Client;
-
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
@@ -35,7 +34,6 @@ public class ChoiceDevice extends JFrame{
     private final List<String> listSensor = new ArrayList<>();
     private String[] equipmentArray;
     private String[] sensorArray;
-
     public static Map<String, String> config = new HashMap<>();
     private final List keyConfigSensor  = new ArrayList();
     private final List keyConfigEquipment  = new ArrayList();
@@ -95,6 +93,11 @@ public class ChoiceDevice extends JFrame{
                 }
                 ViewWithPlan.reload();
                 frameDevice.dispose();
+
+                System.out.println("////////");
+                System.out.println(ChoiceCriteria.input);
+                System.out.println("////////");
+                System.out.println(Choice.proposalSelected);
             }
         });
         view.add(buttonValidate);
@@ -355,12 +358,12 @@ public class ChoiceDevice extends JFrame{
                 String[] value = verifyDispo.split(",");
                 //List deviceIdInRoom = new ArrayList();
                 if(value.length == Integer.parseInt(str)){
-                    stockDevice(value,deviceIdInRoom, text,str,messageError, price);
+                    stockDevice(value,deviceIdInRoom, text,messageError, price);
                     return true;
                 } else {
                     int result = JOptionPane.showConfirmDialog(null, "On n'a seulement "+ value.length +" . Souhaitez-vous prendre les "+ value.length+ " ?");
                     if( result == JOptionPane.YES_OPTION) {
-                        stockDevice(value,deviceIdInRoom, text,str,messageError, price);
+                        stockDevice(value,deviceIdInRoom, text,messageError, price);
                         return true;
                     } else return false;
                 }
@@ -375,8 +378,7 @@ public class ChoiceDevice extends JFrame{
         }
     }
 
-    public void stockDevice(String[] value, List deviceIdInRoom, String text, String str, JTextField messageError, String price){
-        int count = 0;
+    public void stockDevice(String[] value, List deviceIdInRoom, String text, JTextField messageError, String price){
         for(int i = 0; i < value.length; i++) {
             ViewWithPlan.listDeviceId.add(value[i]);
             deviceIdInRoom.add(value[i]);
