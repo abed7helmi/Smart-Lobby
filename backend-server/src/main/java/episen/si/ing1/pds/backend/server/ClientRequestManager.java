@@ -264,15 +264,14 @@ public class ClientRequestManager {
 			Statement s = c.createStatement();
 			if(oldDevice.isEmpty()) {
 				s.executeUpdate("update device set device_placed='t', location_id="+location+" where device_id="+newDevice);
-				s.executeUpdate("update location set occupied_location='t' where location_id="+location);
 			}else if(newDevice.isEmpty()) {
 				s.executeUpdate("update device set device_placed='f', location_id=null where device_id="+oldDevice);
-				s.executeUpdate("update location set occupied_location='f' where location_id="+location);
 			}else {
 				s.executeUpdate("update device set device_placed='t', location_id="+location+" where device_id="+newDevice);
 				s.executeUpdate("update device set device_placed='f', location_id=null where device_id="+oldDevice);
 			}
-			
+			s.executeUpdate("update location set occupied_location='f' where location_id not in (select location_id from device where location_id is not null)");
+			s.executeUpdate("update location set occupied_location='t' where location_id in (select location_id from device where location_id is not null)");
 			output.println("Done");
 		} catch (SQLException e) {}
 	}

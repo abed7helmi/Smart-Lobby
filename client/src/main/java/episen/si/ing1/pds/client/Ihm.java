@@ -2,6 +2,9 @@ package episen.si.ing1.pds.client;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
+
+import episen.si.ing1.pds.client.Mapping.Mapping;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -18,7 +21,7 @@ public class Ihm extends JFrame{
     private JPanel pageBody3 ;
     private JPanel pageBody4 ;
     private String company_id ="";
-    protected static String path = System.getenv("PDSIMG");
+    public static String path = System.getenv("PDSIMG");
 
     public Ihm(String name, String page, String id) {
         company_id = id;
@@ -30,6 +33,7 @@ public class Ihm extends JFrame{
         pageBody1 = reservation.realizeReservation();
 
         Mapping m = new Mapping();
+        m.mapping();
         pageBody2 = m.getPanel();
 
         Indicators indicator = new Indicators();
@@ -75,6 +79,11 @@ public class Ihm extends JFrame{
         consult.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+            	pageBody.remove(pageBody2);
+            	Mapping m = new Mapping();
+                m.mapping();
+                pageBody2 = m.getPanel();
+                pageBody.add(pageBody2,"consult");
                 pages.show(pageBody,"consult");
             }
         });

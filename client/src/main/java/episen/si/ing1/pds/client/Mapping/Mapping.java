@@ -1,37 +1,26 @@
-package episen.si.ing1.pds.client;
+package episen.si.ing1.pds.client.Mapping;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.Graphics;
 import java.awt.GridLayout;
-import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.io.File;
-import java.io.IOException;
 import java.util.Map;
-
-import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTextArea;
+
 
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import episen.si.ing1.pds.client.Client;
+import episen.si.ing1.pds.client.Menu;
 
 
 public class Mapping {
@@ -41,19 +30,19 @@ public class Mapping {
 	private JPanel p1 = new JPanel();
 	private JPanel p2 = new JPanel();
 	private JPanel locationSelection = new JPanel();
-	private JPanel locationPlan = new JPanel();
 	private JPanel equipmentSelection = new JPanel();
 	private String companyId = Menu.company_id;
-	private String reservation_id = "";
-	private String room_id = "";
-	private String imgPath = "";
-	private JPanel selection1 = new JPanel();
-	private JPanel selection2 = new JPanel();
-	private JPanel selection3 = new JPanel();
-	private JPanel selection4 = new JPanel();
-	private JPanel selection5 = new JPanel();
-	private JPanel selection6 = new JPanel();
-	private Font titlefont = new Font("font", 1, 20);
+	protected static JPanel locationPlan = new JPanel();
+	protected static JPanel selection1 = new JPanel();
+	protected static JPanel selection2 = new JPanel();
+	protected static JPanel selection3 = new JPanel();
+	protected static JPanel selection4 = new JPanel();
+	protected static JPanel selection5 = new JPanel();
+	protected static JPanel selection6 = new JPanel();
+	protected static Font titlefont = new Font("font", 1, 20);
+	protected static String reservation_id = "";
+	protected static String room_id = "";
+	protected static String imgPath = "";
 
 	public Mapping() {
 		panel.setBackground(Color.white);
@@ -68,7 +57,7 @@ public class Mapping {
 		p.setLayout(new GridLayout(1,1));
 		p2.add(p);
 		p.add(locationPlan);
-		locationPlan.setBorder(BorderFactory.createEmptyBorder(0,220,0,0));
+		locationPlan.setBorder(BorderFactory.createEmptyBorder(0,150,0,0));
 		locationPlan.setLayout(new BorderLayout());
 		locationPlan.setBackground(Color.WHITE);
 		
@@ -89,7 +78,12 @@ public class Mapping {
 		selection1.setBackground(Color.WHITE);
 		selection2.setBackground(Color.WHITE);
 		selection3.setBackground(Color.WHITE);
-		JLabel title = new JLabel("SÃ©lectionnez une location Ã  configurer:");
+	}
+	
+	public void mapping() {
+		selection1.removeAll();
+		
+		JLabel title = new JLabel("Sélectionnez une location à configurer:");
 		title.setFont(titlefont);
 		selection1.add(title);
 		
@@ -99,7 +93,7 @@ public class Mapping {
 		Map<String, Map<String, String>> reservations = mapper.readValue(Client.sendBd("companyReservation"),new TypeReference<Map<String, Map<String, String>>>(){});
 		String[] reservationList = new String[reservations.size()];
 		for(int i=0;i<reservationList.length;i++) {
-			reservationList[i]="NÂ°"+reservations.get(""+i).get("reservation_id")+" du "+reservations.get(""+i).get("start_date");
+			reservationList[i]="N°"+reservations.get(""+i).get("reservation_id")+" du "+reservations.get(""+i).get("start_date");
 		}
 		JComboBox<String> cb = new JComboBox<String>(reservationList);
 		cb.setSize(100,10);
@@ -113,16 +107,19 @@ public class Mapping {
 				selection3.removeAll();
 				selection3.repaint();
 				reservation_id = reservations.get(cb.getSelectedIndex()+"").get("reservation_id");
-				floorSelection(reservation_id);
+				FloorSelection.floorSelection(reservation_id);
 			}
 		});
-		
 		} catch (JsonMappingException e1) {} catch (JsonProcessingException e1) {}
 	}
+	
+	public JPanel getPanel() {
+		return panel;
+	}
 
-	public void floorSelection(String reservation_id) {
+	/*public void floorSelection(String reservation_id) {
 		try {
-		JLabel title = new JLabel("SÃ©lectionnez le bÃ¢timent et l'Ã©tage Ã  configurer:");
+		JLabel title = new JLabel("Sélectionnez le bâtiment et l'étage à configurer:");
 		title.setFont(titlefont);
 		selection2.add(title);
 		
@@ -152,7 +149,7 @@ public class Mapping {
 	
 	public void roomSelection(String floor_id,String reservation_id) {
 		try {
-			JLabel title = new JLabel("SÃ©lectionnez la salle Ã  configurer:");
+			JLabel title = new JLabel("Sélectionnez la salle à configurer:");
 			title.setFont(titlefont);
 			selection3.add(title);
 			
@@ -189,12 +186,13 @@ public class Mapping {
 			selection3.revalidate();
 			} catch (JsonMappingException e) {} catch (JsonProcessingException e) {}
 	}
+	
 	public void roomPlan(String room_id,String imgPath) {
 		try {
 			locationPlan.removeAll();
 		
 			
-			JLabel title = new JLabel("SÃ©lectionnez un emplacement Ã  configurer:");
+			JLabel title = new JLabel("Sélectionnez un emplacement à configurer:");
 			title.setFont(titlefont);
 			title.setBorder(BorderFactory.createEmptyBorder(0,50,0,0));
 			locationPlan.add(title,BorderLayout.NORTH);
@@ -236,6 +234,19 @@ public class Mapping {
 					@Override
 					public void mouseClicked(MouseEvent e) {
 						equipmentSelection(m.get("location_id"),m.get("is_sensor"));
+						if(m.get("is_sensor").equals("t")) {
+							if(m.get("occupied_location").equals("t")) {
+								pin.setIcon(redSensor);
+							}else {
+								pin.setIcon(greenSensor);
+							}
+						}else {
+							if(m.get("occupied_location").equals("t")) {
+								pin.setIcon(redPin);
+							}else {
+								pin.setIcon(greenPin);
+							}
+						}
 					}
 					@Override
 					public void mousePressed(MouseEvent e) {}
@@ -277,7 +288,7 @@ public class Mapping {
 			
 			selection4.add(info);
 			if(equipmentPlaced.size()>0) {
-				info.setText("L'emplacement NÂ°"+location_id+" est actuellement occupÃ© par:");
+				info.setText("L'emplacement N°"+location_id+" est actuellement occupé par:");
 				JTextArea txt = new JTextArea("Id:"+equipmentPlaced.get("device_id")+" Nom:"+equipmentPlaced.get("device_wording")+" Actif:"+equipmentPlaced.get("device_active")
 						+" Prix:"+equipmentPlaced.get("device_price"));
 			
@@ -295,12 +306,12 @@ public class Mapping {
 				selection6.add(empty);
 				selection6.revalidate();
 			}else {
-				info.setText("L'emplacement NÂ°"+location_id+" est actuellement libre.");
+				info.setText("L'emplacement N°"+location_id+" est actuellement libre.");
 				info.setFont(titlefont);
 			}
 			selection4.revalidate();
 			
-			JLabel deviceSelection = new JLabel("SÃ©lectionnez un appareil Ã  placer:");
+			JLabel deviceSelection = new JLabel("Sélectionnez un appareil à placer:");
 			deviceSelection.setFont(titlefont);
 			selection5.add(deviceSelection);
 		
@@ -328,10 +339,5 @@ public class Mapping {
 			selection5.add(cb);
 			selection5.revalidate();
 		}catch(Exception e) {}
-	}
-
-	public JPanel getPanel() {
-		return panel;
-	}
-
+	}*/
 }
