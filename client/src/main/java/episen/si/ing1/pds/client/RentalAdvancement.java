@@ -1,9 +1,12 @@
 package episen.si.ing1.pds.client;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
 
 public class RentalAdvancement {
+    private JPanel rentalAdvancement = new JPanel();
     public String getPage() {
         return page;
     }
@@ -13,6 +16,7 @@ public class RentalAdvancement {
     public RentalAdvancement(String page) {
         this.page = page;
     }
+
 
     private String page;
 
@@ -64,13 +68,12 @@ public class RentalAdvancement {
         rentalAdvancement.add(equipment);
         rentalAdvancement.add(fleche());
         rentalAdvancement.add(bill);
-
         return rentalAdvancement;
     }
     public JLabel fleche(){
-        ImageIcon iconAdvancement = new ImageIcon(new ImageIcon("C:\\Users\\cedri\\Bureau\\pds\\image\\flecheAdvancement.png")
-                .getImage().getScaledInstance(50,30,Image.SCALE_DEFAULT));
+        ImageIcon iconAdvancement = new ImageIcon(new ImageIcon(Ihm.path+"flecheAdvancement.png").getImage().getScaledInstance(50, 30, Image.SCALE_DEFAULT));
         JLabel flecheAdvancement = new JLabel(iconAdvancement,JLabel.CENTER);
+        flecheAdvancement.setVisible(true);
         return flecheAdvancement;
     }
 }

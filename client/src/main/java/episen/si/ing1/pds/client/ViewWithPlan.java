@@ -1,9 +1,11 @@
 package episen.si.ing1.pds.client;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -11,66 +13,81 @@ import java.util.List;
 
 public class ViewWithPlan {
     private final String page = "device";
-    private final JFrame frame;
-    private Map<String , String> input = new HashMap<>();
     private JPanel pageBody;
+    private JPanel view = new JPanel();
     private String order;
     private String floorNumber;
     private final JPanel configButton = new JPanel();
-    private final Map<JButton, String> listButton = new HashMap<>();
-    private Map<String ,Map<String,String>> proposalSelected = new HashMap<>();
-    private Map<String,Map<String, String>> configRoom = new HashMap<>();
-    private List listDeviceId = new ArrayList();
-    private Map<String, String> listDeviceIdRoom = new HashMap<>();
+    private JTextField consign = new JTextField("**Veuillez configurer les salles qui sont rouges. " +
+            "Les salles vertes sont configurees.");
+    protected static Map<JButton, String> listButton = new HashMap<>();
+    protected static Map<String,Map<String, String>> configRoom = new HashMap<>();
+    protected static List listDeviceId = new ArrayList();
+    protected static Map<String, String> listDeviceIdRoom = new HashMap<>();
+    private JPanel advancement = new JPanel();
+    private JTextField orderSelected = new JTextField();
+    private JFrame frame;
+    private JButton confirm = new JButton("Continuer");
 
-    public ViewWithPlan(JFrame frame, Map<String, String> input){
+    public ViewWithPlan(JFrame frame, String o) {
         this.frame = frame;
-        this.input = input;
-    }
-    public ViewWithPlan(JFrame frame, Map<String, String> input, String o,  Map<String ,Map<String,String>>  ps) {
-        this.frame = frame;
-        this.input = input;
         this.order = o;
-        proposalSelected = ps;
     }
     public void viewWithPlan(JPanel pb){
         this.pageBody = pb;
         pageBody.setBackground(Color.WHITE);
-        JPanel view = view();
-        JPanel advancement;
+        view = view();
         RentalAdvancement rentalAdvancement = new RentalAdvancement(page);
         advancement = rentalAdvancement.rentalAdvancement();
+        advancement.setVisible(true);
         pageBody.add(advancement, BorderLayout.CENTER);
         pageBody.add(view, BorderLayout.SOUTH);
         pageBody.repaint();
         frame.repaint();
+
+        System.out.println("////////");
+        System.out.println(ChoiceCriteria.input);
+        System.out.println("////////");
+        System.out.println(Choice.proposalSelected);
+
     }
     public JPanel view(){
-        JPanel view = new JPanel();
+        view = new JPanel();
         view.setBackground(Color.WHITE);
         Ihm.sizeComposant(new Dimension(950,600), view);
         view.setLayout(null);
 
-        JTextField orderSelected = new JTextField("Vous avez choisi l'offre " + order);
+        confirm = Ihm.navJButton(confirm, 780,10,100,50);
+        view.add(confirm);
+        confirm.setEnabled(true);
+        confirm.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                view.setVisible(false);
+                advancement.setVisible(false);
+                pageBody.repaint();
+                Bill bill = new Bill(frame);
+                bill.confirmation(pageBody);
+            }
+        });
+
+        orderSelected = new JTextField("Vous avez choisi l'offre " + order);
         orderSelected = styleJTextFieldReservation(orderSelected, 20, 20, 320, 50, Color.WHITE, Color.WHITE);
         orderSelected.setFont(new Font("Serif", Font.BOLD, 20));
         view.add(orderSelected);
 
-        JPanel plan = new JPanel();
-        plan.setLayout(new BorderLayout());
-        plan.setBackground(Color.white);
-        Ihm.sizeComposant(new Dimension(500, 400), plan);
-        plan.setBounds(10,100,500,400);
-        ImageIcon planImage = new ImageIcon("C:\\Users\\cedri\\Bureau\\pds\\image\\plan.png");
-        planImage = new ImageIcon(planImage.getImage().getScaledInstance(plan.getWidth(), plan.getHeight(), Image.SCALE_DEFAULT));
+        JPanel planPanel = new JPanel();
+        planPanel.setBounds(10,100,500,400);
+        ImageIcon planImage = new ImageIcon(Ihm.path+"plan.png");
+        planImage = new ImageIcon(planImage.getImage().getScaledInstance(planPanel.getWidth(), planPanel.getHeight(), Image.SCALE_DEFAULT));
         JLabel planLabel = new JLabel(planImage, JLabel.CENTER);
-        plan.add(planLabel, BorderLayout.CENTER);
-        view.add(plan);
-
-        JPanel config = new JPanel();
+        planPanel.add(planLabel);
+        view.add(planPanel);
 
         createButton(view);
-        view.add(config);
+
+        consign = styleJTextFieldReservation(consign, 20, 550, 500, 50, Color.WHITE, Color.WHITE);
+        view.add(consign);
         return view;
     }
     public void createButton(JPanel view){
@@ -79,8 +96,14 @@ public class ViewWithPlan {
 
         int x = 10;
         int y = 10;
-        for(Map<String , String> map : proposalSelected.values()){
-            configRoom(map.get("room_wording").split("salle")[0]+" etage "+ map.get("floor_number"), x,y,175,50, configButton, view, map.get("building_name"), map.get("room_id"));
+        for(Map<String , String> map : Choice.proposalSelected.values()){
+            if(map.get("room_wording").contains("reunion")){
+                configRoom(map.get("room_wording").split("reunion")[0]+" reunion etage "+ map.get("floor_number"),
+                        x,y,175,50, configButton,  "batiment : " + map.get("building_name") +", etage : "+
+                                map.get("floor_number")  +" numero de salle "+ map.get("room_wording").split("reunion")[1], map.get("room_id"));
+            } else configRoom(map.get("room_wording").split("salle")[0]+" etage "+ map.get("floor_number"),
+                    x,y,175,50, configButton,  "batiment : " + map.get("building_name") +", etage : "+
+                            map.get("floor_number")  +" numero de salle "+ map.get("room_wording").split("salle")[1], map.get("room_id"));
             if(y >= 480) {
                 y = 10;
                 x = 195;
@@ -96,10 +119,9 @@ public class ViewWithPlan {
         t.setBounds(x, y, w, h);
         return t;
     }
-
-    public void configRoom( String message, int x, int y, int w, int h,JPanel configButton, JPanel view,String information, String room_id){
+    public void configRoom( String message, int x, int y, int w, int h,JPanel configButton,String information, String room_id){
         JButton room = new JButton(message);
-        room.setBackground(Color.red);
+        room.setBackground(new Color(255,102,102));
         room.setBounds(x,y,w,h);
         room.setVisible(true);
         room.setFont(new Font("Arial", Font.PLAIN, 10));
@@ -107,41 +129,14 @@ public class ViewWithPlan {
         room.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                view.setVisible(false);
-                changePage(view, room, listButton, room_id);
+                changePage(room, room_id);
             }
         });
         listButton.put(room, "unvalidated");
         configButton.add(room);
     }
-    public void changePage(JPanel view, JButton room, Map<JButton, String> listButton, String room_id){
-        ChoiceDevice device = new ChoiceDevice(frame, input,room_id, configRoom, proposalSelected, listDeviceId, listDeviceIdRoom);
-        device.choice(pageBody, view, room, listButton);
-    }
-    public void back(JPanel oldView, JPanel pb, JButton room, Map<JButton, String> list, Map<String, Map<String, String>> configurationRoom , Map<String, Map<String, String>> ps, List lDI,Map<String, String> listIdRoom ){
-        configRoom = configurationRoom;
-        proposalSelected = ps;
-        listDeviceId = lDI;
-        listDeviceIdRoom = listIdRoom;
-        this.pageBody = pb;
-        boolean verifContinue = true;
-        for(Map.Entry map : list.entrySet()){
-            if( (map.getValue()).equals("unvalidated")) verifContinue = false;
-        }
-        oldView.setVisible(true);
-        if(verifContinue){
-            Ihm.buttonContinue.setEnabled(true);
-            oldView.add(Ihm.buttonContinue);
-            Ihm.buttonContinue.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    oldView.setVisible(false);
-                    Bill bill = new Bill(input, frame, proposalSelected, configRoom, listDeviceIdRoom);
-                    bill.confirmation(pageBody);
-                }
-            });
-        }
-        room.repaint();
-        pageBody.repaint();
+    public void changePage(JButton room, String room_id){
+        ChoiceDevice device = new ChoiceDevice(frame, room_id);
+        device.choice(room);
     }
 }

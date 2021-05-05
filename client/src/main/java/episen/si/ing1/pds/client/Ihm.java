@@ -1,27 +1,30 @@
 package episen.si.ing1.pds.client;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 
 
 public class Ihm extends JFrame{
     private JFrame frame = new JFrame();
-
-    protected JPanel pageBody = new JPanel();
-    public static JButton buttonVoid = new JButton("Annuler");
+    private JPanel pageBody = new JPanel();
+    public  static JButton buttonVoid = new JButton("Annuler");
     public  static JButton buttonContinue = new JButton("> Continuer");
-
     private JPanel pageBody1 ;
     private JPanel pageBody2 ;
     private JPanel pageBody3 ;
     private JPanel pageBody4 ;
+    private JPanel pageBody7 ;
     private String company_id ="";
-    CardLayout pages = new CardLayout();
+    protected static String path = System.getenv("PDSIMG");
+
     public Ihm(String name, String page, String id) {
         company_id = id;
         frame = this;
+        CardLayout pages = new CardLayout();
 
         pageBody.setLayout(pages);
         ChoiceCriteria reservation = new ChoiceCriteria(frame, company_id);
@@ -30,36 +33,34 @@ public class Ihm extends JFrame{
         Mapping m = new Mapping();
         pageBody2 = m.getPanel();
 
+        AcceuilPersonnel personnel = new AcceuilPersonnel(frame,company_id);
+        pageBody7=personnel.acceuil();
+
         Indicators indicator = new Indicators();
         pageBody3 = indicator.getIndicator();
-
-        Window window=new Window();
-        pageBody4=window.firstMenu;
-
 
         if(page.equals("realize")){
             pageBody.add(pageBody1,"realize");
             pageBody.add(pageBody2,"consult");
-            pageBody.add(pageBody4,"window");
             pageBody.add(pageBody3,"indicator");
-            //pageBody.add(pageBody3,"staff");
-            //pageBody.add(pageBody1,"page1");
+            pageBody.add(pageBody7,"staff");
         } else if(page.equals("consult")){
             pageBody.add(pageBody2,"consult");
             pageBody.add(pageBody1,"realize");
-            pageBody.add(pageBody4,"window");
             pageBody.add(pageBody3,"indicator");
+            pageBody.add(pageBody7,"staff");
         }
         else if(page.equals("indicator")){
             pageBody.add(pageBody3,"indicator");
             pageBody.add(pageBody2,"consult");
             pageBody.add(pageBody1,"realize");
-            pageBody.add(pageBody4,"window");
-        } else if(page.equals("window")){
-            pageBody.add(pageBody4,"window");
+            pageBody.add(pageBody7,"staff");
+        }else if(page.equals("staff")){
+            pageBody.add(pageBody7,"staff");
+            pageBody.add(pageBody3,"indicator");
             pageBody.add(pageBody2,"consult");
             pageBody.add(pageBody1,"realize");
-            pageBody.add(pageBody3,"indicator");
+
 
         }
 
@@ -105,17 +106,9 @@ public class Ihm extends JFrame{
         setColor(staff,Color.white,new Color(0, 102,204));
 
         JButton configWindow = new JButton("Configurer fenêtre");
-        configWindow.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                pages.show(pageBody,"window");
-
-            }
-        });
-        sizeComposant(new Dimension(Integer.MAX_VALUE, 75), configWindow);
-        setColor(configWindow,Color.white,new Color(0, 102,204));
 
         JButton indicatorButton = new JButton("Indicateurs et locations");
+        setColor(indicatorButton,Color.white,new Color(0, 102,204));
         indicatorButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -142,33 +135,38 @@ public class Ihm extends JFrame{
         disconnect.setMaximumSize(new Dimension(100, 100));
         setColor(disconnect,Color.white,new Color(0, 102,204));
 
-        ImageIcon iconHome = new ImageIcon(new ImageIcon("C:\\Users\\cedri\\Bureau\\pds\\image\\maison.png").getImage().getScaledInstance(18,18,Image.SCALE_DEFAULT));
-        JButton home = new JButton(iconHome);
-        home.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Menu Menu = new Menu("Smart Lobby", company_id);
-                frame.dispose();
-            }
-        });
-        setColor(home,Color.white,new Color(0, 102,204));
+        try{
+            ImageIcon iconHome = new ImageIcon(ImageIO.read(new File(path+"maison.png")));
+            iconHome = new ImageIcon(iconHome.getImage().getScaledInstance(18, 18, Image.SCALE_DEFAULT));
+            JButton home = new JButton(iconHome);
+            home.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    Menu Menu = new Menu("Smart Lobby", company_id);
+                    frame.dispose();
+                }
+            });
+            setColor(home,Color.white,new Color(0, 102,204));
+            underMenu.add(home);
+        } catch(Exception e){}
 
-        ImageIcon iconRefresh = new ImageIcon(new ImageIcon("C:\\Users\\cedri\\Bureau\\pds\\image\\actualiser.png").getImage().getScaledInstance(18,18,Image.SCALE_DEFAULT));
-        JButton refresh = new JButton(iconRefresh);
-        refresh.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {}
-        });
-        setColor(refresh,Color.white,new Color(0, 102,204));
+        try{
+            ImageIcon iconRefresh = new ImageIcon(ImageIO.read(new File(path+"actualiser.png")));
+            iconRefresh = new ImageIcon(iconRefresh.getImage().getScaledInstance(18, 18, Image.SCALE_DEFAULT));
+            JButton refresh = new JButton(iconRefresh);
+            refresh.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {}
+            });
+            setColor(refresh,Color.white,new Color(0, 102,204));
+            underMenu.add(refresh);
+         } catch(Exception e){}
 
         underMenu.add(disconnect);
-        underMenu.add(home);
-        underMenu.add(refresh);
 
         menu.add(realize);
         menu.add(consult);
         menu.add(staff);
-        menu.add(configWindow);
         menu.add(indicatorButton);
         menu.add(Box.createGlue());
         menu.add(underMenu);

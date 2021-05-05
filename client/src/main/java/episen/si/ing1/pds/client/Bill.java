@@ -6,32 +6,24 @@ import javax.swing.table.TableColumn;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.HashMap;
 import java.util.Map;
 
 public class Bill {
     private final String page = "bill";
-    private Map<String, String> input = new HashMap<>();
-    private JPanel pageBody;
     private final JFrame frame;
-    private Map<String, Map<String,String>> proposalSelected = new HashMap<>();
-    private Map<String, Map<String, String>> configRooms = new HashMap<>();
-    private Map<String, String> listDeviceIdRoom = new HashMap<>();
     private String response ="";
     private int numberRoom= 0;
+    private JPanel pageBody;
 
-    public Bill(Map<String, String> in, JFrame f, Map<String, Map<String,String>> p, Map<String, Map<String, String>> config, Map<String ,String> listIdRoom)  {
-        this.input = in;
+    public Bill(JFrame f)  {
         this.frame = f;
-        proposalSelected = p;
-        configRooms = config;
-        listDeviceIdRoom = listIdRoom;
     }
 
     public void confirmation(JPanel pb){
         this.pageBody = pb;
         pageBody.setBackground(Color.WHITE);
-        JPanel view = view();
+
+        JPanel view = viewBill();
         RentalAdvancement rentalAdvancement = new RentalAdvancement(page);
         JPanel advancement = rentalAdvancement.rentalAdvancement();
 
@@ -39,13 +31,22 @@ public class Bill {
         pageBody.add(view, BorderLayout.SOUTH);
         pageBody.repaint();
         frame.repaint();
-        frame.setVisible(true);
     }
-    public JPanel view(){
-        JPanel view = new JPanel();
-        view.setBackground(Color.WHITE);
-        sizeComposant(new Dimension(950,600), view);
-        view.setLayout(null);
+    public JPanel viewBill(){
+        JPanel viewBill = new JPanel();
+        frame.repaint();
+
+        viewBill.setBackground(Color.WHITE);
+        sizeComposant(new Dimension(950,600), viewBill);
+        viewBill.setLayout(null);
+
+        JTextField title = new JTextField();
+        title = Ihm.styleJTextFieldReservation(title, 20,20,500,50,Color.WHITE, Color.white);
+        title.setBorder(BorderFactory.createMatteBorder(0,0, 1, 0, Color.black));
+        title.setFont(new Font("Serif", Font.BOLD, 18));
+        title.setVisible(true);
+        title.setText("Recapitualtif de votre commande : " + ChoiceCriteria.input.get("start_date") + " / "+ ChoiceCriteria.input.get("end_date"));
+        viewBill.add(title);
 
         JButton validate = new JButton("Confirmer");
         validate.setBounds(780, 10, 100, 50);
@@ -56,17 +57,32 @@ public class Bill {
                 response = prepareRequest();
                 if(  !(response.equals("Not done") && !(response.equals("")))  ){
                     frame.dispose();
-                    Menu menu = new Menu("Smart Lobby", input.get("company_id"));
-                    restartData();
+                    Menu menu = new Menu("Smart Lobby", ChoiceCriteria.input.get("company_id"));
+                    ChoiceCriteria.restartData();
                     menu.reservationDone(numberRoom);
                 } else{
-                    Ihm ihm = new Ihm("Smart Lobby","realize", input.get("company_id"));
-                    restartData();
+                    Ihm ihm = new Ihm("Smart Lobby","realize", ChoiceCriteria.input.get("company_id"));
+                    ChoiceCriteria.restartData();
                     frame.dispose();
                     JOptionPane.showMessageDialog(null,"Nous sommes desoles mais l'offre n'est plus disponible. Veuillez reessayer.");
                 }
             }
         });
+
+        JButton cancel = new JButton("Annuler");
+        cancel.setBounds(650, 10, 100, 50);
+        cancel.setBackground(Color.WHITE);
+        cancel.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ChoiceCriteria.restartData();
+                frame.dispose();
+                Menu Menu = new Menu("Smart Lobby", ChoiceCriteria.input.get("company_id"));
+            }
+        });
+        viewBill.add(cancel);
+
+
         JPanel table = new JPanel(new BorderLayout());
         table.setBounds(20,100,700,400);
 
@@ -90,12 +106,6 @@ public class Bill {
         JScrollPane scroll = new JScrollPane(dataTable);
         table.add(scroll, BorderLayout.CENTER);
 
-        JTextField bill = new JTextField("Voici un recapitulatif de votre commande : ");
-        bill = Ihm.styleJTextFieldReservation(bill, 20,20,600,50,Color.white, Color.white);
-        bill.setBorder(BorderFactory.createMatteBorder(0,0, 1, 0, Color.black));
-        bill.setFont(new Font("Serif", Font.BOLD, 20));
-
-        bill.setText(bill.getText() + input.get("start_date") + "/"+ input.get("end_date"));
 
         JTextField priceJTextField = new JTextField("Prix total :");
         priceJTextField.setForeground(Color.BLACK);
@@ -104,13 +114,17 @@ public class Bill {
 
         priceJTextField = Ihm.styleJTextFieldReservation(priceJTextField, 750,100,65,50, Color.WHITE,Color.white);
         valuePrice = Ihm.styleJTextFieldReservation(valuePrice, 825,100,100,50, Color.WHITE,Color.white);
-        view.add(priceJTextField);
-        view.add(valuePrice);
 
-        view.add(table);
-        view.add(validate);
-        view.repaint();
-        return view;
+        JTextField dateJTextField = new JTextField( "Date : " +  ChoiceCriteria.input.get("start_date") + " / "+ ChoiceCriteria.input.get("end_date") );
+        dateJTextField = Ihm.styleJTextFieldReservation(dateJTextField, 750,150,175,50, Color.WHITE,Color.white);
+
+        viewBill.add(dateJTextField);
+        viewBill.add(priceJTextField);
+        viewBill.add(valuePrice);
+        viewBill.add(table);
+        viewBill.add(validate);
+        viewBill.repaint();
+        return viewBill;
     }
     public void sizeComposant(Dimension dim, Component c){
         c.setPreferredSize(dim);
@@ -119,14 +133,16 @@ public class Bill {
     }
 
     public String[][] fillTable(){
-        String[][] data= new String[configRooms.size()][4];
+        String[][] data = new String[ViewWithPlan.configRoom.size()][4];
         int i = 0;
-        for(Map<String, String> m : proposalSelected.values()){
-            data[i][0] = (m.get("room_wording")).split("salle")[0];
+        for(Map<String, String> m : Choice.proposalSelected.values()){
+            if(m.get("room_wording").contains("reunion")){
+                data[i][0] = (m.get("room_wording")).split("reunion")[0] + "reunion";
+            } else data[i][0] = (m.get("room_wording")).split("salle")[0];
             data[i][1] = m.get("building_name");
             data[i][2] = m.get("floor_number");
-            data[i][3] = configRooms.get(m.get("room_id")).get("config_sensor");
-            data[i][3] = data[i][3] + " / " + configRooms.get(m.get("room_id")).get("config_equipment");
+            data[i][3] = ViewWithPlan.configRoom.get(m.get("room_id")).get("config_sensor");
+            data[i][3] = data[i][3] + " / " + ViewWithPlan.configRoom.get(m.get("room_id")).get("config_equipment");
             i++;
         }
         numberRoom = i;
@@ -134,14 +150,13 @@ public class Bill {
     }
 
     public String prepareRequest(){
-        Client.map.get("requestLocation5").put("company_id", input.get("company_id"));
+        Client.map.get("requestLocation5").put("company_id", ChoiceCriteria.input.get("company_id"));
         String manager_id = Client.sendBd("requestLocation5");
-        System.out.println(input);
-        Client.map.get("requestLocation4").put("end_date", input.get("end_date"));
-        Client.map.get("requestLocation4").put("start_date", input.get("start_date"));
+        Client.map.get("requestLocation4").put("end_date", ChoiceCriteria.input.get("end_date"));
+        Client.map.get("requestLocation4").put("start_date", ChoiceCriteria.input.get("start_date"));
         float price = 0;
         int i = 0;
-        for(Map<String, String> map : proposalSelected.values()){
+        for(Map<String, String> map : Choice.proposalSelected.values()){
             if( !((map.get("room_id")+"").equals("")) ) {
                 Client.map.get("requestLocation4").put("room"+i, map.get("room_id"));
                 i++;
@@ -149,31 +164,22 @@ public class Bill {
         }
         Client.map.get("requestLocation4").put("gs_manager_id", manager_id);
 
-        for(Map.Entry map : listDeviceIdRoom.entrySet()){
+        for(Map.Entry map : ViewWithPlan.listDeviceIdRoom.entrySet()){
             if( !((map.getValue()+"").equals("")) ) Client.map.get("requestLocation4").put(map.getKey()+"" , map.getValue()+"");
         }
-        System.out.println(Client.map);
         response = Client.sendBd("requestLocation4");
-        System.out.println(response);
         return response;
     }
     public Float priceTotal(){
         float price = 0;
-        for(Map<String, String> map : proposalSelected.values()){
+        for(Map<String, String> map : Choice.proposalSelected.values()){
             if( !((map.get("price")+"").equals("")) ) price = price + Float.parseFloat(map.get("price"));
         }// price room
-        for(Map<String, String> map : configRooms.values()){
+        for(Map<String, String> map : ViewWithPlan.configRoom.values()){
             if( map.containsKey("price") ) price = price + Float.parseFloat(map.get("price")+"");
         }//price device
 
         Client.map.get("requestLocation4").put("price", price+"");
         return price;
-    }
-
-    public void restartData(){
-        input.clear();
-        configRooms.clear();
-        proposalSelected.clear();
-        listDeviceIdRoom.clear();
     }
 }
