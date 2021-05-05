@@ -13,37 +13,24 @@ public class Bill {
     private final JFrame frame;
     private String response ="";
     private int numberRoom= 0;
+    private JPanel pageBody;
 
     public Bill(JFrame f)  {
         this.frame = f;
-        frame.update(frame.getGraphics());
     }
 
-    public void confirmation(JPanel pageBody){
-        pageBody.revalidate();
-        ViewWithPlan.consign.setVisible(false);
-        ViewWithPlan.advancement.setVisible(false);
-        ViewWithPlan.orderSelected = Ihm.styleJTextFieldReservation(ViewWithPlan.orderSelected, 20,20,500,50,Color.WHITE, Color.white);
-        ViewWithPlan.orderSelected.setBorder(BorderFactory.createMatteBorder(0,0, 1, 0, Color.black));
-        ViewWithPlan.orderSelected.setFont(new Font("Serif", Font.BOLD, 18));
-        ViewWithPlan.orderSelected.setVisible(true);
-        ViewWithPlan.orderSelected.setText("Recapitualtif de votre commande : " + ChoiceCriteria.input.get("start_date") + " / "+ ChoiceCriteria.input.get("end_date"));
-
+    public void confirmation(JPanel pb){
+        this.pageBody = pb;
         pageBody.setBackground(Color.WHITE);
+
+        JPanel view = viewBill();
         RentalAdvancement rentalAdvancement = new RentalAdvancement(page);
         JPanel advancement = rentalAdvancement.rentalAdvancement();
+
         pageBody.add(advancement, BorderLayout.CENTER);
-
-        JPanel viewBill = viewBill();
-        viewBill.add(ViewWithPlan.orderSelected);
-        viewBill.repaint();
-        viewBill.revalidate();
-
-        pageBody.add(viewBill, BorderLayout.SOUTH);
-        pageBody.setVisible(true);
+        pageBody.add(view, BorderLayout.SOUTH);
         pageBody.repaint();
         frame.repaint();
-        frame.setVisible(true);
     }
     public JPanel viewBill(){
         JPanel viewBill = new JPanel();
@@ -52,6 +39,13 @@ public class Bill {
         viewBill.setBackground(Color.WHITE);
         sizeComposant(new Dimension(950,600), viewBill);
         viewBill.setLayout(null);
+
+        JTextField title = new JTextField();
+        title = Ihm.styleJTextFieldReservation(title, 20,20,500,50,Color.WHITE, Color.white);
+        title.setBorder(BorderFactory.createMatteBorder(0,0, 1, 0, Color.black));
+        title.setFont(new Font("Serif", Font.BOLD, 18));
+        title.setVisible(true);
+        title.setText("Recapitualtif de votre commande : " + ChoiceCriteria.input.get("start_date") + " / "+ ChoiceCriteria.input.get("end_date"));
 
         JButton validate = new JButton("Confirmer");
         validate.setBounds(780, 10, 100, 50);

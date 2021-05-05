@@ -15,12 +15,12 @@ import java.awt.event.ItemListener;
 import java.util.*;
 import java.util.List;
 
-public class ChoiceDevice {
+public class ChoiceDevice extends JFrame{
     private String room_id ="";
-    private final JFrame frame;
+    private final JFrame mainFrame;
+    private final JFrame frameDevice;
     private Map<String , String> input = new HashMap<>();
     private final JButton buttonValidate = new JButton("> Valider");
-    private JPanel pageBody;
     private final String page = "device";
     private JTextField selectionE = new JTextField();
     private final JTextField quantityE = new JTextField();
@@ -43,9 +43,10 @@ public class ChoiceDevice {
     private final List keyConfigEquipment  = new ArrayList();
     private final List deviceIdInRoom = new ArrayList();
 
-    public ChoiceDevice(JFrame frame, String id) {
-        this.frame = frame;
+    public ChoiceDevice(JFrame f, String id) {
+        mainFrame = f;
         this.room_id = id;
+        frameDevice = this;
 
         Client.map.get("requestLocation2").put("room_id", room_id);
         resultRequest = Client.sendBd("requestLocation2");
@@ -60,19 +61,23 @@ public class ChoiceDevice {
 
         equipmentArray = listEquipment.toArray(equipmentArray);
         sensorArray = listSensor.toArray(sensorArray);
+
+        setSize(800, 700);
+        setVisible(true);
+        setLocationRelativeTo(null);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setResizable(false);
     }
 
-    public void choice(JPanel pb, JPanel oldView, JButton room){
+    public void choice(JButton room){
         roomName = room.getText();
 
-        this.pageBody = pb;
+        JPanel pageBody = new JPanel();
+        pageBody.setLayout(new BorderLayout());
         pageBody.setBackground(Color.CYAN);
         JPanel view = view();
         view.setBackground(Color.white);
-        RentalAdvancement rentalAdvancement = new RentalAdvancement(page);
-        JPanel advancement = rentalAdvancement.rentalAdvancement();
-        pageBody.add(advancement, BorderLayout.CENTER);
-        buttonValidate.setBounds(780, 10, 100, 50);
+        buttonValidate.setBounds(650, 10, 100, 50);
         buttonValidate.setBackground(new Color(255, 255,255));
         buttonValidate.setForeground(Color.BLACK);
         buttonValidate.setBorder(BorderFactory.createLineBorder(Color.BLACK));
@@ -84,19 +89,15 @@ public class ChoiceDevice {
             public void actionPerformed(ActionEvent e) {
                 String list = deviceIdInRoom.toString();
                 ViewWithPlan.listDeviceIdRoom.put(room_id, list);
-                advancement.setVisible(false);
                 ViewWithPlan.listButton.replace(room, "validated");
-                view.setVisible(false);
                 room.setBackground(Color.green);
-                ViewWithPlan backViewPlan = new ViewWithPlan(frame);
-                backViewPlan.back(oldView,pb,room);
+                frameDevice.dispose();
             }
         });
         view.add(buttonValidate);
         view.setVisible(true);
-        pageBody.add(view, BorderLayout.SOUTH);
-        pageBody.repaint();
-        frame.repaint();
+        pageBody.add(view, BorderLayout.CENTER);
+        this.getContentPane().add(pageBody);
     }
     public JPanel view(){
         JPanel view = new JPanel();
@@ -106,25 +107,25 @@ public class ChoiceDevice {
 
         roomName = roomName.substring(0,1).toUpperCase() + roomName.substring(1);
         JTextField room = new JTextField(roomName);
-        room = Ihm.styleJTextFieldReservation(room, 50,20,350, 50, Color.white, Color.WHITE);
+        room = Ihm.styleJTextFieldReservation(room, 10,20,350, 50, Color.white, Color.WHITE);
         room.setBorder(BorderFactory.createMatteBorder(0,0, 1, 0, Color.black));
         room.setFont(new Font("Serif", Font.BOLD, 20));
         view.add(room);
 
         JTextField titleEquipment = new JTextField("Choisissez les equipements :");
-        titleEquipment = Ihm.styleJTextFieldReservation(titleEquipment, 50,100,350, 50, Color.white, Color.white);
+        titleEquipment = Ihm.styleJTextFieldReservation(titleEquipment, 10,100,350, 50, Color.white, Color.white);
         titleEquipment.setFont(new Font("Serif", Font.BOLD, 18));
         view.add(titleEquipment);
 
         JTextField choiceEquipment = new JTextField("- Souhaitez-vous des equipements ? ");
-        choiceEquipment = Ihm.styleJTextFieldReservation(choiceEquipment, 50, 160, 200, 20,Color.white, Color.white);
+        choiceEquipment = Ihm.styleJTextFieldReservation(choiceEquipment, 10, 160, 200, 20,Color.white, Color.white);
         view.add(choiceEquipment);
 
         ButtonGroup groupEquipment = new ButtonGroup();
         JRadioButton rYesEquipment = new JRadioButton("Oui ");
         rYesEquipment.setVisible(true);
         rYesEquipment.setBackground(Color.white);
-        rYesEquipment.setBounds(275, 160, 80,20);
+        rYesEquipment.setBounds(225, 160, 65,20);
         JList listE = new JList(equipmentArray);
         JScrollPane scrollEquipment = new JScrollPane(listE);
         scrollEquipment.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
@@ -137,7 +138,7 @@ public class ChoiceDevice {
             public void itemStateChanged(ItemEvent e) {
                 config.put("config_equipment", "oui");
 
-                scrollEquipment.setBounds(50, 250, 350, 250);
+                scrollEquipment.setBounds(10, 250, 350, 250);
                 listE.setBackground(Color.white);
                 scrollEquipment.setVisible(true);
                 listE.setBorder(new TitledBorder("Veuillez selectionner les equipements."));
@@ -150,16 +151,16 @@ public class ChoiceDevice {
                             String price = (equipment.split("--")[1].trim()).split("euros")[0].trim();
 
                             selectionE.setText("Quelle quantite pour "+ text +" ?");
-                            selectionE = Ihm.styleJTextFieldReservation(selectionE, 50, 500, 300, 20, Color.white, Color.white);
+                            selectionE = Ihm.styleJTextFieldReservation(selectionE, 10, 500, 300, 20, Color.white, Color.white);
                             selectionE.setVisible(true);
 
                             quantityE.setBackground(Color.white);
-                            quantityE.setBounds(350, 505, 30,20);
+                            quantityE.setBounds(310, 505, 30,20);
                             quantityE.setVisible(true);
 
                             messageErrorE = styleJTextFieldError(view, quantityE.getWidth() + quantityE.getX(), 500, 20, 20);
 
-                            validateQuantityE.setBounds(50,530,100,20);
+                            validateQuantityE.setBounds(10,530,100,20);
                             validateQuantityE.setVisible(true);
                             validateQuantityE.addActionListener(new ActionListener() {
                                 @Override
@@ -190,7 +191,7 @@ public class ChoiceDevice {
         JRadioButton rNonEquipment = new JRadioButton("Non ");
         rNonEquipment.setVisible(true);
         rNonEquipment.setBackground(Color.white);
-        rNonEquipment.setBounds(365, 160,80,20);
+        rNonEquipment.setBounds(295, 160,65,20);
         rNonEquipment.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -212,17 +213,17 @@ public class ChoiceDevice {
         view.add(rNonEquipment);
 
         JTextField titleSensor = new JTextField("Choisissez les capteurs :");
-        titleSensor = Ihm.styleJTextFieldReservation(titleSensor, 450,100,350, 50, Color.white, Color.white);
+        titleSensor = Ihm.styleJTextFieldReservation(titleSensor, 400,100,350, 50, Color.white, Color.white);
         titleSensor.setFont(new Font("Serif", Font.BOLD, 18));
         view.add(titleSensor);
 
         JTextField choiceSensor = new JTextField("- Souhaitez-vous des capteurs ? ");
-        choiceSensor = Ihm.styleJTextFieldReservation(choiceSensor, 450, 160, 175, 20,Color.white, Color.white);
+        choiceSensor = Ihm.styleJTextFieldReservation(choiceSensor, 400, 160, 175, 20,Color.white, Color.white);
         view.add(choiceSensor);
 
         ButtonGroup groupSensor = new ButtonGroup();
         JRadioButton rYesSensor = new JRadioButton("Oui");
-        rYesSensor.setBounds(675, 160, 80,20);
+        rYesSensor.setBounds(625, 160, 65,20);
         rYesSensor.setVisible(true);
         rYesSensor.setBackground(Color.white);
         JList listS = new JList(sensorArray);
@@ -236,7 +237,7 @@ public class ChoiceDevice {
                 config.put("config_sensor","oui");
 
                 listS.setBackground(Color.white);
-                scrollSensor.setBounds(450, 250, 350, 250);
+                scrollSensor.setBounds(400, 250, 350, 250);
                 scrollSensor.setVisible(true);
                 listS.setBorder(new TitledBorder("Veuillez selectionner les capteurs."));
                 listS.addListSelectionListener(new ListSelectionListener() {
@@ -248,16 +249,16 @@ public class ChoiceDevice {
                             String price = (sensor.split("--")[1].trim()).split("euros")[0].trim();
 
                             selectionS.setText("Quelle quantite pour "+ text +" ?");
-                            selectionS = Ihm.styleJTextFieldReservation(selectionS, 450, 500, 300, 20, Color.white, Color.white);
+                            selectionS = Ihm.styleJTextFieldReservation(selectionS, 400, 500, 300, 20, Color.white, Color.white);
                             selectionS.setVisible(true);
 
                             quantityS.setBackground(Color.white);
-                            quantityS.setBounds(750, 505, 30,20);
+                            quantityS.setBounds(700, 505, 30,20);
                             quantityS.setVisible(true);
 
                             messageErrorS = styleJTextFieldError(view, quantityS.getWidth() + quantityS.getX(), 500, 20, 20);
 
-                            validateQuantityS.setBounds(450,530,100,20);
+                            validateQuantityS.setBounds(400,530,100,20);
                             validateQuantityS.setVisible(true);
                             validateQuantityS.addActionListener(new ActionListener() {
                                 @Override
@@ -288,7 +289,7 @@ public class ChoiceDevice {
         JRadioButton rNoSensor = new JRadioButton("Non ");
         rNoSensor.setVisible(true);
         rNoSensor.setBackground(Color.white);
-        rNoSensor.setBounds(760, 160,80,20);
+        rNoSensor.setBounds(710, 160,65,20);
         rNoSensor.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
