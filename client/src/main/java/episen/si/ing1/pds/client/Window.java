@@ -9,16 +9,15 @@ public class Window extends JFrame implements ActionListener {
 
     JButton  ok,plan,list, vide, store, tint, p1,p2,p3,p4,p5,p11,p22,p33,p44,p55,p111,p222,p333,p444,p555;
     private JTextField txt2,txt1,txt3,txt4,txt5,txt6;
-    JPanel firstMenu= new JPanel(new GridLayout(10,2,100,10));
+    protected JPanel firstMenu= new JPanel(new GridLayout(10,2,100,10));
     private JPanel mplan=new JPanel(new GridLayout(1,3,0,0));
     private JPanel Jplan=new JPanel(new BorderLayout());
-     JPanel listWindow=new JPanel(new GridLayout(10,2,0,0));
+    private JPanel listWindow=new JPanel(new GridLayout(10,2,0,0));
     private Dimension dim=new Dimension(5,5);
-    private JPanel onstate=new JPanel(new GridLayout(6,2,0,0));
     private JPanel jstate=new JPanel(new GridLayout(5,1,0,0));
     private JPanel managestore=new JPanel(new GridLayout(1,2,0,0));
     private JPanel managetint=new JPanel(new GridLayout(3,1,0,0));
-    private JPanel state=new JPanel(new BorderLayout());
+
 
     public Window(){
         this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -88,42 +87,63 @@ public class Window extends JFrame implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        String result= Client.sendBd("requestWindow1");
-        String tab=result.split("#")[1];
-        System.out.println(tab);
-        System.out.println(tab.charAt(1));
-        Ihm ihm=new Ihm("ok","oka","okay");
+
         if (e.getActionCommand().equals("Accéder au Plan")){
+            Jplan.removeAll();
             ImageIcon lplan = new ImageIcon(new ImageIcon("C:\\Users\\windows 10\\Desktop\\pds\\R3\\plan.jpg").getImage().getScaledInstance(800,800,Image.SCALE_DEFAULT));
             plan = new JButton(lplan);
             mplan.add(new JLabel("cliquez sur l'emplacement   rouge(hors service)    vert(disponible)"));
             Jplan.add(mplan, BorderLayout.NORTH);
             Jplan.add(plan, BorderLayout.CENTER);
-            ihm.pageBody.add(Jplan,"Accéder au plan");
-            ihm.pages.show(ihm.pageBody,"Accéder au plan");
+            Ihm.pageBody.add(Jplan,"Accéder au plan");
+            Ihm.pages.show(Ihm.pageBody,"Accéder au plan");
         }
         if (e.getActionCommand().equals("Accéder à la liste des fenêtres")) {
-            getContentPane().remove(firstMenu);
+            listWindow.removeAll();
             listWindow.add(new JLabel("cliquez sur la fenêtres de votre choix"));
-            for (int i=0; i<tab.length();i++){
-                JButton j=new JButton(""+tab.charAt(i));
+            String result= Client.sendBd("requestWindow");
+            /*if (result == null){
+                for (int i=589; i<596;i++){
+                    JButton j=new JButton(""+i);
+                    j.setBackground(Color.lightGray);
+                    j.addActionListener(this);
+                    listWindow.add(j);
+                }
+            }else {
+                for (int i = 0; i < result.length(); i++) {
+                    JButton j = new JButton("" + result.charAt(i));
+                    j.setBackground(Color.lightGray);
+                    j.addActionListener(this);
+                    listWindow.add(j);
+                }
+            }*/
+
+            for (int i=589; i<596;i++){
+                JButton j=new JButton(""+i);
                 j.setBackground(Color.lightGray);
                 j.addActionListener(this);
                 listWindow.add(j);
             }
-            //ihm.pageBody.add(listWindow,"Accéder à la liste des fenetres");
-            //ihm.pages.show(ihm.pageBody,"Accéder à la liste des fenetres");
-            getContentPane().add(listWindow, BorderLayout.CENTER);
-            this.setVisible(true);
+            Ihm.pageBody.add(listWindow,"Accéder à la liste des fenetres");
+            Ihm.pages.show(Ihm.pageBody,"Accéder à la liste des fenetres");
         }
-        if (e.getActionCommand().equals("1")||e.getActionCommand().equals("2")||e.getActionCommand().equals("3")||e.getActionCommand().equals("d")||e.getActionCommand().equals("f")){
-
+        if (e.getActionCommand().equals("590")||e.getActionCommand().equals("589")||e.getActionCommand().equals("3")||e.getActionCommand().equals("d")||e.getActionCommand().equals("f")){
+            jstate.removeAll();
+            JPanel onstate=new JPanel(new GridLayout(6,2,0,0));
+            JPanel state=new JPanel(new BorderLayout());
             store=new JButton("gérer les stores");
             store.setBackground(Color.lightGray);
             tint=new JButton("gérer la teinte");
             tint.setBackground(Color.lightGray);
             tint.addActionListener(this);
             store.addActionListener(this);
+            /*if (e.getActionCommand().equals("590")){
+                String m = "590";
+                Client.map.get("confWindow").put("device_id", m);
+                String result = Client.sendBd("confWindow");
+                String outt = result.split(",")[1];
+                txt2=new JTextField(outt);
+            }*/
             onstate.add(new JLabel("Température intérieure"));
             onstate.add(txt1);
             onstate.add(new JLabel("Température extérieure"));
@@ -141,10 +161,11 @@ public class Window extends JFrame implements ActionListener {
             jstate.add(state);
             jstate.add(store);
             jstate.add(tint);
-            ihm.pageBody.add(jstate,"ok");
-            ihm.pages.show(ihm.pageBody,"ok");
+            Ihm.pageBody.add(jstate,"ok");
+            Ihm.pages.show(Ihm.pageBody,"ok");
         }
         if (e.getActionCommand().equals("gérer les stores")){
+            managestore.removeAll();
             JPanel managestore1=new JPanel(new GridLayout(6,3,0,0));
             JPanel managestore2=new JPanel(new GridLayout(6,3,0,0));
             managestore1.add(new JLabel("pourcentage fermeture"));
@@ -187,10 +208,11 @@ public class Window extends JFrame implements ActionListener {
             managestore.add(managestore2);
             managestore.setPreferredSize(dim);
             managestore.setBackground(Color.GRAY);
-            ihm.pageBody.add(managestore,"gérer les stores");
-            ihm.pages.show(ihm.pageBody,"gérer les stores");
+            Ihm.pageBody.add(managestore,"gérer les stores");
+            Ihm.pages.show(Ihm.pageBody,"gérer les stores");
         }
         if (e.getActionCommand().equals("gérer la teinte")){
+            managetint.removeAll();
             JPanel managetint1=new JPanel(new GridLayout(6,3,0,0));
             managetint1.add(new JLabel("pourcentage de teinte"));
             managetint1.add(new JLabel("luminosité intérieure"));
@@ -211,11 +233,12 @@ public class Window extends JFrame implements ActionListener {
             managetint1.add(new JLabel("45"));
             managetint1.add(new JLabel("56"));
             managetint.add(managetint1);
-            ihm.pageBody.add(managetint,"gérer la teinte");
-            ihm.pages.show(ihm.pageBody,"gérer la teinte");
+            Ihm.pageBody.add(managetint,"gérer la teinte");
+            Ihm.pages.show(Ihm.pageBody,"gérer la teinte");
         }
         if (e.getActionCommand().equals("100%")||e.getActionCommand().equals("75%")||e.getActionCommand().equals("50%")||e.getActionCommand().equals("25%")||e.getActionCommand().equals("0%")){
-            onstate.removeAll();
+            JPanel state=new JPanel(new BorderLayout());
+            JPanel onstate=new JPanel(new GridLayout(6,2,0,0));
             if (e.getSource().equals(p11))txt1=new JTextField("1°");
             if (e.getSource().equals(p11))txt2=new JTextField("5°");
             if (e.getSource().equals(p11))txt3=new JTextField("null");
@@ -235,8 +258,8 @@ public class Window extends JFrame implements ActionListener {
             onstate.add(new JLabel("pourcentage des stores"));
             onstate.add(txt6);
             state.add(onstate,BorderLayout.CENTER);
-            ihm.pageBody.add(state,"valide");
-            ihm.pages.show(ihm.pageBody,"valide");
+            Ihm.pageBody.add(state,"valide");
+            Ihm.pages.show(Ihm.pageBody,"valide");
         }
     }
 
