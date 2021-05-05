@@ -22,9 +22,10 @@ public class Ihm extends JFrame{
     private JPanel pageBody7 ;
     private String company_id ="";
     public static String path = System.getenv("PDSIMG");
-    public static CardLayout pages = new CardLayout();
+    public static CardLayout pages;
 
     public Ihm(String name, String page, String id) {
+        pages = new CardLayout();
         company_id = id;
         frame = this;
 
@@ -33,6 +34,7 @@ public class Ihm extends JFrame{
         pageBody1 = reservation.realizeReservation();
 
         Mapping m = new Mapping();
+        m.mapping();
         pageBody2 = m.getPanel();
 
         AcceuilPersonnel personnel = new AcceuilPersonnel(frame,company_id);
@@ -104,6 +106,10 @@ public class Ihm extends JFrame{
         consult.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                pageBody.remove(pageBody2);
+                m.mapping();
+                pageBody2 = m.getPanel();
+                pageBody.add(pageBody2,"consult");
                 pages.show(pageBody,"consult");
             }
         });
@@ -154,34 +160,7 @@ public class Ihm extends JFrame{
         });
         disconnect.setMaximumSize(new Dimension(100, 100));
         setColor(disconnect,Color.white,new Color(0, 102,204));
-
-        try{
-            ImageIcon iconHome = new ImageIcon(ImageIO.read(new File(path+"maison.png")));
-            iconHome = new ImageIcon(iconHome.getImage().getScaledInstance(18, 18, Image.SCALE_DEFAULT));
-            JButton home = new JButton(iconHome);
-            home.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    Menu Menu = new Menu("Smart Lobby", company_id);
-                    frame.dispose();
-                }
-            });
-            setColor(home,Color.white,new Color(0, 102,204));
-            underMenu.add(home);
-        } catch(Exception e){}
-
-        try{
-            ImageIcon iconRefresh = new ImageIcon(ImageIO.read(new File(path+"actualiser.png")));
-            iconRefresh = new ImageIcon(iconRefresh.getImage().getScaledInstance(18, 18, Image.SCALE_DEFAULT));
-            JButton refresh = new JButton(iconRefresh);
-            refresh.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {}
-            });
-            setColor(refresh,Color.white,new Color(0, 102,204));
-            underMenu.add(refresh);
-         } catch(Exception e){}
-
+        
         underMenu.add(disconnect);
 
         menu.add(realize);
