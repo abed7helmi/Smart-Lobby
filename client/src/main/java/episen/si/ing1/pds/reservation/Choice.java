@@ -3,7 +3,6 @@ package episen.si.ing1.pds.reservation;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import episen.si.ing1.pds.client.Ihm;
 import episen.si.ing1.pds.client.Menu;
 import javax.swing.*;
 import java.awt.*;

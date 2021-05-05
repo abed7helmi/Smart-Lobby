@@ -1,7 +1,5 @@
 package episen.si.ing1.pds.reservation;
 
-import episen.si.ing1.pds.client.Ihm;
-
 import javax.swing.*;
 import java.awt.*;
 

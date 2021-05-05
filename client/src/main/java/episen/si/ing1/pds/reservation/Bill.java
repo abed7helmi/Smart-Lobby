@@ -1,7 +1,6 @@
 package episen.si.ing1.pds.reservation;
 
 import episen.si.ing1.pds.client.Client;
-import episen.si.ing1.pds.client.Ihm;
 import episen.si.ing1.pds.client.Menu;
 
 import javax.swing.*;
