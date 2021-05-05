@@ -1,4 +1,4 @@
-package episen.si.ing1.pds.reservation;
+package episen.si.ing1.pds.client.reservation;
 
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.type.TypeReference;
