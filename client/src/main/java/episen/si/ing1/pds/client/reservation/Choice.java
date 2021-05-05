@@ -3,7 +3,9 @@ package episen.si.ing1.pds.client.reservation;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import episen.si.ing1.pds.client.Ihm;
 import episen.si.ing1.pds.client.Menu;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -21,7 +23,6 @@ public class Choice{
     //keep for link with the previous page
     public Choice(JFrame f) {
         this.frame = f;
-        System.out.println("tetste");
     }
 
     public void choice(JPanel pb, String proposals){
@@ -53,7 +54,8 @@ public class Choice{
         view.add(Ihm.buttonVoid);
         view.add(Ihm.buttonContinue);
 
-
+        pageBody.add(advancement, BorderLayout.CENTER);
+        pageBody.add(view, BorderLayout.SOUTH);
         pageBody.repaint();
         frame.repaint();
     }
@@ -194,3 +196,4 @@ public class Choice{
         display.add(button);
     }
 }
+
