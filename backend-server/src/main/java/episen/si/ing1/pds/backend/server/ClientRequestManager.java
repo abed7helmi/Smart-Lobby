@@ -1,5 +1,13 @@
 package episen.si.ing1.pds.backend.server;
 
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -9,21 +17,8 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.*;
 
 public class ClientRequestManager {
 
@@ -114,9 +109,16 @@ public class ClientRequestManager {
 						case "requestManyNewBadge":
 							saveallemployees(map);
 							break;
+						case "requestWindow":
+							getWindow(map);
+							break;
+						case "confWindow":
+							confWindow(map);
+							break;
 						case "getbadges":
 							getallbadges(map);
 							break;
+
 
 					}
 
@@ -186,6 +188,44 @@ public class ClientRequestManager {
 			output.println(mapper.writeValueAsString(result));
 		} catch (JsonMappingException e) {} catch (JsonProcessingException e) {} catch (SQLException e) {}
 
+	}
+	public void getWindow(Map<String,String> map) throws SQLException {
+		System.out.println("ok");
+		try {
+			ObjectMapper mapper = new ObjectMapper(new JsonFactory());
+			String request="select device.device_id from device inner join windows on(device.device_id=windows.device_id);";
+			ResultSet rs = c.createStatement().executeQuery(request);
+			Map<String,Map<String, String>> result = new HashMap<String,Map<String, String>>();
+			int i=0;
+			while(rs.next()) {
+				Map<String, String> tab = new HashMap<String, String>();
+				tab.put("device_id", rs.getString(1));
+				result.put(""+i++, tab);
+			}System.out.println("ok");
+			output.println(mapper.writeValueAsString(result));
+		} catch (JsonMappingException e) {} catch (JsonProcessingException e) {}
+	}
+	public void confWindow(Map<String,String> map) throws SQLException {
+
+		try {
+			ObjectMapper mapper = new ObjectMapper(new JsonFactory());
+			String request="select * from windows where device-id='"+map.get("device_id")+"';";
+			ResultSet rs = c.createStatement().executeQuery(request);
+			Map<String,Map<String, String>> result = new HashMap<String,Map<String, String>>();
+			int i=0;
+			while(rs.next()) {
+				Map<String, String> resultmap = new HashMap<String, String>();
+				resultmap.put("device_id", rs.getString(1));
+				resultmap.put("outside_temperature", rs.getString(2));
+				resultmap.put("inside_temperature", rs.getString(3));
+				resultmap.put("outside_luminosity", rs.getString(4));
+				resultmap.put("inside_luminosity", rs.getString(5));
+				resultmap.put("percentage_store", rs.getString(6));
+				resultmap.put("percentage_tint", rs.getString(7));
+				result.put(""+i++, resultmap);
+			}System.out.println("ok");
+			output.println(mapper.writeValueAsString(result));
+		} catch (JsonMappingException e) {} catch (JsonProcessingException e) {}
 	}
 
 	public void reservationFloor(Map<String,String> map) {

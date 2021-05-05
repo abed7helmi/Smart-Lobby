@@ -10,7 +10,7 @@ import java.io.File;
 
 public class Ihm extends JFrame{
     private JFrame frame = new JFrame();
-    private JPanel pageBody = new JPanel();
+    public static JPanel pageBody = new JPanel();
     public  static JButton buttonVoid = new JButton("Annuler");
     public  static JButton buttonContinue = new JButton("> Continuer");
     private JPanel pageBody1 ;
@@ -20,11 +20,11 @@ public class Ihm extends JFrame{
     private JPanel pageBody7 ;
     private String company_id ="";
     protected static String path = System.getenv("PDSIMG");
+    public static CardLayout pages = new CardLayout();
 
     public Ihm(String name, String page, String id) {
         company_id = id;
         frame = this;
-        CardLayout pages = new CardLayout();
 
         pageBody.setLayout(pages);
         ChoiceCriteria reservation = new ChoiceCriteria(frame, company_id);
@@ -36,15 +36,27 @@ public class Ihm extends JFrame{
         AcceuilPersonnel personnel = new AcceuilPersonnel(frame,company_id);
         pageBody7=personnel.acceuil();
 
+        Window window=new Window();
+        pageBody4=window.firstMenu;
+
         Indicators indicator = new Indicators();
         pageBody3 = indicator.getIndicator();
 
         if(page.equals("realize")){
             pageBody.add(pageBody1,"realize");
             pageBody.add(pageBody2,"consult");
+            pageBody.add(pageBody4,"Configurer fenêtre");
             pageBody.add(pageBody3,"indicator");
             pageBody.add(pageBody7,"staff");
         } else if(page.equals("consult")){
+            pageBody.add(pageBody2,"consult");
+            pageBody.add(pageBody1,"realize");
+            pageBody.add(pageBody4,"Configurer fenêtre");
+            pageBody.add(pageBody3,"indicator");
+            pageBody.add(pageBody7,"staff");
+        }
+        else if(page.equals("Configurer fenêtre")){
+            pageBody.add(pageBody4,"Configurer fenêtre");
             pageBody.add(pageBody2,"consult");
             pageBody.add(pageBody1,"realize");
             pageBody.add(pageBody3,"indicator");
@@ -55,12 +67,13 @@ public class Ihm extends JFrame{
             pageBody.add(pageBody2,"consult");
             pageBody.add(pageBody1,"realize");
             pageBody.add(pageBody7,"staff");
+            pageBody.add(pageBody4,"Configurer fenêtre");
         }else if(page.equals("staff")){
             pageBody.add(pageBody7,"staff");
             pageBody.add(pageBody3,"indicator");
             pageBody.add(pageBody2,"consult");
             pageBody.add(pageBody1,"realize");
-
+            pageBody.add(pageBody4,"Configurer fenêtre");
 
         }
 
@@ -106,6 +119,14 @@ public class Ihm extends JFrame{
         setColor(staff,Color.white,new Color(0, 102,204));
 
         JButton configWindow = new JButton("Configurer fenêtre");
+        configWindow.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                pages.show(pageBody, "Configurer fenêtre");
+            }
+        });
+        sizeComposant(new Dimension(Integer.MAX_VALUE, 75), configWindow);
+        setColor(configWindow,Color.white,new Color(0, 102,204));
 
         JButton indicatorButton = new JButton("Indicateurs et locations");
         setColor(indicatorButton,Color.white,new Color(0, 102,204));
@@ -117,9 +138,6 @@ public class Ihm extends JFrame{
         });
         sizeComposant(new Dimension(Integer.MAX_VALUE, 75), indicatorButton);
         setColor(consult,Color.white,new Color(0, 102,204));
-
-        sizeComposant(new Dimension(Integer.MAX_VALUE, 75), staff);
-        setColor(configWindow,Color.white,new Color(0, 102,204));
 
         JPanel underMenu = new JPanel(new FlowLayout(FlowLayout.LEFT));
         underMenu.setMaximumSize(new Dimension(Integer.MAX_VALUE, 100));
@@ -166,6 +184,7 @@ public class Ihm extends JFrame{
 
         menu.add(realize);
         menu.add(consult);
+        menu.add(configWindow);
         menu.add(staff);
         menu.add(indicatorButton);
         menu.add(Box.createGlue());

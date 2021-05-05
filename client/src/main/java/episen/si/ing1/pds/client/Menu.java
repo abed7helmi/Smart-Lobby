@@ -27,11 +27,14 @@ public class Menu extends JFrame{
         JButton consultLocation = new JButton("Consulter une location");
         menuJButton(consultLocation,150,210,200,50, "consult");
 
+        JButton window = new JButton("Configurer fenêtre");
+        menuJButton(window,150,260,200,50, "Configurer fenêtre");
+
         JButton staff = new JButton("Personnel");
-        menuJButton(staff,150,260,200,50, "staff");
+        menuJButton(staff,150,310,200,50, "staff");
 
         JButton indicator = new JButton("Indicateurs - locations");
-        menuJButton(indicator,150,310,200,50, "indicator");
+        menuJButton(indicator,150,360,200,50, "indicator");
 
         setVisible(true);
         setLocationRelativeTo(null);
