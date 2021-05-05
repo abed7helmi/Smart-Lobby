@@ -19,7 +19,6 @@ public class ChoiceDevice extends JFrame{
     private String room_id ="";
     private final JFrame mainFrame;
     private final JFrame frameDevice;
-    private Map<String , String> input = new HashMap<>();
     private final JButton buttonValidate = new JButton("> Valider");
     private final String page = "device";
     private JTextField selectionE = new JTextField();
