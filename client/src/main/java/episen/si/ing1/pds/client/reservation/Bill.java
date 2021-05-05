@@ -1,5 +1,8 @@
-package episen.si.ing1.pds.client;
+package episen.si.ing1.pds.client.reservation;
 
+import episen.si.ing1.pds.client.Client;
+import episen.si.ing1.pds.client.Ihm;
+import episen.si.ing1.pds.client.Menu;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
@@ -57,7 +60,7 @@ public class Bill {
                 response = prepareRequest();
                 if(  !(response.equals("Not done") && !(response.equals("")))  ){
                     frame.dispose();
-                    Menu menu = new Menu("Smart Lobby", ChoiceCriteria.input.get("company_id"));
+                    episen.si.ing1.pds.client.Menu menu = new episen.si.ing1.pds.client.Menu("Smart Lobby", ChoiceCriteria.input.get("company_id"));
                     ChoiceCriteria.restartData();
                     menu.reservationDone(numberRoom);
                 } else{
@@ -77,7 +80,7 @@ public class Bill {
             public void actionPerformed(ActionEvent e) {
                 ChoiceCriteria.restartData();
                 frame.dispose();
-                Menu Menu = new Menu("Smart Lobby", ChoiceCriteria.input.get("company_id"));
+                episen.si.ing1.pds.client.Menu Menu = new Menu("Smart Lobby", ChoiceCriteria.input.get("company_id"));
             }
         });
         viewBill.add(cancel);

@@ -1,4 +1,7 @@
-package episen.si.ing1.pds.client;
+package episen.si.ing1.pds.client.reservation;
+
+import episen.si.ing1.pds.client.Client;
+import episen.si.ing1.pds.client.Ihm;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -16,7 +19,6 @@ public class ChoiceDevice extends JFrame{
     private String room_id ="";
     private final JFrame mainFrame;
     private final JFrame frameDevice;
-    private Map<String , String> input = new HashMap<>();
     private final JButton buttonValidate = new JButton("> Valider");
     private final String page = "device";
     private JTextField selectionE = new JTextField();
@@ -33,7 +35,8 @@ public class ChoiceDevice extends JFrame{
     private final List<String> listSensor = new ArrayList<>();
     private String[] equipmentArray;
     private String[] sensorArray;
-    protected static Map<String, String> config = new HashMap<>();
+
+    public static Map<String, String> config = new HashMap<>();
     private final List keyConfigSensor  = new ArrayList();
     private final List keyConfigEquipment  = new ArrayList();
     private final List deviceIdInRoom = new ArrayList();
@@ -86,12 +89,12 @@ public class ChoiceDevice extends JFrame{
                 ViewWithPlan.listDeviceIdRoom.put(room_id, list);
                 ViewWithPlan.listButton.replace(room, "validated");
                 room.setBackground(Color.green);
+                ViewWithPlan.verifConfiguration = true;
+                for(Map.Entry m : ViewWithPlan.listButton.entrySet()){
+                    if( m.getKey().equals("unvalited") ) ViewWithPlan.verifConfiguration = false;
+                }
+                ViewWithPlan.reload();
                 frameDevice.dispose();
-
-                System.out.println("////////");
-                System.out.println(ChoiceCriteria.input);
-                System.out.println("////////");
-                System.out.println(Choice.proposalSelected);
             }
         });
         view.add(buttonValidate);
@@ -352,12 +355,12 @@ public class ChoiceDevice extends JFrame{
                 String[] value = verifyDispo.split(",");
                 //List deviceIdInRoom = new ArrayList();
                 if(value.length == Integer.parseInt(str)){
-                    stockDevice(value,deviceIdInRoom, text,messageError, price);
+                    stockDevice(value,deviceIdInRoom, text,str,messageError, price);
                     return true;
                 } else {
                     int result = JOptionPane.showConfirmDialog(null, "On n'a seulement "+ value.length +" . Souhaitez-vous prendre les "+ value.length+ " ?");
                     if( result == JOptionPane.YES_OPTION) {
-                        stockDevice(value,deviceIdInRoom, text,messageError, price);
+                        stockDevice(value,deviceIdInRoom, text,str,messageError, price);
                         return true;
                     } else return false;
                 }
@@ -372,7 +375,8 @@ public class ChoiceDevice extends JFrame{
         }
     }
 
-    public void stockDevice(String[] value, List deviceIdInRoom, String text, JTextField messageError, String price){
+    public void stockDevice(String[] value, List deviceIdInRoom, String text, String str, JTextField messageError, String price){
+        int count = 0;
         for(int i = 0; i < value.length; i++) {
             ViewWithPlan.listDeviceId.add(value[i]);
             deviceIdInRoom.add(value[i]);
@@ -389,3 +393,4 @@ public class ChoiceDevice extends JFrame{
         messageError.setText(" ");
     }
 }
+
