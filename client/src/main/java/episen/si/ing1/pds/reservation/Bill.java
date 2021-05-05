@@ -41,7 +41,7 @@ public class Bill {
         frame.repaint();
 
         viewBill.setBackground(Color.WHITE);
-        sizeComposant(new Dimension(950,600), viewBill);
+        Ihm.sizeComposant(new Dimension(950,600), viewBill);
         viewBill.setLayout(null);
 
         JTextField title = new JTextField();
@@ -129,11 +129,6 @@ public class Bill {
         viewBill.add(validate);
         viewBill.repaint();
         return viewBill;
-    }
-    public void sizeComposant(Dimension dim, Component c){
-        c.setPreferredSize(dim);
-        c.setMaximumSize(dim);
-        c.setMinimumSize(dim);
     }
 
     public String[][] fillTable(){
