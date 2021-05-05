@@ -16,6 +16,7 @@ public class Ihm extends JFrame{
     private JPanel pageBody3 ;
     private JPanel pageBody4 ;
     private String company_id ="";
+    protected static String path = System.getenv("PDSIMG");
 
     public Ihm(String name, String page, String id) {
         company_id = id;
