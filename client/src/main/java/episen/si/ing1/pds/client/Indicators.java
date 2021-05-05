@@ -6,6 +6,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.Map;
 
 public class Indicators {
     private JPanel pane = new JPanel();
@@ -26,9 +27,15 @@ public class Indicators {
 
         Border blackline = BorderFactory.createTitledBorder("Indicateurs generaux");
         indicateurGeneral.setBorder(blackline);
+
+        Client.map = Map.of("test", Map.of("test", "tes"));
+        String response = Client.sendBd("requestBuildList");
+
+        String occuRate = response.split(",")[0].split("-")[1];
+
         String[] cols = { "A", "B" };
         String[][] data = {
-                { "Taux d'occupation", "2344" },
+                { "Taux d'occupation", occuRate},
                 { "Nombre de capteurs à installer", "2444" },
                 { "Nombre de capteurs installés", "2444" },
                 { "Nombre de fenêtres électrochromatiques actives", "2444" },
@@ -117,7 +124,6 @@ public class Indicators {
         root3.add(flor3);
 
         JTree tree3 = new JTree(root3);
-
         list.add(tree);
         list.add(tree2);
         list.add(tree3);
@@ -126,6 +132,19 @@ public class Indicators {
 
         pane.add(context, BorderLayout.CENTER);
         return pane;
+    }
+
+    public static void main(String[] args) {
+        JFrame frame = new JFrame("Indicators");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(1200, 800);
+
+        frame.setPreferredSize(frame.getSize());
+
+        Indicators indi = new Indicators();
+        frame.setContentPane(indi.getIndicator());
+        frame.setVisible(true);
+        frame.pack();
     }
 
 }

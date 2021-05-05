@@ -118,6 +118,9 @@ public class ClientRequestManager {
 						case "getbadges":
 							getallbadges(map);
 							break;
+						case "requestBuildList":
+							getGlobalIndicators();
+							break;
 
 
 					}
@@ -1075,7 +1078,6 @@ public class ClientRequestManager {
 
 
 
-
 	public void testpermissions( Map<String, String> map) {
 		logger.debug("tesssssttttt");
 		try {
@@ -1108,9 +1110,30 @@ public class ClientRequestManager {
 	}
 
 
+	public void getGlobalIndicators() throws Exception {
+		Double nb = 0.00;
+		Double wc = 0.00;
+
+		String query = "SELECT ((SELECT COUNT(*) FROM room WHERE status LIKE 'booked')::numeric / (SELECT COUNT(*) FROM room)::numeric)";
+		Statement stmt = c.createStatement();
+		ResultSet rs = stmt.executeQuery(query);
+		if(rs.next()) {
+			nb = rs.getDouble(1);
+		}
+		String query2 = "SELECT SUM(water_consumption) FROM building";
+		Statement stmt2 = c.createStatement();
+		ResultSet rs2 = stmt2.executeQuery(query2);
+		while (rs2.next())
+			wc = rs.getDouble(1);
 
 
 
+		String hm = "WC-"+wc+",OC-"+nb;
+
+		ObjectMapper mapper = new ObjectMapper();
+		String response = mapper.writeValueAsString(hm);
+		output.println(response);
+	}
 
 
 
