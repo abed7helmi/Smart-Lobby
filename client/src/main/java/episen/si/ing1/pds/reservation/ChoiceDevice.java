@@ -1,12 +1,12 @@
-package episen.si.ing1.pds.client;
+package episen.si.ing1.pds.reservation;
 
-import com.sun.tools.javac.util.StringUtils;
+import episen.si.ing1.pds.client.Client;
+import episen.si.ing1.pds.client.Ihm;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import javax.swing.text.View;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -37,8 +37,7 @@ public class ChoiceDevice extends JFrame{
     private String[] equipmentArray;
     private String[] sensorArray;
 
-
-    protected static Map<String, String> config = new HashMap<>();
+    public static Map<String, String> config = new HashMap<>();
     private final List keyConfigSensor  = new ArrayList();
     private final List keyConfigEquipment  = new ArrayList();
     private final List deviceIdInRoom = new ArrayList();
@@ -91,6 +90,11 @@ public class ChoiceDevice extends JFrame{
                 ViewWithPlan.listDeviceIdRoom.put(room_id, list);
                 ViewWithPlan.listButton.replace(room, "validated");
                 room.setBackground(Color.green);
+                ViewWithPlan.verifConfiguration = true;
+                for(Map.Entry m : ViewWithPlan.listButton.entrySet()){
+                    if( m.getKey().equals("unvalited") ) ViewWithPlan.verifConfiguration = false;
+                }
+                ViewWithPlan.reload();
                 frameDevice.dispose();
             }
         });

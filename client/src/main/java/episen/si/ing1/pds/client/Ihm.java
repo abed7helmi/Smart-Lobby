@@ -1,5 +1,7 @@
 package episen.si.ing1.pds.client;
 
+import episen.si.ing1.pds.reservation.ChoiceCriteria;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
@@ -18,7 +20,7 @@ public class Ihm extends JFrame{
     private JPanel pageBody3 ;
     private JPanel pageBody4 ;
     private String company_id ="";
-    protected static String path = System.getenv("PDSIMG");
+    public static String path = System.getenv("PDSIMG");
 
 
     public Ihm(String name, String page, String id) {
