@@ -74,6 +74,7 @@ public class Client {
 		try{
 			ObjectMapper objectMapper = new ObjectMapper();
 			String data = objectMapper.writeValueAsString(map.get(request));
+
 			Socket socket = new Socket(config.getIpAddress(), config.getPort());
 			PrintWriter output = new PrintWriter(socket.getOutputStream(), true);
 			BufferedReader input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
