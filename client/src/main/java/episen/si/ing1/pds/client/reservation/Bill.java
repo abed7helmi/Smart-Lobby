@@ -1,8 +1,8 @@
 package episen.si.ing1.pds.client.reservation;
 
 import episen.si.ing1.pds.client.Client;
+import episen.si.ing1.pds.client.Ihm;
 import episen.si.ing1.pds.client.Menu;
-
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
@@ -40,7 +40,7 @@ public class Bill {
         frame.repaint();
 
         viewBill.setBackground(Color.WHITE);
-        Ihm.sizeComposant(new Dimension(950,600), viewBill);
+        sizeComposant(new Dimension(950,600), viewBill);
         viewBill.setLayout(null);
 
         JTextField title = new JTextField();
@@ -128,6 +128,11 @@ public class Bill {
         viewBill.add(validate);
         viewBill.repaint();
         return viewBill;
+    }
+    public void sizeComposant(Dimension dim, Component c){
+        c.setPreferredSize(dim);
+        c.setMaximumSize(dim);
+        c.setMinimumSize(dim);
     }
 
     public String[][] fillTable(){
