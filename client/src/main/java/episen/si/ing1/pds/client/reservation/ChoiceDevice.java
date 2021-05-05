@@ -394,3 +394,4 @@ public class ChoiceDevice extends JFrame{
         messageError.setText(" ");
     }
 }
+

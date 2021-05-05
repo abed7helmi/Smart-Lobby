@@ -1,5 +1,13 @@
 package episen.si.ing1.pds.backend.server;
 
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -9,19 +17,8 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 public class ClientRequestManager {
 
@@ -47,47 +44,82 @@ public class ClientRequestManager {
 					String values = clientInput.split("#")[1];
 
 					Map<String, String> map = mapper.readValue(values,new TypeReference<Map<String, String>>(){});
-					
+
 					switch (requestType) {
-					case "companyReservation":
-						companyReservation(map);
-						break;
-					case "reservationFloor":
-						reservationFloor(map);
-						break;
-					case "floorRoom":
-						floorRoom(map);
-						break;
-					case "roomLocation":
-						roomLocation(map);
-						break;
-					case "locationEquipment":
-						locationEquipment(map);
-						break;
-					case "reservationEquipment":
-						reservationEquipment(map);
-						break;
-					case "setEquipment":
-						setEquipment(map);
-						break;
-					case "homePage1":
-						firstPage(map);
-						break;
-					case "requestLocation1":
-						getChoice(map);
-						break;
-					case "requestLocation2":
-						getDevice(map);
-						break;
-					case "requestLocation3":
-						getDisponibility(map);
-						break;
-					case "requestLocation5":
-						getManagerId(map);
-						break;
-					case "requestLocation4":
-						insertReservation(map);
-						break;
+						case "companyReservation":
+							companyReservation(map);
+							break;
+						case "reservationFloor":
+							reservationFloor(map);
+							break;
+						case "floorRoom":
+							floorRoom(map);
+							break;
+						case "roomLocation":
+							roomLocation(map);
+							break;
+						case "locationEquipment":
+							locationEquipment(map);
+							break;
+						case "reservationEquipment":
+							reservationEquipment(map);
+							break;
+						case "setEquipment":
+							setEquipment(map);
+							break;
+						case "homePage1":
+							firstPage(map);
+							break;
+						case "requestLocation1":
+							getChoice(map);
+							break;
+						case "requestLocation2":
+							getDevice(map);
+							break;
+						case "requestLocation3":
+							getDisponibility(map);
+							break;
+						case "requestLocation5":
+							getManagerId(map);
+							break;
+						case "requestLocation4":
+							insertReservation(map);
+							break;
+						case "requestNewBadge":
+							SaveBadge(map);
+							break;
+						case "getpermissions":
+							getPermissions(map);
+							break;
+						case "testpermissions":
+							testpermissions(map);
+							break;
+						case "getdevices":
+							getdevices(map);
+							break;
+						case "requestDetailBadge":
+							getDetailPermission(map);
+							break;
+						case "requestadddevice":
+							adddevicepermission(map);
+							break;
+						case "requestallbadges":
+							getallemployees(map);
+							break;
+						case "requestManyNewBadge":
+							saveallemployees(map);
+							break;
+						case "requestWindow":
+							getWindow(map);
+							break;
+						case "confWindow":
+							confWindow(map);
+							break;
+						case "getbadges":
+							getallbadges(map);
+							break;
+
+
 					}
 
 					/*switch (requestType) {
@@ -108,7 +140,6 @@ public class ClientRequestManager {
 						}
 						output.println(sb.toString());
 						break;
-
 					case "update":
 						int newAge = Integer.valueOf(map.get("toto").get("age"))+1;
 						output.println(
@@ -156,9 +187,47 @@ public class ClientRequestManager {
 			}
 			output.println(mapper.writeValueAsString(result));
 		} catch (JsonMappingException e) {} catch (JsonProcessingException e) {} catch (SQLException e) {}
-		
+
 	}
-	
+	public void getWindow(Map<String,String> map) throws SQLException {
+		System.out.println("ok");
+		try {
+			ObjectMapper mapper = new ObjectMapper(new JsonFactory());
+			String request="select device.device_id from device inner join windows on(device.device_id=windows.device_id);";
+			ResultSet rs = c.createStatement().executeQuery(request);
+			Map<String,Map<String, String>> result = new HashMap<String,Map<String, String>>();
+			int i=0;
+			while(rs.next()) {
+				Map<String, String> tab = new HashMap<String, String>();
+				tab.put("device_id", rs.getString(1));
+				result.put(""+i++, tab);
+			}System.out.println("ok");
+			output.println(mapper.writeValueAsString(result));
+		} catch (JsonMappingException e) {} catch (JsonProcessingException e) {}
+	}
+	public void confWindow(Map<String,String> map) throws SQLException {
+
+		try {
+			ObjectMapper mapper = new ObjectMapper(new JsonFactory());
+			String request="select * from windows where device-id='"+map.get("device_id")+"';";
+			ResultSet rs = c.createStatement().executeQuery(request);
+			Map<String,Map<String, String>> result = new HashMap<String,Map<String, String>>();
+			int i=0;
+			while(rs.next()) {
+				Map<String, String> resultmap = new HashMap<String, String>();
+				resultmap.put("device_id", rs.getString(1));
+				resultmap.put("outside_temperature", rs.getString(2));
+				resultmap.put("inside_temperature", rs.getString(3));
+				resultmap.put("outside_luminosity", rs.getString(4));
+				resultmap.put("inside_luminosity", rs.getString(5));
+				resultmap.put("percentage_store", rs.getString(6));
+				resultmap.put("percentage_tint", rs.getString(7));
+				result.put(""+i++, resultmap);
+			}System.out.println("ok");
+			output.println(mapper.writeValueAsString(result));
+		} catch (JsonMappingException e) {} catch (JsonProcessingException e) {}
+	}
+
 	public void reservationFloor(Map<String,String> map) {
 		try {
 			String request = "select distinct(floor_id),floor_number,building_name from (room natural join floor) natural join building where reservation_id="+map.get("reservation_id");
@@ -174,9 +243,9 @@ public class ClientRequestManager {
 			}
 			output.println(mapper.writeValueAsString(result));
 		} catch (JsonMappingException e) {} catch (JsonProcessingException e) {} catch (SQLException e) {}
-		
+
 	}
-	
+
 	public void floorRoom(Map<String,String> map) {
 		try {
 			String request = "select room_id,room_wording,room_type_id from room where reservation_id="+map.get("reservation_id")+" and floor_id="+map.get("floor_id");
@@ -192,9 +261,9 @@ public class ClientRequestManager {
 			}
 			output.println(mapper.writeValueAsString(result));
 		} catch (JsonMappingException e) {} catch (JsonProcessingException e) {} catch (SQLException e) {}
-		
+
 	}
-	
+
 	public void roomLocation(Map<String,String> map) {
 		try {
 			String request = "select location_id,occupied_location,is_sensor,x_position,y_position from location where room_id="+map.get("room_id");
@@ -212,12 +281,12 @@ public class ClientRequestManager {
 			}
 			output.println(mapper.writeValueAsString(result));
 		} catch (JsonMappingException e) {} catch (JsonProcessingException e) {} catch (SQLException e) {}
-		
+
 	}
-	
+
 	public void locationEquipment(Map<String,String> map) {
 		try {
-			String request = "select device_id,device_wording,device_active,device_price,reservation_id,is_sensor from device natural join location where location_id="+map.get("location_id");
+			String request = "select device_id,device_wording,device_active,device_price,reservation_id from device where location_id="+map.get("location_id");
 			ResultSet rs = c.createStatement().executeQuery(request);
 			Map<String, String> result = new HashMap<String, String>();
 			while(rs.next()) {
@@ -225,21 +294,19 @@ public class ClientRequestManager {
 				result.put("device_wording", rs.getString(2));
 				result.put("device_active", rs.getString(3));
 				result.put("device_price", rs.getString(4));
-				result.put("reservation_id", rs.getString(5));
-				result.put("is_sensor", rs.getString(6));
 			}
 			output.println(mapper.writeValueAsString(result));
 		} catch (JsonMappingException e) {} catch (JsonProcessingException e) {} catch (SQLException e) {}
-		
+
 	}
-	
+
 	public void reservationEquipment(Map<String,String> map) {
 		try {
 			String request = "";
 			if(map.get("is_sensor").equals("f")) {
-				request = "select device_id,device_wording,device_price from device where device_type_id<11 and location_id is null and reservation_id="+map.get("reservation_id");
+				request = "select device_id,device_wording,device_price from device where device_type_id in (select device_type_id from could_configure where room_type_id=(select room_type_id from room where room_id="+map.get("room_id")+")) and device_type_id<11 and location_id is null and reservation_id="+map.get("reservation_id");
 			}else {
-				request = "select device_id,device_wording,device_price from device where device_type_id>10 and location_id is null and reservation_id="+map.get("reservation_id");
+				request = "select device_id,device_wording,device_price from device where device_type_id in (select device_type_id from could_configure where room_type_id=(select room_type_id from room where room_id="+map.get("room_id")+")) and device_type_id>10 and location_id is null and reservation_id="+map.get("reservation_id");
 			}
 			ResultSet rs = c.createStatement().executeQuery(request);
 			Map<String,Map<String, String>> result = new HashMap<String,Map<String, String>>();
@@ -253,16 +320,16 @@ public class ClientRequestManager {
 			}
 			output.println(mapper.writeValueAsString(result));
 		} catch (JsonMappingException e) {} catch (JsonProcessingException e) {} catch (SQLException e) {}
-		
+
 	}
-	
+
 	public void setEquipment(Map<String,String> map) {
 		try {
-			
+
 			String location = map.get("location_id");
 			String newDevice = map.get("new_device_id");
 			String oldDevice = map.get("old_device_id");
-	
+
 			Statement s = c.createStatement();
 			if(oldDevice.isEmpty()) {
 				s.executeUpdate("update device set device_placed='t', location_id="+location+" where device_id="+newDevice);
@@ -274,11 +341,11 @@ public class ClientRequestManager {
 				s.executeUpdate("update device set device_placed='t', location_id="+location+" where device_id="+newDevice);
 				s.executeUpdate("update device set device_placed='f', location_id=null where device_id="+oldDevice);
 			}
-			
+
 			output.println("Done");
 		} catch (SQLException e) {}
 	}
-	
+
 	public void getChoice(Map<String,String> map){
 		try {
 			int numberOpenSpace = Integer.parseInt(map.get("numberOpenSpace")) * 4;
@@ -292,37 +359,38 @@ public class ClientRequestManager {
 					"inner join building b on b.building_id = f.building_id " +
 					"where room_id in "+
 					"(select room_id " +
-						"from room r " +
-						"inner join floor f on f.floor_id = r.floor_id " +
-						"inner join building b on b.building_id = f.building_id " +
-						"where status = 'free' and room_type_id = 1 ";
-					if( map.keySet().contains("location") && !(map.get("location").equals("")) )	request	= request + " and position = '" + map.get("location")+"' ";
-					request = request + "Limit " + numberOpenSpace + ")"+
-						"or room_id in "+
+					"from room r " +
+					"inner join floor f on f.floor_id = r.floor_id " +
+					"inner join building b on b.building_id = f.building_id " +
+					"where status = 'free' and room_type_id = 1 ";
+			if( map.keySet().contains("location") && !(map.get("location").equals("")) )	request	= request + " and position = '" + map.get("location")+"' ";
+			request = request + "Limit " + numberOpenSpace + ")"+
+					"or room_id in "+
 					" (select room_id "+
-						"from room r " +
-						"inner join floor f on f.floor_id = r.floor_id " +
-						"inner join building b on b.building_id = f.building_id " +
-						"where status = 'free' and room_type_id = 3 ";
-					if( map.keySet().contains("location")  && !(map.get("location").equals("")) )	request	= request + " and position = '" + map.get("location")+"' ";
-					request = request + "Limit " + numberClosedOffice + ")"+
-						"or room_id in "+
+					"from room r " +
+					"inner join floor f on f.floor_id = r.floor_id " +
+					"inner join building b on b.building_id = f.building_id " +
+					"where status = 'free' and room_type_id = 3 ";
+			if( map.keySet().contains("location")  && !(map.get("location").equals("")) )	request	= request + " and position = '" + map.get("location")+"' ";
+			request = request + "Limit " + numberClosedOffice + ")"+
+					"or room_id in "+
 					"(select room_id " +
-						"from room r " +
-						"inner join floor f on f.floor_id = r.floor_id " +
-						"inner join building b on b.building_id = f.building_id " +
-						"where status = 'free' and room_type_id = 4 " ;
-					if( map.keySet().contains("location") && !(map.get("location").equals(""))  )	request	= request + " and position = '" + map.get("location")+"' ";
-					request = request + "Limit " + numberSingleOffice + ")"+
+					"from room r " +
+					"inner join floor f on f.floor_id = r.floor_id " +
+					"inner join building b on b.building_id = f.building_id " +
+					"where status = 'free' and room_type_id = 4 " ;
+			if( map.keySet().contains("location") && !(map.get("location").equals(""))  )	request	= request + " and position = '" + map.get("location")+"' ";
+			request = request + "Limit " + numberSingleOffice + ")"+
 					"or room_id in " +
 					"(select room_id " +
-						"from room r " +
-						"inner join floor f on f.floor_id = r.floor_id " +
-						"inner join building b on b.building_id = f.building_id " +
-						"where status = 'free' and room_type_id = 2 ";
-					if( map.keySet().contains("location")  && !(map.get("location").equals(""))  )	request	= request + " and position = '" + map.get("location")+"' ";
-					request = request +"Limit " + numberMeetingRoom +") " +
+					"from room r " +
+					"inner join floor f on f.floor_id = r.floor_id " +
+					"inner join building b on b.building_id = f.building_id " +
+					"where status = 'free' and room_type_id = 2 ";
+			if( map.keySet().contains("location")  && !(map.get("location").equals(""))  )	request	= request + " and position = '" + map.get("location")+"' ";
+			request = request +"Limit " + numberMeetingRoom +") " +
 					" order by room_price;";
+
 
 			ResultSet result = c.createStatement().executeQuery(request);
 			Map<String, Map<String, String>> roomProposal1 = new HashMap<>();
@@ -616,5 +684,437 @@ public class ClientRequestManager {
 			e.printStackTrace();
 		}
 	}
+
+
+
+
+
+
+
+
+
+
+	public void getDetailPermission(Map<String, String> map){
+		logger.debug("testdetail");
+		try {
+
+
+			int id_company=Integer.parseInt(map.get("company_id"));
+			String permission=map.get("permission");
+			String per[]=permission.split(",");
+			int idpermission=Integer.parseInt(getNbr(per[0]));
+			String namepermission=per[1].split(":")[1];
+
+
+
+			ResultSet result = c.createStatement().executeQuery("select device.device_id,device_wording,device_active,device.room_id,permission_device.number_validity_use,equipement_validity_period " +
+					"from permission_device inner join device on device.device_id=permission_device.device_id where permission_device.permission_id='"+ idpermission +"';");
+
+			logger.debug("c bon");
+
+			StringBuilder sb = new StringBuilder();
+
+			sb.append(idpermission);
+
+			sb.append("//");
+			sb.append(namepermission);
+			sb.append("//");
+
+
+
+			while (result.next()) {
+
+				///sb.append("device_id=" + result.getInt(1) + ",device_wording=" + result.getString(2) + ",device_active=" + result.getBoolean(3) + ",room_id=" + result.getInt(4) +",number_validity_use=" + result.getInt(5) +",equipement_validity_period="+ result.getDate(6) +"#");
+				sb.append(result.getInt(1) + "," + result.getString(2) + "," + result.getBoolean(3) + "," + result.getInt(4) +"," + result.getInt(5) +","+ result.getDate(6) +","+result.getInt(1)+"#");
+			}
+
+
+
+			ResultSet result2 = c.createStatement().executeQuery("select device.device_id,device.device_wording,device.room_id from device inner join reservation on reservation.reservation_id=device.reservation_id inner join general_services_manager on general_services_manager.gs_manager_id=reservation.gs_manager_id inner join employee on employee.employee_id=general_services_manager.gs_manager_id where employee.company_id='" + id_company+"';");
+
+			sb.append("//");
+
+			while (result2.next()) {
+
+				sb.append("device_id=" + result2.getInt(1) + ",device_wording=" + result2.getString(2) + ",room_id=" + result2.getInt(3) +"#");
+			}
+
+			output.println(sb.toString());
+
+
+
+		}catch (Exception e){
+			output.println("notgood");
+			e.printStackTrace();
+		}
+
+	}
+
+
+
+	static String getNbr(String str)
+	{
+
+		str = str.replaceAll("[^\\d]", " ");
+		str = str.trim();
+		str = str.replaceAll(" +", " ");
+		return str;
+	}
+
+
+
+
+	public void SaveBadge(Map<String, String> map){
+		logger.debug("bravo : test save4");
+		try {
+
+
+			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+			String name1 =map.get("nomemploye");
+			String name2=map.get("prenomemploye");
+			String idbadge=map.get("puceemploye");
+			Date today = dateFormat.parse(dateFormat.format(new Date()));
+			int agent=Integer.parseInt(map.get("idagent"));
+			Date dateendbadge = dateFormat.parse(map.get("badge_date"));
+			Date datecontract = dateFormat.parse(map.get("contract_date"));
+			Date datepermission = dateFormat.parse(map.get("permission_date"));
+			String emailagent=map.get("emailagent");
+			String permission=map.get("permission");
+			int id_company=Integer.parseInt(map.get("company_id"));
+			String state="En Fonction";
+			int id=0;
+
+
+
+
+
+
+			String requestInsert = "insert into employee (employee_last_name,employee_first_name,company_id,contract_duration) values ('"+name1+"','"+name2+"','"+id_company+"','"+datecontract +"') ;";
+
+			c.createStatement().executeUpdate(requestInsert);
+			ResultSet lastemployee = c.createStatement().executeQuery("select employee.employee_id from employee order by employee.employee_id DESC LIMIT 1; ");
+
+			while (lastemployee.next()){
+				id=lastemployee.getInt(1);
+			}
+
+			ResultSet agentid = c.createStatement().executeQuery("select general_services_manager.gs_manager_id from general_services_manager where gs_manager_id = '"+ agent+"';");
+
+			int id2;
+			if (agentid.next())
+				while (agentid.next()){
+					id2=lastemployee.getInt(1);
+					String requestupdate ="update general_services_manager set manager_email ='"+ emailagent +"'where gs_manager_id='"+id2   +" ';";
+					c.createStatement().executeQuery(requestupdate);
+
+				}
+			else{output.println("notgood id agent");}
+
+
+			String requestInsert2 = "insert into badge (badge_id,badge_start_date,badge_end_date,badge_state,employee_id,gs_manager_id) " +
+					"values ('"+idbadge+"','"+today+"','"+dateendbadge+"','"+state +"','"+id+"','"+agent+"') ;";
+
+			try{
+				c.createStatement().executeUpdate(requestInsert2);
+			}catch (Exception e) {
+				output.println("notgood badge");
+			}
+
+
+
+			String per[]=permission.split(",");
+			int idpermission=Integer.parseInt(getNbr(per[0]));
+			String insertrequest = "insert into permission_access (badge_id,permission_id,permission_validity_period) VALUES ('"+idbadge+"','"+idpermission+"','"+datepermission+"') ;";
+			try {
+				c.createStatement().executeUpdate(insertrequest);
+			}catch (Exception e){
+				output.println("notgood permision");
+			}
+
+
+
+
+			output.println("good");
+		}catch (Exception e){
+			output.println("notgood");
+			e.printStackTrace();
+		}
+
+	}
+
+
+
+
+	public void getdevices(Map<String, String> map){
+		logger.debug("bravo2");
+		try {
+
+
+
+
+
+			ResultSet result = c.createStatement().executeQuery("select device.device_id,device.device_wording,device.room_id from device inner join reservation on reservation.reservation_id=device.reservation_id\n" +
+					"inner join general_services_manager on general_services_manager.gs_manager_id=reservation.gs_manager_id\n" +
+					"inner join employee on employee.employee_id=general_services_manager.gs_manager_id where employee.company_id='" +
+					Integer.parseInt(map.get("company_id"))+"';");
+
+
+
+			StringBuilder sb = new StringBuilder();
+			while (result.next()) {
+
+				sb.append("device_id=" + result.getInt(1) + ",device_wording=" + result.getString(2) + ",room_id=" + result.getInt(3) +"#");
+			}
+
+			output.println(sb.toString());
+
+
+
+		}catch (Exception e){
+			output.println("notgood");
+			e.printStackTrace();
+		}
+
+	}
+
+
+
+
+	public void getallbadges(Map<String, String> map){
+		logger.debug("getallbadges test");
+		try {
+
+			int company = Integer.parseInt(map.get("company_id"));
+			logger.debug("getallbfds" +company);
+			ResultSet result = c.createStatement().executeQuery("select distinct (employee.employee_id),employee.employee_last_name,permission_badge.name_permission,permission_access.permission_validity_period from employee inner join badge on badge.employee_id=employee.employee_id inner join permission_access on permission_access.badge_id=badge.badge_id inner join permission_badge on permission_badge.permission_id=permission_access.permission_id inner join permission_device on permission_device.permission_id=permission_badge.permission_id where (employee.company_id='"+ company + "'  );");
+
+
+
+
+
+			logger.debug("bravo test");
+
+			StringBuilder sb = new StringBuilder();
+			while (result.next()) {
+
+				sb.append(result.getInt(1) +","+ result.getString(2) +","+  result.getString(3)  +","+ result.getDate(4)  +","+   result.getString(1) +","+  result.getString(1) +"#");
+			}
+
+			output.println(sb.toString());
+
+
+
+		}catch (Exception e){
+			output.println("notgood");
+			e.printStackTrace();
+		}
+
+	}
+
+
+
+
+
+	public void adddevicepermission(Map<String, String> map){
+		logger.debug("test add3");
+
+
+		try {
+
+
+			//int id_company=Integer.parseInt(map.get("requestadddevice").get("idcompany"));
+			String namepermission=map.get("permission");
+			//logger.debug(namepermission);
+			String device=map.get("device");
+			//logger.debug(device);
+
+			String dev[]=device.split(",");
+			int idpermission=Integer.parseInt(map.get("idpermission"));
+			//logger.debug(" waw "+idpermission);
+			int iddevice=Integer.parseInt(getNbr(dev[0]));
+
+
+			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+			Date today = dateFormat.parse(dateFormat.format(new Date()));
+
+			int x=3;
+
+			String requestInsert = "insert into permission_device (device_id,permission_id,equipement_validity_period,number_validity_use) values ('"+    iddevice     +"','"+  idpermission   +    " ','"+     today     +"','"+  x    +"'                                   ) ;";
+
+
+			c.createStatement().executeUpdate(requestInsert);
+
+
+
+
+
+			output.println("bravo");
+
+
+
+		}catch (Exception e){
+			output.println("notgood");
+			e.printStackTrace();
+		}
+
+	}
+
+
+
+
+
+	public void getPermissions(Map<String, String> map){
+		logger.debug("bravo2");
+		try {
+
+			//int company = Integer.parseInt(map.get("getpermissions").get("company_id"));
+			ResultSet result = c.createStatement().executeQuery("select permission_badge.permission_id,permission_badge.name_permission from permission_badge "+
+					"where company_id='" +
+					Integer.parseInt(map.get("company_id"))+"';");
+			StringBuilder sb = new StringBuilder();
+			while (result.next()) {
+
+				sb.append("ID Permission:" + result.getInt(1) + ",Nom Permission:" + result.getString(2) +"#");
+			}
+
+			output.println(sb.toString());
+
+
+
+		}catch (Exception e){
+			output.println("notgood");
+			e.printStackTrace();
+		}
+
+	}
+
+
+	public void getallemployees(Map<String, String> map){
+		logger.debug("requestallbadges test");
+		try {
+
+			//int company = Integer.parseInt(map.get("requestallbadges").get("company_id"));
+			ResultSet result = c.createStatement().executeQuery("select  badge.badge_id,employee.employee_last_name,employee.employee_last_name from employee inner join badge on employee.employee_id=badge.employee_id where company_id='" + Integer.parseInt(map.get("company_id"))+"';");
+			StringBuilder sb = new StringBuilder();
+			while (result.next()) {
+
+				sb.append("ID Badge:" + result.getInt(1) + ",Nom:" + result.getString(2) +",Prenom:" + result.getString(2) +"#");
+			}
+
+			output.println(sb.toString());
+
+
+
+		}catch (Exception e){
+			output.println("notgood");
+			e.printStackTrace();
+		}
+
+	}
+
+
+
+
+
+	public void saveallemployees( Map<String, String> map) {
+		logger.debug("test save all employees2");
+		try {
+
+
+
+			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+			int idcompany =Integer.parseInt(map.get("company_id"));
+			logger.debug("waaw"+idcompany);
+			String permission=map.get("permission");
+
+			String per[]=permission.split(",");
+			int idpermission=Integer.parseInt(getNbr(per[0]));
+			//String employees=map.get("requestManyNewBadge").get("permission");
+			logger.debug("waaw"+idpermission);
+			String empls =map.get("employees");
+			String [] employees = empls.split("&");
+
+			Date datepermission = dateFormat.parse(map.get("date"));
+
+			logger.debug("waaw"+empls);
+			logger.debug("waaw2"+employees[0]);
+
+			logger.debug("llee"+employees.length);
+
+
+
+			for (int i = 0; i < employees.length; i++) {
+				logger.debug(employees[i]);
+				String emp[]=employees[i].split(",");
+				//int idbadge=Integer.parseInt(getNbr(emp[0]));
+				String idbadge=emp[0].substring(9,15);
+				logger.debug("sdss"+idbadge);
+				String insertrequest = "update permission_access set permission_id='" + idpermission + " ', permission_validity_period='" + datepermission +" 'where badge_id like'"+ idbadge +  "'                    ;";
+
+				try {
+					c.createStatement().executeUpdate(insertrequest);
+				}catch (Exception e){
+					output.println("notgood save");
+				}
+
+			}
+
+
+
+
+
+
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+
+
+
+
+
+	public void testpermissions( Map<String, String> map) {
+		logger.debug("tesssssttttt");
+		try {
+
+
+			String name1 =map.get("employee_last_name");
+			String name2=map.get("employee_first_name");
+			String device=map.get("device_id");
+
+			String per[]=device.split(",");
+			int device_id=Integer.parseInt(getNbr(per[0]));
+
+			System.out.println(device_id);
+
+
+
+			ResultSet result = c.createStatement().executeQuery("select employee.employee_id from employee inner join badge on badge.employee_id=employee.employee_id inner join permission_access on" +
+					"permission_access.badge_id=badge.badge_id inner join permission_badge on permission_badge.permission_id=permission_access.permission_id inner join" +
+					"permission_device on permission_device.permission_id=permission_badge.permission_id where (employee_last_name='"+ name1  +"' and employee_first_name='"+name2+  "' and device_id='"+device_id+ "'                 );");
+
+			System.out.println("bravo");
+
+			if(result.next()) {
+				//String data = result.getString(1);
+				output.println("Good");
+			} else output.println("Notgood");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+
+
+
+
+
+
+
+
+
 
 }

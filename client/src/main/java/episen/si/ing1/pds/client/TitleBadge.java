@@ -1,18 +1,17 @@
-package episen.si.ing1.pds.client.reservation;
+package episen.si.ing1.pds.client;
 
-import episen.si.ing1.pds.client.Ihm;
 import javax.swing.*;
 import java.awt.*;
 
-public class TitleReservation {
-    public JPanel titleReservation(){
+public class TitleBadge {
+    public JPanel TitleBadge(){
         JPanel titlePage = new JPanel();
         titlePage.setLayout(null);
         Dimension dimTitle = new Dimension(950, 100);
-        Ihm.sizeComposant(dimTitle, titlePage);
+        sizeComposant(dimTitle, titlePage);
         titlePage.setBackground(Color.WHITE);
 
-        JTextField title = new JTextField("Realisation d'une location : ", 50);
+        JTextField title = new JTextField("Espace Gestion de Personnel : ", 30);
         title.setFont(new Font("Serif", Font.BOLD, 35));
         title.setHorizontalAlignment(JTextField.RIGHT);
         title.setBackground(Color.WHITE);
@@ -21,8 +20,16 @@ public class TitleReservation {
         title.setEditable(false);
         title.setBounds(500, 0, 420, 75);
 
+        //titlePage.add(flecheBack);
         titlePage.add(title);
 
         return titlePage;
     }
+
+    public void sizeComposant(Dimension dim, Component c){
+        c.setPreferredSize(dim);
+        c.setMaximumSize(dim);
+        c.setMinimumSize(dim);
+    }
 }
+

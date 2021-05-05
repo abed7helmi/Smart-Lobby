@@ -514,3 +514,4 @@ public class ChoiceCriteria{
         ChoiceDevice.config.clear();
     }
 }
+

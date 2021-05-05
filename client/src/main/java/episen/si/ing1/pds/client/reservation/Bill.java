@@ -3,7 +3,6 @@ package episen.si.ing1.pds.client.reservation;
 import episen.si.ing1.pds.client.Client;
 import episen.si.ing1.pds.client.Ihm;
 import episen.si.ing1.pds.client.Menu;
-
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
