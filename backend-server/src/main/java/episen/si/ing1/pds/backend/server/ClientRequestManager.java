@@ -1,13 +1,5 @@
 package episen.si.ing1.pds.backend.server;
 
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -21,6 +13,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class ClientRequestManager {
 
@@ -46,47 +47,47 @@ public class ClientRequestManager {
 					String values = clientInput.split("#")[1];
 
 					Map<String, String> map = mapper.readValue(values,new TypeReference<Map<String, String>>(){});
-
+					
 					switch (requestType) {
-						case "companyReservation":
-							companyReservation(map);
-							break;
-						case "reservationFloor":
-							reservationFloor(map);
-							break;
-						case "floorRoom":
-							floorRoom(map);
-							break;
-						case "roomLocation":
-							roomLocation(map);
-							break;
-						case "locationEquipment":
-							locationEquipment(map);
-							break;
-						case "reservationEquipment":
-							reservationEquipment(map);
-							break;
-						case "setEquipment":
-							setEquipment(map);
-							break;
-						case "homePage1":
-							firstPage(map);
-							break;
-						case "requestLocation1":
-							getChoice(map);
-							break;
-						case "requestLocation2":
-							getDevice(map);
-							break;
-						case "requestLocation3":
-							getDisponibility(map);
-							break;
-						case "requestLocation5":
-							getManagerId(map);
-							break;
-						case "requestLocation4":
-							insertReservation(map);
-							break;
+					case "companyReservation":
+						companyReservation(map);
+						break;
+					case "reservationFloor":
+						reservationFloor(map);
+						break;
+					case "floorRoom":
+						floorRoom(map);
+						break;
+					case "roomLocation":
+						roomLocation(map);
+						break;
+					case "locationEquipment":
+						locationEquipment(map);
+						break;
+					case "reservationEquipment":
+						reservationEquipment(map);
+						break;
+					case "setEquipment":
+						setEquipment(map);
+						break;
+					case "homePage1":
+						firstPage(map);
+						break;
+					case "requestLocation1":
+						getChoice(map);
+						break;
+					case "requestLocation2":
+						getDevice(map);
+						break;
+					case "requestLocation3":
+						getDisponibility(map);
+						break;
+					case "requestLocation5":
+						getManagerId(map);
+						break;
+					case "requestLocation4":
+						insertReservation(map);
+						break;
 					}
 
 					/*switch (requestType) {
@@ -107,6 +108,7 @@ public class ClientRequestManager {
 						}
 						output.println(sb.toString());
 						break;
+
 					case "update":
 						int newAge = Integer.valueOf(map.get("toto").get("age"))+1;
 						output.println(
@@ -154,9 +156,9 @@ public class ClientRequestManager {
 			}
 			output.println(mapper.writeValueAsString(result));
 		} catch (JsonMappingException e) {} catch (JsonProcessingException e) {} catch (SQLException e) {}
-
+		
 	}
-
+	
 	public void reservationFloor(Map<String,String> map) {
 		try {
 			String request = "select distinct(floor_id),floor_number,building_name from (room natural join floor) natural join building where reservation_id="+map.get("reservation_id");
@@ -172,9 +174,9 @@ public class ClientRequestManager {
 			}
 			output.println(mapper.writeValueAsString(result));
 		} catch (JsonMappingException e) {} catch (JsonProcessingException e) {} catch (SQLException e) {}
-
+		
 	}
-
+	
 	public void floorRoom(Map<String,String> map) {
 		try {
 			String request = "select room_id,room_wording,room_type_id from room where reservation_id="+map.get("reservation_id")+" and floor_id="+map.get("floor_id");
@@ -190,9 +192,9 @@ public class ClientRequestManager {
 			}
 			output.println(mapper.writeValueAsString(result));
 		} catch (JsonMappingException e) {} catch (JsonProcessingException e) {} catch (SQLException e) {}
-
+		
 	}
-
+	
 	public void roomLocation(Map<String,String> map) {
 		try {
 			String request = "select location_id,occupied_location,is_sensor,x_position,y_position from location where room_id="+map.get("room_id");
@@ -210,25 +212,9 @@ public class ClientRequestManager {
 			}
 			output.println(mapper.writeValueAsString(result));
 		} catch (JsonMappingException e) {} catch (JsonProcessingException e) {} catch (SQLException e) {}
-
+		
 	}
-	public void getWindow(String values) throws SQLException {
-
-		try {
-			ObjectMapper mapper = new ObjectMapper(new JsonFactory());
-			String request="select device.device_id from device inner join windows on(device.device_id=windows.device_id)";
-			ResultSet rs = c.createStatement().executeQuery(request);
-			Map<String,Map<String, String>> result = new HashMap<String,Map<String, String>>();
-			int i=0;
-			while(rs.next()) {
-				Map<String, String> tab = new HashMap<String, String>();
-				tab.put("device_id", rs.getString(1));
-				result.put(""+i++, tab);
-			}
-			output.println(mapper.writeValueAsString(result));
-		} catch (JsonMappingException e) {} catch (JsonProcessingException e) {}
-	}
-
+	
 	public void locationEquipment(Map<String,String> map) {
 		try {
 			String request = "select device_id,device_wording,device_active,device_price,reservation_id from device where location_id="+map.get("location_id");
@@ -242,10 +228,9 @@ public class ClientRequestManager {
 			}
 			output.println(mapper.writeValueAsString(result));
 		} catch (JsonMappingException e) {} catch (JsonProcessingException e) {} catch (SQLException e) {}
-
+		
 	}
-
-
+	
 	public void reservationEquipment(Map<String,String> map) {
 		try {
 			String request = "";
@@ -266,16 +251,16 @@ public class ClientRequestManager {
 			}
 			output.println(mapper.writeValueAsString(result));
 		} catch (JsonMappingException e) {} catch (JsonProcessingException e) {} catch (SQLException e) {}
-
+		
 	}
-
+	
 	public void setEquipment(Map<String,String> map) {
 		try {
-
+			
 			String location = map.get("location_id");
 			String newDevice = map.get("new_device_id");
 			String oldDevice = map.get("old_device_id");
-
+	
 			Statement s = c.createStatement();
 			if(oldDevice.isEmpty()) {
 				s.executeUpdate("update device set device_placed='t', location_id="+location+" where device_id="+newDevice);
@@ -287,12 +272,11 @@ public class ClientRequestManager {
 				s.executeUpdate("update device set device_placed='t', location_id="+location+" where device_id="+newDevice);
 				s.executeUpdate("update device set device_placed='f', location_id=null where device_id="+oldDevice);
 			}
-
+			
 			output.println("Done");
 		} catch (SQLException e) {}
 	}
-
-
+	
 	public void getChoice(Map<String,String> map){
 		try {
 			int numberOpenSpace = Integer.parseInt(map.get("numberOpenSpace")) * 4;
@@ -306,40 +290,38 @@ public class ClientRequestManager {
 					"inner join building b on b.building_id = f.building_id " +
 					"where room_id in "+
 					"(select room_id " +
-					"from room r " +
-					"inner join floor f on f.floor_id = r.floor_id " +
-					"inner join building b on b.building_id = f.building_id " +
-					"where status = 'free' and room_type_id = 1 ";
-			if( map.keySet().contains("location") && !(map.get("location").equals("")) )	request	= request + " and position = '" + map.get("location")+"' ";
-			request = request + "Limit " + numberOpenSpace + ")"+
-					"or room_id in "+
+						"from room r " +
+						"inner join floor f on f.floor_id = r.floor_id " +
+						"inner join building b on b.building_id = f.building_id " +
+						"where status = 'free' and room_type_id = 1 ";
+					if( map.keySet().contains("location") && !(map.get("location").equals("")) )	request	= request + " and position = '" + map.get("location")+"' ";
+					request = request + "Limit " + numberOpenSpace + ")"+
+						"or room_id in "+
 					" (select room_id "+
-					"from room r " +
-					"inner join floor f on f.floor_id = r.floor_id " +
-					"inner join building b on b.building_id = f.building_id " +
-					"where status = 'free' and room_type_id = 3 ";
-			if( map.keySet().contains("location")  && !(map.get("location").equals("")) )	request	= request + " and position = '" + map.get("location")+"' ";
-			request = request + "Limit " + numberClosedOffice + ")"+
-					"or room_id in "+
+						"from room r " +
+						"inner join floor f on f.floor_id = r.floor_id " +
+						"inner join building b on b.building_id = f.building_id " +
+						"where status = 'free' and room_type_id = 3 ";
+					if( map.keySet().contains("location")  && !(map.get("location").equals("")) )	request	= request + " and position = '" + map.get("location")+"' ";
+					request = request + "Limit " + numberClosedOffice + ")"+
+						"or room_id in "+
 					"(select room_id " +
-					"from room r " +
-					"inner join floor f on f.floor_id = r.floor_id " +
-					"inner join building b on b.building_id = f.building_id " +
-					"where status = 'free' and room_type_id = 4 " ;
-			if( map.keySet().contains("location") && !(map.get("location").equals(""))  )	request	= request + " and position = '" + map.get("location")+"' ";
-			request = request + "Limit " + numberSingleOffice + ")"+
+						"from room r " +
+						"inner join floor f on f.floor_id = r.floor_id " +
+						"inner join building b on b.building_id = f.building_id " +
+						"where status = 'free' and room_type_id = 4 " ;
+					if( map.keySet().contains("location") && !(map.get("location").equals(""))  )	request	= request + " and position = '" + map.get("location")+"' ";
+					request = request + "Limit " + numberSingleOffice + ")"+
 					"or room_id in " +
 					"(select room_id " +
-					"from room r " +
-					"inner join floor f on f.floor_id = r.floor_id " +
-					"inner join building b on b.building_id = f.building_id " +
-					"where status = 'free' and room_type_id = 2 ";
-			if( map.keySet().contains("location")  && !(map.get("location").equals(""))  )	request	= request + " and position = '" + map.get("location")+"' ";
-			request = request +"Limit " + numberMeetingRoom +") " +
+						"from room r " +
+						"inner join floor f on f.floor_id = r.floor_id " +
+						"inner join building b on b.building_id = f.building_id " +
+						"where status = 'free' and room_type_id = 2 ";
+					if( map.keySet().contains("location")  && !(map.get("location").equals(""))  )	request	= request + " and position = '" + map.get("location")+"' ";
+					request = request +"Limit " + numberMeetingRoom +") " +
 					" order by room_price;";
 
-
-			System.out.println(request);
 			ResultSet result = c.createStatement().executeQuery(request);
 			Map<String, Map<String, String>> roomProposal1 = new HashMap<>();
 			Map<String, Map<String, String>> roomProposal2 = new HashMap<>();
@@ -573,14 +555,11 @@ public class ClientRequestManager {
 						String[] listDeviceId = deviceId.split(",");
 						if( listDeviceId.length != 1 ){
 							String whereRequestUpdateDevice =" where";
-							System.out.println(listDeviceId.length);
 							for(int y = 0; y < listDeviceId.length; y++){
-								System.out.println(listDeviceId[y]);
 								verifyDeviceId.add(listDeviceId[y]);
 								whereRequestUpdateDevice = whereRequestUpdateDevice + " device_id = " + listDeviceId[y]+ " or ";
 							}
 							verifyDevice = new StringBuffer(whereRequestUpdateDevice);
-							System.out.println(verifyDevice+"/////////////////////////");
 							if(whereRequestUpdateDevice.contains("or")){
 								verifyDevice.delete(verifyDevice.length() - 4, verifyDevice.length());
 								verifyDevice.append(";");
@@ -597,9 +576,6 @@ public class ClientRequestManager {
 			verifyRoom.delete(verifyRoom.length() - 4, verifyRoom.length());
 			verifyRoom.append(";");
 
-			System.out.println("/////////////");
-			System.out.println(verifyRoom);
-
 			ResultSet resultRoom = c.createStatement().executeQuery(verifyRoom+"");
 
 			boolean verifyDataDB = true;
@@ -612,7 +588,6 @@ public class ClientRequestManager {
 			}
 
 			if(verifyRequestUpdateDevice.contains("or")){
-				System.out.println("test");
 				StringBuffer verifyRoomUpdateDevice = new StringBuffer(verifyRequestUpdateDevice);
 				verifyRoomUpdateDevice.delete(verifyRoomUpdateDevice.length() - 4, verifyRoomUpdateDevice.length());
 				verifyRoomUpdateDevice.append(";");
@@ -633,8 +608,6 @@ public class ClientRequestManager {
 						"    reservation_id = (select max(reservation_id) from reservation)  "+ correctWhere;
 
 				String requestOrder = requestInsert + requestUpdateRoom + requestUpdateDevice;
-				System.out.println("/////////////");
-				System.out.println(requestOrder);
 				output.println("Successfully updated "+ c.createStatement().executeUpdate(requestOrder));
 			} else output.println("Not done");
 		}catch (Exception e) {

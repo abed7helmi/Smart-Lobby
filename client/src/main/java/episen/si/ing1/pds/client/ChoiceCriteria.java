@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ChoiceCriteria{
-    private final Map<String, String> input = new HashMap<>();
+    protected static Map<String, String> input = new HashMap<>();
     private final String page = "criteria";
     private final JButton buttonContinue = new JButton("> Continuer");
     private final JFrame frame;
@@ -28,11 +28,10 @@ public class ChoiceCriteria{
     private String company_id = "";
 
     public ChoiceCriteria(JFrame f,String id)  {
-        input.clear();
+        restartData();
         frame = f;
         company_id = id;
         input.put("company_id", company_id);
-        System.out.println(input);
     }
 
     public JPanel realizeReservation(){
@@ -111,7 +110,6 @@ public class ChoiceCriteria{
 
                 if(input.containsKey("location")) Client.map.get(request).put("location", input.get("location"));
 
-                System.out.println(Client.map);
                 String result = Client.sendBd(request);
                 changePage(result);
             }
@@ -276,9 +274,9 @@ public class ChoiceCriteria{
         });
 
         JTextField singleOffice = new JTextField("Bureau individuel : ");
-        singleOffice = Ihm.styleJTextFieldReservation(singleOffice, 200, 290, 100, 20, Color.WHITE, Color.WHITE);
+        singleOffice = Ihm.styleJTextFieldReservation(singleOffice, 200, 290, 110, 20, Color.WHITE, Color.WHITE);
 
-        checkBoxSingleOffice = styleJCheckBoxReservation(checkBoxSingleOffice,300, 290, 20, 20);
+        checkBoxSingleOffice = styleJCheckBoxReservation(checkBoxSingleOffice,310, 290, 20, 20);
 
         JTextField quantitySingleOffice = new JTextField("- nombre de bureau individuel : ");
         quantitySingleOffice = Ihm.styleJTextFieldReservation(quantitySingleOffice,620, 320, 175, 20, Color.WHITE, Color.WHITE);
@@ -307,9 +305,9 @@ public class ChoiceCriteria{
         });
 
         JTextField closedOffice = new JTextField("Bureau ferme : ");
-        closedOffice = Ihm.styleJTextFieldReservation(closedOffice, 200, 320, 100, 20,Color.WHITE, Color.WHITE);
+        closedOffice = Ihm.styleJTextFieldReservation(closedOffice, 200, 320, 110, 20,Color.WHITE, Color.WHITE);
 
-        checkBoxClosedOffice = styleJCheckBoxReservation(checkBoxClosedOffice,300, 320, 20, 20);
+        checkBoxClosedOffice = styleJCheckBoxReservation(checkBoxClosedOffice,310, 320, 20, 20);
         checkBoxClosedOffice.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
@@ -475,13 +473,12 @@ public class ChoiceCriteria{
             c.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    System.out.println("test"+data); input.put("location", data); System.out.println("test"+input);
+                    input.put("location", data);
                 }
             });
         }
         c.setBackground(Color.WHITE);
         location.add(c);
-        System.out.println(input);
     }
     public JCheckBox styleJCheckBoxReservation(JCheckBox c, int x, int y, int w, int h){
         c.setBackground(Color.WHITE);
@@ -496,11 +493,21 @@ public class ChoiceCriteria{
         else return false;
     }
     public void changePage(String proposals){
-        Choice selectChoice = new Choice(input, frame);
+        Choice selectChoice = new Choice(frame);
         selectChoice.choice(pageBody, proposals);
     }
     public void messageError (JTextField message){
         message.setText("X");
         message.setForeground(Color.red);
+    }
+    public static void restartData(){
+        ChoiceCriteria.input.clear();
+        Choice.proposalSelected.clear();
+        Choice.mapProposals.clear();
+        ViewWithPlan.listDeviceIdRoom.clear();
+        ViewWithPlan.configRoom.clear();
+        ViewWithPlan.listButton.clear();
+        ViewWithPlan.listDeviceId.clear();
+        ChoiceDevice.config.clear();
     }
 }
