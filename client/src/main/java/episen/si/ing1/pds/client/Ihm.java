@@ -17,6 +17,7 @@ public class Ihm extends JFrame{
     private JPanel pageBody2 ;
     private JPanel pageBody3 ;
     private JPanel pageBody4 ;
+    private JPanel pageBody7 ;
     private String company_id ="";
     protected static String path = System.getenv("PDSIMG");
 
@@ -32,6 +33,9 @@ public class Ihm extends JFrame{
         Mapping m = new Mapping();
         pageBody2 = m.getPanel();
 
+        AcceuilPersonnel personnel = new AcceuilPersonnel(frame,company_id);
+        pageBody7=personnel.acceuil();
+
         Indicators indicator = new Indicators();
         pageBody3 = indicator.getIndicator();
 
@@ -39,15 +43,25 @@ public class Ihm extends JFrame{
             pageBody.add(pageBody1,"realize");
             pageBody.add(pageBody2,"consult");
             pageBody.add(pageBody3,"indicator");
+            pageBody.add(pageBody7,"staff");
         } else if(page.equals("consult")){
             pageBody.add(pageBody2,"consult");
             pageBody.add(pageBody1,"realize");
             pageBody.add(pageBody3,"indicator");
+            pageBody.add(pageBody7,"staff");
         }
         else if(page.equals("indicator")){
             pageBody.add(pageBody3,"indicator");
             pageBody.add(pageBody2,"consult");
             pageBody.add(pageBody1,"realize");
+            pageBody.add(pageBody7,"staff");
+        }else if(page.equals("staff")){
+            pageBody.add(pageBody7,"staff");
+            pageBody.add(pageBody3,"indicator");
+            pageBody.add(pageBody2,"consult");
+            pageBody.add(pageBody1,"realize");
+
+
         }
 
         buttonVoid = navJButton(buttonVoid,670,10,100,50);
@@ -92,12 +106,7 @@ public class Ihm extends JFrame{
         setColor(staff,Color.white,new Color(0, 102,204));
 
         JButton configWindow = new JButton("Configurer fenêtre");
-        staff.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                pages.show(pageBody,"window");
-            }
-        });
+
         JButton indicatorButton = new JButton("Indicateurs et locations");
         setColor(indicatorButton,Color.white,new Color(0, 102,204));
         indicatorButton.addActionListener(new ActionListener() {

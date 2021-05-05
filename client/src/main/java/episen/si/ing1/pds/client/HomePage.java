@@ -48,7 +48,7 @@ public class HomePage extends JFrame {
                     frame.dispose();
                 } else
                     JOptionPane.showMessageDialog(null, "Le nom renseigne n'existe pas", "",
-                                JOptionPane.ERROR_MESSAGE);
+                            JOptionPane.ERROR_MESSAGE);
             }
         });
         getContentPane().add(title, BorderLayout.NORTH);

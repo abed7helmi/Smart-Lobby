@@ -26,6 +26,7 @@ public class ServerCore {
 			try {
 				final Socket socket = serverSocket.accept();
 				logger.debug("Request received");
+
 				try {
 					Connection c = d.send();
 					final ClientRequestManager clientRequestManager = new ClientRequestManager(socket, c);
