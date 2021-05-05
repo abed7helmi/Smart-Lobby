@@ -217,7 +217,7 @@ public class ClientRequestManager {
 	
 	public void locationEquipment(Map<String,String> map) {
 		try {
-			String request = "select device_id,device_wording,device_active,device_price,reservation_id,is_sensor from device natural join location where location_id="+map.get("location_id");
+			String request = "select device_id,device_wording,device_active,device_price,reservation_id from device where location_id="+map.get("location_id");
 			ResultSet rs = c.createStatement().executeQuery(request);
 			Map<String, String> result = new HashMap<String, String>();
 			while(rs.next()) {
@@ -225,8 +225,6 @@ public class ClientRequestManager {
 				result.put("device_wording", rs.getString(2));
 				result.put("device_active", rs.getString(3));
 				result.put("device_price", rs.getString(4));
-				result.put("reservation_id", rs.getString(5));
-				result.put("is_sensor", rs.getString(6));
 			}
 			output.println(mapper.writeValueAsString(result));
 		} catch (JsonMappingException e) {} catch (JsonProcessingException e) {} catch (SQLException e) {}
@@ -237,9 +235,9 @@ public class ClientRequestManager {
 		try {
 			String request = "";
 			if(map.get("is_sensor").equals("f")) {
-				request = "select device_id,device_wording,device_price from device where device_type_id<11 and location_id is null and reservation_id="+map.get("reservation_id");
+				request = "select device_id,device_wording,device_price from device where device_type_id in (select device_type_id from could_configure where room_type_id=(select room_type_id from room where room_id="+map.get("room_id")+")) and device_type_id<11 and location_id is null and reservation_id="+map.get("reservation_id");
 			}else {
-				request = "select device_id,device_wording,device_price from device where device_type_id>10 and location_id is null and reservation_id="+map.get("reservation_id");
+				request = "select device_id,device_wording,device_price from device where device_type_id in (select device_type_id from could_configure where room_type_id=(select room_type_id from room where room_id="+map.get("room_id")+")) and device_type_id>10 and location_id is null and reservation_id="+map.get("reservation_id");
 			}
 			ResultSet rs = c.createStatement().executeQuery(request);
 			Map<String,Map<String, String>> result = new HashMap<String,Map<String, String>>();

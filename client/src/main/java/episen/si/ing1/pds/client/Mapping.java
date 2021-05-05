@@ -2,6 +2,8 @@ package episen.si.ing1.pds.client;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.GridLayout;
@@ -15,6 +17,8 @@ import java.io.IOException;
 import java.util.Map;
 
 import javax.imageio.ImageIO;
+import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -61,8 +65,11 @@ public class Mapping {
 		p1.add(locationSelection);
 		p1.add(equipmentSelection);
 		p2.setLayout(new GridLayout(1,1));
-		p2.add(locationPlan);
-
+		JPanel p = new JPanel();
+		p.setLayout(new GridLayout(1,1));
+		p2.add(p);
+		p.add(locationPlan);
+		locationPlan.setBorder(BorderFactory.createEmptyBorder(0,220,0,0));
 		locationPlan.setLayout(new BorderLayout());
 		locationPlan.setBackground(Color.WHITE);
 		
@@ -186,11 +193,12 @@ public class Mapping {
 	public void roomPlan(String room_id,String imgPath) {
 		try {
 			locationPlan.removeAll();
-			locationPlan.setLayout(new BorderLayout());
+		
 			
 			JLabel title = new JLabel("Sélectionnez un emplacement à configurer:");
 			title.setFont(titlefont);
-			locationPlan.add(title, BorderLayout.NORTH);
+			title.setBorder(BorderFactory.createEmptyBorder(0,50,0,0));
+			locationPlan.add(title,BorderLayout.NORTH);
 			
 			JPanel plan = new JPanel() {
 				Image img = ImageIO.read(new File(imgPath));
@@ -201,7 +209,6 @@ public class Mapping {
 				}
 			};
 			plan.setLayout(null);
-			
 			Icon greenPin = new ImageIcon(ImageIO.read(new File(path+"greenpin.png")));
 			Icon redPin = new ImageIcon(ImageIO.read(new File(path+"redpin.png")));
 			Icon greenSensor = new ImageIcon(ImageIO.read(new File(path+"greensensor.png")));
@@ -244,6 +251,9 @@ public class Mapping {
 				plan.add(pin);
 				pin.setBounds(Integer.valueOf(m.get("x_position")),Integer.valueOf(m.get("y_position")), 60, 30);
 			}
+
+			
+
 			locationPlan.add(plan,BorderLayout.CENTER);
 			locationPlan.revalidate();
 			
@@ -296,6 +306,7 @@ public class Mapping {
 			selection5.add(deviceSelection);
 		
 			Client.map.get("reservationEquipment").put("is_sensor", is_sensor);
+			Client.map.get("reservationEquipment").put("room_id", room_id);
 			Client.map.get("reservationEquipment").put("reservation_id", reservation_id);
 			Map<String, Map<String, String>> equipments = mapper.readValue(Client.sendBd("reservationEquipment"),new TypeReference<Map<String, Map<String, String>>>(){});
 			String[] equipmentList = new String[equipments.size()];
