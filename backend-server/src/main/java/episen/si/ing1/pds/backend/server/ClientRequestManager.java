@@ -84,9 +84,16 @@ public class ClientRequestManager {
 						case "requestLocation5":
 							getManagerId(map);
 							break;
+						case "requestWindow":
+							getWindow(map);
+							break;
+						case "configWindow":
+							configWindow(map);
+							break;
 						case "requestLocation4":
 							insertReservation(map);
 							break;
+
 					}
 
 					/*switch (requestType) {
@@ -212,7 +219,23 @@ public class ClientRequestManager {
 		} catch (JsonMappingException e) {} catch (JsonProcessingException e) {} catch (SQLException e) {}
 
 	}
-	public void getWindow(String values) throws SQLException {
+	public void getWindow(Map<String,String> map) throws SQLException {
+
+		try {
+			String request="select device.device_id from device inner join windows on(device.device_id=windows.device_id)"+map.get("device_id");
+			ResultSet rs = c.createStatement().executeQuery(request);
+			Map<String,Map<String, String>> result = new HashMap<String,Map<String, String>>();
+			int i=0;
+			while(rs.next()) {
+				Map<String, String> resultmap = new HashMap<String, String>();
+				resultmap.put("device_id", rs.getString(1));
+				result.put(""+i++, resultmap);
+			}
+			output.println(mapper.writeValueAsString(result));
+		} catch (JsonMappingException e) {} catch (JsonProcessingException e) {} catch (SQLException e) {}
+	}
+
+	public void configWindow(Map<String,String> map) throws SQLException {
 
 		try {
 			ObjectMapper mapper = new ObjectMapper(new JsonFactory());

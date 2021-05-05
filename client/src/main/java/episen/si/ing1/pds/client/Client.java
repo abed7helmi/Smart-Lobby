@@ -39,7 +39,7 @@ public class Client {
 			Properties props = new Properties();
 			props.load(Thread.currentThread().getContextClassLoader().getResourceAsStream("connection.properties"));
 
-			//Ihm ihm = new Ihm("Smart Lobby");
+			//Ihm ihm = new Ihm("Smart Lobby","e","1");
 			HomePage homePage = new HomePage();
 
 			//String requestType = commandLine.getOptionValue("requesttype");

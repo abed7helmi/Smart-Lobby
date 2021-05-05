@@ -9,7 +9,7 @@ import java.awt.event.ActionListener;
 public class Ihm extends JFrame{
     private JFrame frame = new JFrame();
 
-    protected JPanel pageBody = new JPanel();
+    public static JPanel pageBody = new JPanel();
     public static JButton buttonVoid = new JButton("Annuler");
     public  static JButton buttonContinue = new JButton("> Continuer");
 
@@ -18,7 +18,7 @@ public class Ihm extends JFrame{
     private JPanel pageBody3 ;
     private JPanel pageBody4 ;
     private String company_id ="";
-    CardLayout pages = new CardLayout();
+    public static CardLayout pages = new CardLayout();
     public Ihm(String name, String page, String id) {
         company_id = id;
         frame = this;
@@ -109,7 +109,6 @@ public class Ihm extends JFrame{
             @Override
             public void actionPerformed(ActionEvent e) {
                 pages.show(pageBody,"window");
-
             }
         });
         sizeComposant(new Dimension(Integer.MAX_VALUE, 75), configWindow);
@@ -123,7 +122,7 @@ public class Ihm extends JFrame{
             }
         });
         sizeComposant(new Dimension(Integer.MAX_VALUE, 75), indicatorButton);
-        setColor(consult,Color.white,new Color(0, 102,204));
+        setColor(indicatorButton,Color.white,new Color(0, 102,204));
 
         sizeComposant(new Dimension(Integer.MAX_VALUE, 75), staff);
         setColor(configWindow,Color.white,new Color(0, 102,204));
