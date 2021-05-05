@@ -46,9 +46,10 @@ public class Choice{
         Ihm.buttonVoid.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                episen.si.ing1.pds.client.Menu Menu = new Menu("Smart Lobby", ChoiceCriteria.input.get("company_id"));
-                ChoiceCriteria.input.clear();
+                pageBody.remove(view);
                 frame.dispose();
+                ChoiceCriteria.input.clear();
+                episen.si.ing1.pds.client.Menu Menu = new Menu("Smart Lobby", ChoiceCriteria.input.get("company_id"));
             }
         });
         view.add(Ihm.buttonVoid);

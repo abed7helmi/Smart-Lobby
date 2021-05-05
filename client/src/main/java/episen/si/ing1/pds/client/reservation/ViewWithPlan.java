@@ -9,6 +9,7 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
 import java.util.List;
 
 public class ViewWithPlan {
@@ -27,7 +28,7 @@ public class ViewWithPlan {
     private JPanel advancement = new JPanel();
     private JTextField orderSelected = new JTextField();
     private JFrame frame;
-    private static JButton confirm = new JButton("Continuer");
+    private JButton confirm = new JButton("Continuer");
     public static boolean verifConfiguration = false;
 
     public ViewWithPlan(JFrame frame, String o) {
@@ -124,19 +125,19 @@ public class ViewWithPlan {
         room.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                changePage(room, room_id);
+                changePage(room, room_id, confirm);
             }
         });
         listButton.put(room, "unvalidated");
         configButton.add(room);
     }
-    public void changePage(JButton room, String room_id){
+    public void changePage(JButton room, String room_id, JButton confirm){
         ChoiceDevice device = new ChoiceDevice(frame, room_id);
-        device.choice(room);
+        device.choice(room,confirm);
     }
-    public static void reload(){
+    public static void reload(JButton c){
         if(verifConfiguration){
-            confirm.setEnabled(true);
+            c.setEnabled(true);
         }
     }
 }

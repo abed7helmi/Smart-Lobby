@@ -66,7 +66,6 @@ public class Bill {
                 } else{
                     Ihm ihm = new Ihm("Smart Lobby","realize", ChoiceCriteria.input.get("company_id"));
                     ChoiceCriteria.restartData();
-                    frame.dispose();
                     JOptionPane.showMessageDialog(null,"Nous sommes desoles mais l'offre n'est plus disponible. Veuillez reessayer.");
                 }
             }
@@ -79,8 +78,13 @@ public class Bill {
             @Override
             public void actionPerformed(ActionEvent e) {
                 ChoiceCriteria.restartData();
+                pageBody.remove(viewBill);
+                frame.removeAll();
                 frame.dispose();
-                episen.si.ing1.pds.client.Menu Menu = new Menu("Smart Lobby", ChoiceCriteria.input.get("company_id"));
+                ChoiceCriteria reservation = new ChoiceCriteria(frame, ChoiceCriteria.input.get("company_id"));
+                pageBody = reservation.realizeReservation();
+                frame.revalidate();
+                pageBody.revalidate();
             }
         });
         viewBill.add(cancel);

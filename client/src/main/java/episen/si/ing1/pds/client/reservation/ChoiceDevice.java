@@ -40,6 +40,7 @@ public class ChoiceDevice extends JFrame{
     private final List keyConfigSensor  = new ArrayList();
     private final List keyConfigEquipment  = new ArrayList();
     private final List deviceIdInRoom = new ArrayList();
+    private JButton confirm = new JButton();
 
     public ChoiceDevice(JFrame f, String id) {
         mainFrame = f;
@@ -67,8 +68,9 @@ public class ChoiceDevice extends JFrame{
         setResizable(false);
     }
 
-    public void choice(JButton room){
+    public void choice(JButton room, JButton c){
         roomName = room.getText();
+        confirm = c;
 
         JPanel pageBody = new JPanel();
         pageBody.setLayout(new BorderLayout());
@@ -93,7 +95,7 @@ public class ChoiceDevice extends JFrame{
                 for(Map.Entry m : ViewWithPlan.listButton.entrySet()){
                     if( m.getKey().equals("unvalited") ) ViewWithPlan.verifConfiguration = false;
                 }
-                ViewWithPlan.reload();
+                ViewWithPlan.reload(confirm);
                 frameDevice.dispose();
             }
         });
