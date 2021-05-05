@@ -1,6 +1,6 @@
 package episen.si.ing1.pds.client;
 
-import episen.si.ing1.pds.reservation.ChoiceCriteria;
+import episen.si.ing1.pds.client.reservation.ChoiceCriteria;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
