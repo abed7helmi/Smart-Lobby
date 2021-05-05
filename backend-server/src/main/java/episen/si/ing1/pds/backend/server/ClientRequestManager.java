@@ -557,14 +557,11 @@ public class ClientRequestManager {
 						String[] listDeviceId = deviceId.split(",");
 						if( listDeviceId.length != 1 ){
 							String whereRequestUpdateDevice =" where";
-							System.out.println(listDeviceId.length);
 							for(int y = 0; y < listDeviceId.length; y++){
-								System.out.println(listDeviceId[y]);
 								verifyDeviceId.add(listDeviceId[y]);
 								whereRequestUpdateDevice = whereRequestUpdateDevice + " device_id = " + listDeviceId[y]+ " or ";
 							}
 							verifyDevice = new StringBuffer(whereRequestUpdateDevice);
-							System.out.println(verifyDevice+"/////////////////////////");
 							if(whereRequestUpdateDevice.contains("or")){
 								verifyDevice.delete(verifyDevice.length() - 4, verifyDevice.length());
 								verifyDevice.append(";");
@@ -581,9 +578,6 @@ public class ClientRequestManager {
 			verifyRoom.delete(verifyRoom.length() - 4, verifyRoom.length());
 			verifyRoom.append(";");
 
-			System.out.println("/////////////");
-			System.out.println(verifyRoom);
-
 			ResultSet resultRoom = c.createStatement().executeQuery(verifyRoom+"");
 
 			boolean verifyDataDB = true;
@@ -596,7 +590,6 @@ public class ClientRequestManager {
 			}
 
 			if(verifyRequestUpdateDevice.contains("or")){
-				System.out.println("test");
 				StringBuffer verifyRoomUpdateDevice = new StringBuffer(verifyRequestUpdateDevice);
 				verifyRoomUpdateDevice.delete(verifyRoomUpdateDevice.length() - 4, verifyRoomUpdateDevice.length());
 				verifyRoomUpdateDevice.append(";");
@@ -617,8 +610,6 @@ public class ClientRequestManager {
 						"    reservation_id = (select max(reservation_id) from reservation)  "+ correctWhere;
 
 				String requestOrder = requestInsert + requestUpdateRoom + requestUpdateDevice;
-				System.out.println("/////////////");
-				System.out.println(requestOrder);
 				output.println("Successfully updated "+ c.createStatement().executeUpdate(requestOrder));
 			} else output.println("Not done");
 		}catch (Exception e) {
