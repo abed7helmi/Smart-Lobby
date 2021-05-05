@@ -44,6 +44,12 @@ public class ViewWithPlan {
         pageBody.add(view, BorderLayout.SOUTH);
         pageBody.repaint();
         frame.repaint();
+
+        System.out.println("////////");
+        System.out.println(ChoiceCriteria.input);
+        System.out.println("////////");
+        System.out.println(Choice.proposalSelected);
+
     }
     public JPanel view(){
         view = new JPanel();
