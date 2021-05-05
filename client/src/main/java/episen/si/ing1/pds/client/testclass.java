@@ -1,5 +1,6 @@
 package episen.si.ing1.pds.client;
 
+import java.sql.ResultSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -26,3 +27,7 @@ public class testclass {
     }
 
 }
+
+
+
+

@@ -13,11 +13,16 @@ public class AllBadge {
     private JFrame frame;
     private JPanel view;
     private String idcompany;
+    private String allemployees;
+    private String[] employeesArray;
+    private List<String> listEmployee = new ArrayList<>();
 
 
-    public AllBadge(JFrame f,String id){
+
+    public AllBadge(JFrame f,String id,String allemployees){
         this.idcompany=id;
         this.frame = f;
+        this.allemployees=allemployees;
 
     }
 
@@ -74,26 +79,47 @@ public class AllBadge {
         /*JButton confirm = new JButton("Confirmer");
 
         JButton cancel = new JButton("Annuler");*/
+        String[] employeevalue = allemployees.split("#");
+
+        for(int i = 0; i< employeevalue.length; i++){
+            listEmployee.add(employeevalue[i]);
+        }
+
+        employeesArray = new String[listEmployee.size()];
+        employeesArray = listEmployee.toArray(employeesArray);
+
+        for (int i = 0; i < employeesArray.length; i++) {
+            System.out.println(employeesArray[i]);
+        }
 
 
 
 
 
+        Object[][] donnees= new Object[employeesArray.length][6];
 
 
-        Object[][] data=
-                {
-                        {"id1","mohammed","gestion fenetres","21","id1","id1"},
-                        {"id2","salah","gestion fenetres","3","id2","id2"},
-                        {"id3","hamza","gestion fenetres","7","id3","id3"},
-                        {"id4","cedric","gestion fenetres","10","id4","id4"},
+        for (int i = 0; i < employeesArray.length; i++) {
+            for (int j = 0; j < 6; j++) {
 
-                };
-
+                donnees[i][j] = employeesArray[i].split(",")[j];
+            }
+        }
 
         String columnHeaders[]={"Id employé","Nom","libellé droit","date validité","Detail","Suppression"};
 
-        JTable tableau = new JTable(data, columnHeaders);
+        JTable tableau = new JTable(donnees, columnHeaders);
+
+        JScrollPane tableScrollPane = new JScrollPane(tableau);
+
+        panneau2.add(tableScrollPane);
+
+
+        tableau.setGridColor(Color.BLUE);
+
+
+        tableScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        tableScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
         tableau.getColumnModel().getColumn(4).setCellRenderer(new ButtonRenderer());
 
@@ -116,6 +142,8 @@ public class AllBadge {
 
         panneau2.add(tableau.getTableHeader(), BorderLayout.NORTH);
         panneau2.add(tableau, BorderLayout.CENTER);
+
+
 
 
 

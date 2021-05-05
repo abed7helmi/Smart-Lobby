@@ -55,6 +55,7 @@ public class ClientRequestManager {
 					if(requestType.equals("requestadddevice")) adddevicepermission((values));
 					if(requestType.equals("requestallbadges")) getallemployees((values));
 					if(requestType.equals("requestManyNewBadge")) saveallemployees((values));
+					if(requestType.equals("getbadges")) getallbadges((values));
 
 
 
@@ -299,6 +300,44 @@ public class ClientRequestManager {
 	}
 
 
+	public void getallbadges(String values){
+		logger.debug("getallbadges test");
+		try {
+			ObjectMapper mapper = new ObjectMapper(new JsonFactory());
+			Map<String, Map<String, String>> map = mapper.readValue(values,
+					new TypeReference<Map<String, Map<String, String>>>() {
+					});
+
+			int company = Integer.parseInt(map.get("getbadges").get("company_id"));
+			logger.debug("getallbfds" +company);
+			ResultSet result = c.createStatement().executeQuery("select distinct (employee.employee_id),employee.employee_last_name,permission_badge.name_permission,permission_access.permission_validity_period from employee inner join badge on badge.employee_id=employee.employee_id inner join permission_access on permission_access.badge_id=badge.badge_id inner join permission_badge on permission_badge.permission_id=permission_access.permission_id inner join permission_device on permission_device.permission_id=permission_badge.permission_id where (employee.company_id='"+ company + "'  );");
+
+
+
+
+
+			logger.debug("bravo test");
+
+			StringBuilder sb = new StringBuilder();
+			while (result.next()) {
+
+				sb.append(result.getInt(1) +","+ result.getString(2) +","+  result.getString(3)  +","+ result.getDate(4)  +","+   result.getString(1) +","+  result.getString(1) +"#");
+			}
+
+			output.println(sb.toString());
+
+
+
+		}catch (Exception e){
+			output.println("notgood");
+			e.printStackTrace();
+		}
+
+	}
+
+
+
+
 
 
 	public void adddevicepermission(String values){
@@ -513,8 +552,8 @@ public class ClientRequestManager {
 
 
 
-			ResultSet result = c.createStatement().executeQuery("select employee.employee_id from employee inner join badge on badge.employee_id=employee.employee_id inner join permission_access on\n" +
-					"permission_access.badge_id=badge.badge_id inner join permission_badge on permission_badge.permission_id=permission_access.permission_id inner join\n" +
+			ResultSet result = c.createStatement().executeQuery("select employee.employee_id from employee inner join badge on badge.employee_id=employee.employee_id inner join permission_access on" +
+					"permission_access.badge_id=badge.badge_id inner join permission_badge on permission_badge.permission_id=permission_access.permission_id inner join" +
 					"permission_device on permission_device.permission_id=permission_badge.permission_id where (employee_last_name='"+ name1  +"' and employee_first_name='"+name2+  "' and device_id='"+device_id+ "'                 );");
 
 			System.out.println("bravo");

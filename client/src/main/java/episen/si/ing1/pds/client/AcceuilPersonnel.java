@@ -65,7 +65,7 @@ public class AcceuilPersonnel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Client.map.get("getdevices").put("company_id", id_company);
-                String request = "getdevices";
+
 
                 String result = Client.sendBd("getdevices");
                 //String company = result.split(",")[0];
@@ -83,10 +83,16 @@ public class AcceuilPersonnel {
             @Override
             public void actionPerformed(ActionEvent e) {
 
+                String request = "getbadges";
+
+                Client.map.get(request).put("company_id", id_company);
+
+                String result = Client.sendBd("getbadges");
+
                 choice.setVisible(false);
 
                 pageBody.repaint();
-                changePageAll(id_company);
+                changePageAll(id_company,result);
             }
         });
 
@@ -122,8 +128,8 @@ public class AcceuilPersonnel {
         Badge.choice(pageBody);
     }
 
-    public void changePageAll(String id){
-        AllBadge AllBadges = new AllBadge(frame,id);
+    public void changePageAll(String id,String allemployes){
+        AllBadge AllBadges = new AllBadge(frame,id,allemployes);
         AllBadges.badgesvue(pageBody);
     }
 
