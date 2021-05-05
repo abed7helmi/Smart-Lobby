@@ -1,26 +1,3 @@
-/*package episen.si.ing1.pds.client;
-
-import javax.swing.*;
-import java.net.Socket;
-
-
-public class Ihm extends JFrame {
-    private String company_id ="";
-
-    public Ihm(String name, String page, String id) {
-        System.out.println(page);
-        company_id = id;
-
-        AcceuilPersonnel personnel = new AcceuilPersonnel(this);
-        personnel.acceuil(id);
-
-
-        setVisible(true);
-        setLocationRelativeTo(null);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    }
-}*/
-
 package episen.si.ing1.pds.client;
 
 import javax.swing.*;
@@ -32,10 +9,13 @@ import java.awt.event.ActionListener;
 public class Ihm extends JFrame{
     private JFrame frame = new JFrame();
     private JPanel pageBody = new JPanel();
+    public static JButton buttonVoid = new JButton("Annuler");
+    public  static JButton buttonContinue = new JButton("> Continuer");
     private JPanel pageBody1 ;
     private JPanel pageBody2 ;
     private JPanel pageBody3 ;
     private JPanel pageBody4 ;
+    private JPanel pageBody7 ;
     private String company_id ="";
 
     public Ihm(String name, String page, String id) {
@@ -43,34 +23,46 @@ public class Ihm extends JFrame{
         frame = this;
         CardLayout pages = new CardLayout();
 
-        System.out.println(page);
-
         pageBody.setLayout(pages);
-        //ChoiceCriteria reservation = new ChoiceCriteria(frame, company_id);
-        //pageBody1 = reservation.realizeReservation();
+        ChoiceCriteria reservation = new ChoiceCriteria(frame, company_id);
+        pageBody1 = reservation.realizeReservation();
 
-        /*Mapping m = new Mapping();
-        pageBody2 = m.mappingPanel();*/
+        Mapping m = new Mapping();
+        pageBody2 = m.getPanel();
 
-        AcceuilPersonnel personnel = new AcceuilPersonnel(this,company_id);
-        pageBody1=personnel.acceuil();
+        AcceuilPersonnel personnel = new AcceuilPersonnel(frame,company_id);
+        pageBody7=personnel.acceuil();
+
+        Indicators indicator = new Indicators();
+        pageBody3 = indicator.getIndicator();
 
         if(page.equals("realize")){
             pageBody.add(pageBody1,"realize");
             pageBody.add(pageBody2,"consult");
-            //pageBody.add(pageBody3,"staff");
-            //pageBody.add(pageBody1,"page1");
+            pageBody.add(pageBody3,"indicator");
+            pageBody.add(pageBody7,"staff");
         } else if(page.equals("consult")){
             pageBody.add(pageBody2,"consult");
             pageBody.add(pageBody1,"realize");
-            //pageBody.add(pageBody3,"staff");
-            //pageBody.add(pageBody1,"page1");
-        }else if(page.equals("staff")){
-            //pageBody.add(pageBody2,"consult");
-            pageBody.add(pageBody1,"staff");
-            //pageBody.add(pageBody3,"staff");
-            //pageBody.add(pageBody1,"page1");
+            pageBody.add(pageBody3,"indicator");
+            pageBody.add(pageBody7,"staff");
         }
+        else if(page.equals("indicator")){
+            pageBody.add(pageBody3,"indicator");
+            pageBody.add(pageBody2,"consult");
+            pageBody.add(pageBody1,"realize");
+            pageBody.add(pageBody7,"staff");
+        }else if(page.equals("staff")){
+            pageBody.add(pageBody7,"staff");
+            pageBody.add(pageBody3,"indicator");
+            pageBody.add(pageBody2,"consult");
+            pageBody.add(pageBody1,"realize");
+
+
+        }
+
+        buttonVoid = navJButton(buttonVoid,670,10,100,50);
+        buttonContinue = navJButton(buttonContinue, 780,10,100,50);
 
 
         frame.add(pageBody, BorderLayout.CENTER);
@@ -111,12 +103,18 @@ public class Ihm extends JFrame{
         setColor(staff,Color.white,new Color(0, 102,204));
 
         JButton configWindow = new JButton("Configurer fenêtre");
-        staff.addActionListener(new ActionListener() {
+
+        JButton indicatorButton = new JButton("Indicateurs et locations");
+        setColor(indicatorButton,Color.white,new Color(0, 102,204));
+        indicatorButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                pages.show(pageBody,"window");
+                pages.show(pageBody,"indicator");
             }
         });
+        sizeComposant(new Dimension(Integer.MAX_VALUE, 75), indicatorButton);
+        setColor(consult,Color.white,new Color(0, 102,204));
+
         sizeComposant(new Dimension(Integer.MAX_VALUE, 75), staff);
         setColor(configWindow,Color.white,new Color(0, 102,204));
 
@@ -138,7 +136,10 @@ public class Ihm extends JFrame{
         JButton home = new JButton(iconHome);
         home.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {}
+            public void actionPerformed(ActionEvent e) {
+                Menu Menu = new Menu("Smart Lobby", company_id);
+                frame.dispose();
+            }
         });
         setColor(home,Color.white,new Color(0, 102,204));
 
@@ -157,6 +158,7 @@ public class Ihm extends JFrame{
         menu.add(realize);
         menu.add(consult);
         menu.add(staff);
+        menu.add(indicatorButton);
         menu.add(Box.createGlue());
         menu.add(underMenu);
 
@@ -171,16 +173,28 @@ public class Ihm extends JFrame{
         frame.setResizable(false);
     }
 
-    public void sizeComposant(Dimension dim, Component c){
-        c.setPreferredSize(dim);
-        c.setMaximumSize(dim);
-        c.setMinimumSize(dim);
-    }
     public void setColor(JButton button,Color font, Color back){
         button.setForeground(font);
         button.setBackground(back);
     }
+
+    public static JButton navJButton(JButton button, int x,int y,int w,int h){
+        button.setBounds(x, y, w, h);
+        button.setBackground(new Color(255,255,255));
+        button.setForeground(Color.black);
+        button.setBorder(BorderFactory.createLineBorder(Color.black));
+        return button;
+    }
+    public static void sizeComposant(Dimension dim, Component c){
+        c.setPreferredSize(dim);
+        c.setMaximumSize(dim);
+        c.setMinimumSize(dim);
+    }
+    public static JTextField styleJTextFieldReservation(JTextField t, int x, int y, int w, int h, Color c1, Color c2) {
+        t.setEditable(false);
+        t.setBackground(c1);
+        t.setBorder(BorderFactory.createLineBorder(c2));
+        t.setBounds(x, y, w, h);
+        return t;
+    }
 }
-
-
-

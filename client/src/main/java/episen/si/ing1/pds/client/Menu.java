@@ -7,7 +7,7 @@ import java.awt.event.ActionListener;
 
 public class Menu extends JFrame{
     private JFrame frame;
-    private String company_id = "";
+    public static String company_id = "";
 
     public Menu(String name, String id){
         company_id = id;
@@ -29,6 +29,10 @@ public class Menu extends JFrame{
 
         JButton staff = new JButton("Personnel");
         menuJButton(staff,150,260,200,50, "staff");
+
+        JButton indicator = new JButton("Indicateurs - locations");
+        menuJButton(indicator,150,310,200,50, "indicator");
+
         setVisible(true);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -43,5 +47,10 @@ public class Menu extends JFrame{
             }
         });
         frame.add(button);
+    }
+
+    public void reservationDone(int numberRoom){
+        JOptionPane.showMessageDialog(null,"Vous venez de reserver : " + numberRoom +
+                " salles. Nous vous souhaitons un agreable sejour chez nous.");
     }
 }

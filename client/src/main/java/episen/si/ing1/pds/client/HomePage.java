@@ -20,7 +20,7 @@ public class HomePage extends JFrame {
         title.setBackground(Color.CYAN);
         title.add(l1);
 
-        JLabel l2 = new JLabel("Deja inscrite : ");
+        JLabel l2 = new JLabel("Saisir le nom : ");
         JTextField companyName = new JTextField(10);
         companyName.setBounds(150, 150,  200, 50);
         l2.setBounds(50, 165, 100, 20);
@@ -39,15 +39,11 @@ public class HomePage extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String m = (companyName.getText()).trim();
-                System.out.println(Client.map.get("homePage1"));
-                System.out.println("bravo");
-
                 Client.map.get("homePage1").put("company_name", m);
                 String result = Client.sendBd("homePage1");
                 String company = result.split(",")[0];
                 if ( !(company.equals("false")) ) {
                     String company_id = result.split(",")[1];
-
                     Menu Menu = new Menu("Smart Lobby", company_id);
                     frame.dispose();
                 } else
