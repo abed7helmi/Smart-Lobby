@@ -1,4 +1,7 @@
-package episen.si.ing1.pds.client;
+package episen.si.ing1.pds.client.reservation;
+
+import episen.si.ing1.pds.client.Client;
+import episen.si.ing1.pds.client.Menu;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -37,7 +40,7 @@ public class Bill {
         frame.repaint();
 
         viewBill.setBackground(Color.WHITE);
-        sizeComposant(new Dimension(950,600), viewBill);
+        Ihm.sizeComposant(new Dimension(950,600), viewBill);
         viewBill.setLayout(null);
 
         JTextField title = new JTextField();
@@ -57,7 +60,7 @@ public class Bill {
                 response = prepareRequest();
                 if(  !(response.equals("Not done") && !(response.equals("")))  ){
                     frame.dispose();
-                    Menu menu = new Menu("Smart Lobby", ChoiceCriteria.input.get("company_id"));
+                    episen.si.ing1.pds.client.Menu menu = new episen.si.ing1.pds.client.Menu("Smart Lobby", ChoiceCriteria.input.get("company_id"));
                     ChoiceCriteria.restartData();
                     menu.reservationDone(numberRoom);
                 } else{
@@ -77,7 +80,7 @@ public class Bill {
             public void actionPerformed(ActionEvent e) {
                 ChoiceCriteria.restartData();
                 frame.dispose();
-                Menu Menu = new Menu("Smart Lobby", ChoiceCriteria.input.get("company_id"));
+                episen.si.ing1.pds.client.Menu Menu = new Menu("Smart Lobby", ChoiceCriteria.input.get("company_id"));
             }
         });
         viewBill.add(cancel);
@@ -125,11 +128,6 @@ public class Bill {
         viewBill.add(validate);
         viewBill.repaint();
         return viewBill;
-    }
-    public void sizeComposant(Dimension dim, Component c){
-        c.setPreferredSize(dim);
-        c.setMaximumSize(dim);
-        c.setMinimumSize(dim);
     }
 
     public String[][] fillTable(){

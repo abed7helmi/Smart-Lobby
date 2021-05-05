@@ -1,9 +1,7 @@
-package episen.si.ing1.pds.client;
+package episen.si.ing1.pds.client.reservation;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.io.File;
 
 public class RentalAdvancement {
     private JPanel rentalAdvancement = new JPanel();

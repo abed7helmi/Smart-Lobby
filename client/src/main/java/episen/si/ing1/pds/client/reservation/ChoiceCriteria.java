@@ -1,4 +1,6 @@
-package episen.si.ing1.pds.client;
+package episen.si.ing1.pds.client.reservation;
+
+import episen.si.ing1.pds.client.Client;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -12,7 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ChoiceCriteria{
-    protected static Map<String, String> input = new HashMap<>();
+    public static Map<String, String> input = new HashMap<>();
     private final String page = "criteria";
     private final JButton buttonContinue = new JButton("> Continuer");
     private final JFrame frame;

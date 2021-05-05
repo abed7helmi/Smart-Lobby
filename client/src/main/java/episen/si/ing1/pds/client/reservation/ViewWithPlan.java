@@ -1,11 +1,9 @@
-package episen.si.ing1.pds.client;
+package episen.si.ing1.pds.client.reservation;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -20,14 +18,15 @@ public class ViewWithPlan {
     private final JPanel configButton = new JPanel();
     private JTextField consign = new JTextField("**Veuillez configurer les salles qui sont rouges. " +
             "Les salles vertes sont configurees.");
-    protected static Map<JButton, String> listButton = new HashMap<>();
-    protected static Map<String,Map<String, String>> configRoom = new HashMap<>();
-    protected static List listDeviceId = new ArrayList();
-    protected static Map<String, String> listDeviceIdRoom = new HashMap<>();
+    public static Map<JButton, String> listButton = new HashMap<>();
+    public static Map<String,Map<String, String>> configRoom = new HashMap<>();
+    public static List listDeviceId = new ArrayList();
+    public static Map<String, String> listDeviceIdRoom = new HashMap<>();
     private JPanel advancement = new JPanel();
     private JTextField orderSelected = new JTextField();
     private JFrame frame;
-    private JButton confirm = new JButton("Continuer");
+    private static JButton confirm = new JButton("Continuer");
+    public static boolean verifConfiguration = false;
 
     public ViewWithPlan(JFrame frame, String o) {
         this.frame = frame;
@@ -59,7 +58,7 @@ public class ViewWithPlan {
 
         confirm = Ihm.navJButton(confirm, 780,10,100,50);
         view.add(confirm);
-        confirm.setEnabled(true);
+        confirm.setEnabled(false);
         confirm.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -77,7 +76,7 @@ public class ViewWithPlan {
         view.add(orderSelected);
 
         JPanel planPanel = new JPanel();
-        planPanel.setBounds(10,100,500,400);
+        planPanel.setBounds(10,100,500,420);
         ImageIcon planImage = new ImageIcon(Ihm.path+"plan.png");
         planImage = new ImageIcon(planImage.getImage().getScaledInstance(planPanel.getWidth(), planPanel.getHeight(), Image.SCALE_DEFAULT));
         JLabel planLabel = new JLabel(planImage, JLabel.CENTER);
@@ -138,5 +137,10 @@ public class ViewWithPlan {
     public void changePage(JButton room, String room_id){
         ChoiceDevice device = new ChoiceDevice(frame, room_id);
         device.choice(room);
+    }
+    public static void reload(){
+        if(verifConfiguration){
+            confirm.setEnabled(true);
+        }
     }
 }

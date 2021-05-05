@@ -1,4 +1,4 @@
-package episen.si.ing1.pds.client;
+package episen.si.ing1.pds.client.reservation;
 
 import java.awt.Color;
 import java.awt.Component;
