@@ -46,6 +46,7 @@ public class Bill {
         title.setFont(new Font("Serif", Font.BOLD, 18));
         title.setVisible(true);
         title.setText("Recapitualtif de votre commande : " + ChoiceCriteria.input.get("start_date") + " / "+ ChoiceCriteria.input.get("end_date"));
+        viewBill.add(title);
 
         JButton validate = new JButton("Confirmer");
         validate.setBounds(780, 10, 100, 50);
