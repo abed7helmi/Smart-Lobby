@@ -2,6 +2,8 @@ package episen.si.ing1.pds.client;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.GridLayout;
@@ -15,6 +17,8 @@ import java.io.IOException;
 import java.util.Map;
 
 import javax.imageio.ImageIO;
+import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -43,7 +47,6 @@ public class Mapping {
 	private String reservation_id = "";
 	private String room_id = "";
 	private String imgPath = "";
-	private String path = System.getenv("PDSIMG");
 	private JPanel selection1 = new JPanel();
 	private JPanel selection2 = new JPanel();
 	private JPanel selection3 = new JPanel();
@@ -61,8 +64,11 @@ public class Mapping {
 		p1.add(locationSelection);
 		p1.add(equipmentSelection);
 		p2.setLayout(new GridLayout(1,1));
-		p2.add(locationPlan);
-
+		JPanel p = new JPanel();
+		p.setLayout(new GridLayout(1,1));
+		p2.add(p);
+		p.add(locationPlan);
+		locationPlan.setBorder(BorderFactory.createEmptyBorder(0,220,0,0));
 		locationPlan.setLayout(new BorderLayout());
 		locationPlan.setBackground(Color.WHITE);
 		
@@ -83,7 +89,7 @@ public class Mapping {
 		selection1.setBackground(Color.WHITE);
 		selection2.setBackground(Color.WHITE);
 		selection3.setBackground(Color.WHITE);
-		JLabel title = new JLabel("Sélectionnez une location à configurer:");
+		JLabel title = new JLabel("SÃ©lectionnez une location Ã  configurer:");
 		title.setFont(titlefont);
 		selection1.add(title);
 		
@@ -93,7 +99,7 @@ public class Mapping {
 		Map<String, Map<String, String>> reservations = mapper.readValue(Client.sendBd("companyReservation"),new TypeReference<Map<String, Map<String, String>>>(){});
 		String[] reservationList = new String[reservations.size()];
 		for(int i=0;i<reservationList.length;i++) {
-			reservationList[i]="N°"+reservations.get(""+i).get("reservation_id")+" du "+reservations.get(""+i).get("start_date");
+			reservationList[i]="NÂ°"+reservations.get(""+i).get("reservation_id")+" du "+reservations.get(""+i).get("start_date");
 		}
 		JComboBox<String> cb = new JComboBox<String>(reservationList);
 		cb.setSize(100,10);
@@ -116,7 +122,7 @@ public class Mapping {
 
 	public void floorSelection(String reservation_id) {
 		try {
-		JLabel title = new JLabel("Sélectionnez le bâtiment et l'étage à configurer:");
+		JLabel title = new JLabel("SÃ©lectionnez le bÃ¢timent et l'Ã©tage Ã  configurer:");
 		title.setFont(titlefont);
 		selection2.add(title);
 		
@@ -125,7 +131,7 @@ public class Mapping {
 		Map<String, Map<String, String>> floors = mapper.readValue(Client.sendBd("reservationFloor"),new TypeReference<Map<String, Map<String, String>>>(){});
 		String[] floorList = new String[floors.size()];
 		for(int i=0;i<floorList.length;i++) {
-			floorList[i]="Bâtiment "+floors.get(""+i).get("building_name")+" étage "+floors.get(""+i).get("floor_number");
+			floorList[i]="BÃ¢timent "+floors.get(""+i).get("building_name")+" Ã©tage "+floors.get(""+i).get("floor_number");
 		}
 		JComboBox<String> cb = new JComboBox<String>(floorList);
 		cb.setSize(100,10);
@@ -146,7 +152,7 @@ public class Mapping {
 	
 	public void roomSelection(String floor_id,String reservation_id) {
 		try {
-			JLabel title = new JLabel("Sélectionnez la salle à configurer:");
+			JLabel title = new JLabel("SÃ©lectionnez la salle Ã  configurer:");
 			title.setFont(titlefont);
 			selection3.add(title);
 			
@@ -165,13 +171,13 @@ public class Mapping {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					switch(rooms.get(cb.getSelectedIndex()+"").get("room_type_id")) {
-					case "1":imgPath = path+"plan1.png";
+					case "1":imgPath = Ihm.path+"plan1.png";
 						break;
-					case "2":imgPath = path+"plan2.png";
+					case "2":imgPath = Ihm.path+"plan2.png";
 						break;
-					case "3":imgPath = path+"plan3.png";
+					case "3":imgPath = Ihm.path+"plan3.png";
 						break;
-					case "4":imgPath = path+"plan4.png";
+					case "4":imgPath = Ihm.path+"plan4.png";
 						break;
 					}
 					room_id=rooms.get(cb.getSelectedIndex()+"").get("room_id");
@@ -186,11 +192,12 @@ public class Mapping {
 	public void roomPlan(String room_id,String imgPath) {
 		try {
 			locationPlan.removeAll();
-			locationPlan.setLayout(new BorderLayout());
+		
 			
-			JLabel title = new JLabel("Sélectionnez un emplacement à configurer:");
+			JLabel title = new JLabel("SÃ©lectionnez un emplacement Ã  configurer:");
 			title.setFont(titlefont);
-			locationPlan.add(title, BorderLayout.NORTH);
+			title.setBorder(BorderFactory.createEmptyBorder(0,50,0,0));
+			locationPlan.add(title,BorderLayout.NORTH);
 			
 			JPanel plan = new JPanel() {
 				Image img = ImageIO.read(new File(imgPath));
@@ -201,11 +208,10 @@ public class Mapping {
 				}
 			};
 			plan.setLayout(null);
-			
-			Icon greenPin = new ImageIcon(ImageIO.read(new File(path+"greenpin.png")));
-			Icon redPin = new ImageIcon(ImageIO.read(new File(path+"redpin.png")));
-			Icon greenSensor = new ImageIcon(ImageIO.read(new File(path+"greensensor.png")));
-			Icon redSensor = new ImageIcon(ImageIO.read(new File(path+"redsensor.png")));
+			Icon greenPin = new ImageIcon(ImageIO.read(new File(Ihm.path+"greenpin.png")));
+			Icon redPin = new ImageIcon(ImageIO.read(new File(Ihm.path+"redpin.png")));
+			Icon greenSensor = new ImageIcon(ImageIO.read(new File(Ihm.path+"greensensor.png")));
+			Icon redSensor = new ImageIcon(ImageIO.read(new File(Ihm.path+"redsensor.png")));
 			
 			Client.map.get("roomLocation").put("room_id", room_id);
 			ObjectMapper mapper = new ObjectMapper(new JsonFactory());
@@ -244,6 +250,9 @@ public class Mapping {
 				plan.add(pin);
 				pin.setBounds(Integer.valueOf(m.get("x_position")),Integer.valueOf(m.get("y_position")), 60, 30);
 			}
+
+			
+
 			locationPlan.add(plan,BorderLayout.CENTER);
 			locationPlan.revalidate();
 			
@@ -268,13 +277,13 @@ public class Mapping {
 			
 			selection4.add(info);
 			if(equipmentPlaced.size()>0) {
-				info.setText("L'emplacement N°"+location_id+" est actuellement occupé par:");
+				info.setText("L'emplacement NÂ°"+location_id+" est actuellement occupÃ© par:");
 				JTextArea txt = new JTextArea("Id:"+equipmentPlaced.get("device_id")+" Nom:"+equipmentPlaced.get("device_wording")+" Actif:"+equipmentPlaced.get("device_active")
 						+" Prix:"+equipmentPlaced.get("device_price"));
 			
 				selection4.add(txt);
 				Client.map.get("setEquipment").put("old_device_id", equipmentPlaced.get("device_id"));
-				JButton empty = new JButton("Libérer l'emplacement");
+				JButton empty = new JButton("LibÃ©rer l'emplacement");
 				empty.addActionListener(new ActionListener() {
 					@Override
 					public void actionPerformed(ActionEvent e) {
@@ -286,16 +295,17 @@ public class Mapping {
 				selection6.add(empty);
 				selection6.revalidate();
 			}else {
-				info.setText("L'emplacement N°"+location_id+" est actuellement libre.");
+				info.setText("L'emplacement NÂ°"+location_id+" est actuellement libre.");
 				info.setFont(titlefont);
 			}
 			selection4.revalidate();
 			
-			JLabel deviceSelection = new JLabel("Sélectionnez un appareil à placer:");
+			JLabel deviceSelection = new JLabel("SÃ©lectionnez un appareil Ã  placer:");
 			deviceSelection.setFont(titlefont);
 			selection5.add(deviceSelection);
 		
 			Client.map.get("reservationEquipment").put("is_sensor", is_sensor);
+			Client.map.get("reservationEquipment").put("room_id", room_id);
 			Client.map.get("reservationEquipment").put("reservation_id", reservation_id);
 			Map<String, Map<String, String>> equipments = mapper.readValue(Client.sendBd("reservationEquipment"),new TypeReference<Map<String, Map<String, String>>>(){});
 			String[] equipmentList = new String[equipments.size()];
