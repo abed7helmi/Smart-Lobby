@@ -77,14 +77,9 @@ public class Bill {
         cancel.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                ChoiceCriteria.restartData();
-                pageBody.remove(viewBill);
-                frame.removeAll();
                 frame.dispose();
-                ChoiceCriteria reservation = new ChoiceCriteria(frame, ChoiceCriteria.input.get("company_id"));
-                pageBody = reservation.realizeReservation();
-                frame.revalidate();
-                pageBody.revalidate();
+                ChoiceCriteria.restartData();
+                episen.si.ing1.pds.client.Menu menu = new episen.si.ing1.pds.client.Menu("Smart Lobby", ChoiceCriteria.input.get("company_id"));
             }
         });
         viewBill.add(cancel);

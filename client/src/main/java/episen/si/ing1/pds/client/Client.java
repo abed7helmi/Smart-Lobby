@@ -29,7 +29,6 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 public class Client {
 
 	private final static Logger logger = LoggerFactory.getLogger(Client.class.getName());
-
 	private static final String episenClientJson = "CLIENT_JSON";
 	private static String episenClientFileLocation;
 	private static final String configClient = "CONFIG_CLIENT";

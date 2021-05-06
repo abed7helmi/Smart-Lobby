@@ -28,7 +28,7 @@ public class Indicators {
         Border blackline = BorderFactory.createTitledBorder("Indicateurs generaux");
         indicateurGeneral.setBorder(blackline);
 
-        Client.map = Map.of("test", Map.of("test", "tes"));
+        //Client.map = Map.of("test", Map.of("test", "tes"));
         String response = Client.sendBd("requestBuildList");
         System.out.println(response);
 
