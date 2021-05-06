@@ -386,7 +386,6 @@ public class ChoiceDevice extends JFrame{
             deviceIdInRoom.add(value[i]);
 
         }
-
         for(int i = 0; i < deviceIdInRoom.size(); i++){
             valuePrice = valuePrice + Float.parseFloat(price);
         }
@@ -398,17 +397,6 @@ public class ChoiceDevice extends JFrame{
             ChoiceCriteria.input.put("price", valuePrice+"");
         } else ChoiceCriteria.input.put("price", valuePrice+"");
         messageError.setText(" ");
-
-        System.out.println(";;;;");
-        System.out.println(ViewWithPlan.listDeviceId);
-        System.out.println(";;;;");
-        System.out.println(deviceIdInRoom);
-        System.out.println(";;;;");
-        System.out.println(config);
-        System.out.println(";;;;");
-        System.out.println(";;;;");
-        System.out.println(ChoiceCriteria.input);
-
     }
 }
 
