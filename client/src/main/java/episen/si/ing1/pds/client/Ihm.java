@@ -1,13 +1,12 @@
 package episen.si.ing1.pds.client;
 
-import episen.si.ing1.pds.client.Mapping.*;
+import episen.si.ing1.pds.client.Mapping.Mapping;
 import episen.si.ing1.pds.client.reservation.ChoiceCriteria;
-import javax.imageio.ImageIO;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 
 
 public class Ihm extends JFrame{
@@ -40,7 +39,7 @@ public class Ihm extends JFrame{
         AcceuilPersonnel personnel = new AcceuilPersonnel(frame,company_id);
         pageBody7=personnel.acceuil();
 
-        Window window=new Window();
+        Window window=new Window(pages,pageBody);
         pageBody4=window.firstMenu;
 
         Indicators indicator = new Indicators();
