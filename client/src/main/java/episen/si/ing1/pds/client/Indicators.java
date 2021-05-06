@@ -41,6 +41,7 @@ public class Indicators {
         String w = resData[4].split("-")[1];
         String fr = resData[5].split("-")[1];
         String bo = resData[6].split("-")[1];
+   //     String la = resData[7].split("-")[1];
 
         String[] cols = { "A", "B" };
         String[][] data = {
@@ -58,7 +59,7 @@ public class Indicators {
                 { "Consommation d’eau global", wc },
                 { "Consommation d’électricité globale ", ec },
                 { "Nombre de badges en fonction", bg },
-                { "Dernière location ajoutée", "2444" },
+           //     { "Dernière location ajoutée", la },
         };
         JTable table2 = new JTable(data2, cols);
         table2.setRowHeight(30);
