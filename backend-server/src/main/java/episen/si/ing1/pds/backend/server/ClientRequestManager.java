@@ -39,6 +39,8 @@ public class ClientRequestManager {
 			@Override
 			public void run() {
 				try {
+					resetData();
+
 					String clientInput = input.readLine();
 					String requestType = clientInput.split("#")[0];
 					String values = clientInput.split("#")[1];
@@ -683,6 +685,22 @@ public class ClientRequestManager {
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	public void resetData(){
+		try{
+			String request = "select reservation_id from reservation where end_date <= current_date";
+			ResultSet result = c.createStatement().executeQuery(request);
+
+			while(result.next()){
+				request = "update device set device_status = 'free', reservation_id = null, room_id = null\n" +
+						"  where reservation_id = "+  result.getString(1) + "; "+
+						"  update room set reservation_id = null, " +
+						"  status = 'free' where reservation_id =" +  result.getString(1) + "; " +
+						"  delete from reservation where reservation_id = " +  result.getString(1) + ";";
+				c.createStatement().executeUpdate(request);
+			}
+		}catch (Exception e){}
+
 	}
 
 
