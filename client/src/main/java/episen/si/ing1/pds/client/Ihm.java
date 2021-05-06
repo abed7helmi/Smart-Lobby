@@ -11,7 +11,7 @@ import java.awt.event.ActionListener;
 
 public class Ihm extends JFrame{
     private JFrame frame = new JFrame();
-    public static JPanel pageBody = new JPanel();
+   private JPanel pageBody = new JPanel();
     public  static JButton buttonVoid = new JButton("Annuler");
     public  static JButton buttonContinue = new JButton("> Continuer");
     private JPanel pageBody1 ;
@@ -21,7 +21,7 @@ public class Ihm extends JFrame{
     private JPanel pageBody7 ;
     private String company_id ="";
     public static String path = System.getenv("PDSIMG");
-    public static CardLayout pages;
+    private CardLayout pages;
 
     public Ihm(String name, String page, String id) {
         pages = new CardLayout();
