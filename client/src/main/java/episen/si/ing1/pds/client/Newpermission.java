@@ -6,14 +6,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-//Staff: Add permission to many employees interface
-public class BadgePermissions {
+public class Newpermission {
 
     private Map<String, String> input = new HashMap<>();
     private JFrame frame;
@@ -22,19 +20,17 @@ public class BadgePermissions {
     private String result;
     private JList<String> listchosen;
     private JList<String> list;
-    private List<String> listEmployees = new ArrayList<>();
-    private String[] employeesArray;
-    private List<String> listPermissions = new ArrayList<>();
-    private String[] permissionsArray;
-    private String allpermissions;
+    private List<String> listdevices = new ArrayList<>();
+    private String[] devicesArray;
+
+
 
     DefaultListModel<String> listModelchosen = new DefaultListModel<>();
 
-    public BadgePermissions(JFrame f,String result,String r) {
+    public Newpermission(JFrame f,String result) {
         input.clear();
         this.result=result;
         frame = f;
-        this.allpermissions=r;
         listModelchosen.clear();
     }
 
@@ -49,28 +45,30 @@ public class BadgePermissions {
 
         String[] value = result.split("#");
         for(int i = 0; i< value.length; i++){
-            listEmployees.add(value[i]);
+            listdevices.add(value[i]);
+
         }
 
-        employeesArray = new String[listEmployees.size()];
-        employeesArray = listEmployees.toArray(employeesArray);
+        devicesArray = new String[listdevices.size()];
+        devicesArray = listdevices.toArray(devicesArray);
 
-        for (int i = 0; i < employeesArray.length; i++) {
-            listModel.addElement(employeesArray[i]);
+        for (int i = 0; i < devicesArray.length; i++) {
+            listModel.addElement(devicesArray[i]);
         }
 
         list = new JList<>(listModel);
         listchosen=new JList<>(listModelchosen);
-
         view.setBackground(Color.white);
+
         JScrollPane EmployeList = new JScrollPane(list);
         JScrollPane EmployeListChosen = new JScrollPane(listchosen);
-        JTextField NomEmploye = new JTextField("Les Employes choisits:");
-        JTextField NomEmploye2 = new JTextField("Choisir un Employe");
+
+        JTextField NomEmploye = new JTextField("Les equipements choisits:");
+        JTextField NomEmploye2 = new JTextField("Choisir un equipement");
 
         JPanel panneau1 = new JPanel(new BorderLayout());
         panneau1.setBackground(Color.yellow);
-        panneau1.setPreferredSize(new Dimension(200, 200));
+        panneau1.setPreferredSize(new Dimension(200, 400));
 
         JPanel panneau3 = new JPanel(new BorderLayout());
         panneau3.setBackground(Color.white);
@@ -93,48 +91,19 @@ public class BadgePermissions {
         JTextField permissionEmploye = new JTextField("Selectionnez Droits :");
         permissionEmploye = styleJTextFieldBadge(permissionEmploye, 30, 100, 120, 20);
 
-        String[] permission = allpermissions.split("#");
-        for(int i = 0; i< permission.length; i++){
-            listPermissions.add(permission[i]);
-        }
-
-        permissionsArray = new String[listPermissions.size()];
-        permissionsArray = listPermissions.toArray(permissionsArray);
-
-
-        JComboBox myPermissions = new JComboBox(permissionsArray);
-        myPermissions.setEditable(true);
-        myPermissions.setBounds(150,100, 350, 20);
-
-        myPermissions.setEditable(false);
-        myPermissions.setForeground(Color.BLUE);
-        myPermissions.setFont(new Font("Arial", Font.BOLD, 9));
-        myPermissions.setMaximumRowCount(7);
 
         JButton showpermission = new JButton("Detail droits selectionné");
         JButton newpermission = new JButton("Nouveau Droits");
         showpermission.setVisible(false);
 
-        myPermissions.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent event) {
-                showpermission.setVisible(true);
-                JComboBox<String> combo = (JComboBox<String>) event.getSource();
-                String selectedPermission = (String) combo.getSelectedItem();
-                input.put("permission", selectedPermission);
-
-            }
-        });
-
         showpermission.setBounds(540, 100, 200, 30);
         newpermission.setBounds(760, 100, 150, 30);
 
-        JTextField validtytime = new JTextField("Durée validité :");
-        validtytime = styleJTextFieldBadge(validtytime, 300, 200, 150, 20);
+        JTextField PermissionName = new JTextField("Libelle droit:");
+        PermissionName = styleJTextFieldBadge(PermissionName, 300, 200, 80, 20);
 
-        JTextField datevalidity = new JTextField(" ");
-        datevalidity.setBounds(500, 200, 100, 20);
+        JTextField valuePermissionName = new JTextField(" ");
+        valuePermissionName.setBounds(500, 200, 250, 20);
 
         JButton confirm = new JButton("Confirmer");
         confirm.setEnabled(false);
@@ -147,34 +116,10 @@ public class BadgePermissions {
         panneau4.add(permissionEmploye);
         panneau4.add(cancel);
         panneau4.add(confirm);
-        panneau4.add(myPermissions);
         panneau4.add(showpermission);
         panneau4.add(newpermission);
-        panneau4.add(validtytime);
-        panneau4.add(datevalidity);
-
-        showpermission.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String request = "requestDetailBadge";
-                Client.map.get(request).put("permission", input.get("permission"));
-                Client.map.get(request).put("company_id",AcceuilPersonnel.id_company);
-                String result = Client.sendBd(request);
-                pageBody.repaint();
-                changePageDetail(AcceuilPersonnel.id_company,result,input.get("permission"));
-            }
-        });
-
-        newpermission.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-
-                Client.map.get("getdevices").put("company_id", AcceuilPersonnel.id_company);
-                String devices = Client.sendBd("getdevices");
-                pageBody.repaint();
-                changePageNewPermission(devices);
-            }
-        });
+        panneau4.add(PermissionName);
+        panneau4.add(valuePermissionName);
 
         view.add(panneau1, BorderLayout.NORTH);
         view.add(panneau4, BorderLayout.SOUTH);
@@ -182,18 +127,18 @@ public class BadgePermissions {
         pageBody.repaint();
         frame.repaint();
 
+
         list.addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e)
             {
-
                 if(!e.getValueIsAdjusting()) {
 
                     listModelchosen.addElement(list.getSelectedValue());
-
                     if(verifMap()) confirm.setEnabled(true);
                     pageBody.repaint();
                     frame.repaint();
+
                 }
             }
         });
@@ -212,34 +157,24 @@ public class BadgePermissions {
             }
         });
 
+        JTextField messageError = styleJTextFieldError(view ,500, 180, 170, 20);
 
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        JTextField messageErrorEndDate = styleJTextFieldError(view ,500, 180, 170, 20);
-
-        datevalidity.addFocusListener(new FocusListener() {
+        valuePermissionName.addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {}
             @Override
             public void focusLost(FocusEvent e) {
                 Object source = e.getSource();
                 String m = (((JTextField)source).getText()).trim();
-                if(m.matches("[0-9]{4}-[0-1]{1}[0-9]{1}-[0-1]{1}[0-9]{1}")) {
-                    try {
-                        Date today = dateFormat.parse(dateFormat.format(new Date()));
-                        Date Mydate = dateFormat.parse(m);
-                        if(today.equals(Mydate) || today.before(Mydate)){
-                            if(input.containsKey("per_date"))input.replace("per_date", ((JTextField)source).getText().trim());
-                            else input.put("per_date", ((JTextField)source).getText().trim());
-                            messageErrorEndDate.setText(" ");
-                            if(verifMap()) confirm.setEnabled(true);
-                        } else {
-                            messageErrorEndDate.setText("Veuillez rentrer une date valide");
-                            messageErrorEndDate.setForeground(Color.red);
-                        }
-                    } catch(Exception a) {a.printStackTrace();}
+                if(m.matches("[a-zA-Z_0-9]+")) {
+
+                    input.put("valuePermissionName", ((JTextField)source).getText().trim());
+                    messageError.setText(" ");
+                    if(verifMap()) confirm.setEnabled(true);
                 }else {
-                    messageErrorEndDate.setText("Veuillez respecter le format");
-                    messageErrorEndDate.setForeground(Color.red);
+
+                    messageError.setText("X");
+                    messageError.setForeground(Color.red);
                 }
             }
         });
@@ -248,29 +183,28 @@ public class BadgePermissions {
         confirm.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String request = "requestManyNewBadge";
+                String request = "CreateNewPermission";
+
                 for (int i = 0; i < listModelchosen.size(); i++) {
 
                     sb.append(listModelchosen.get(i) + "&");
                 }
 
                 Client.map.get(request).put("company_id", AcceuilPersonnel.id_company);
-                Client.map.get(request).put("permission", input.get("permission"));
-                Client.map.get(request).put("date", input.get("per_date"));
-                Client.map.get(request).put("employees",sb.toString());
+                Client.map.get(request).put("permissionname", input.get("valuePermissionName"));
+                Client.map.get(request).put("devices",sb.toString());
 
                 String result = Client.sendBd(request);
-
                 if (result.equals("good")){
                     JOptionPane d = new JOptionPane();
                     d.showMessageDialog(view,
-                            "Employés bien enregistrés",
+                            "Pemission bien enregistrer",
                             " Confirmation",
                             JOptionPane.INFORMATION_MESSAGE);
                 }else{
                     JOptionPane d = new JOptionPane();
                     d.showMessageDialog(view,
-                            "Modification pas réussi",
+                            "Nom permission existe deja",
                             " Attention",
                             JOptionPane.WARNING_MESSAGE);
                 }
@@ -278,43 +212,23 @@ public class BadgePermissions {
         });
 
     }
-
-
     public JPanel view() {
         JPanel view = new JPanel();
         view.setBackground(Color.white);
         sizeComposant(new Dimension(950, 600), view);
         view.setLayout(null);
+
         return view;
-    }
-
-
-    public void changePageNewPermission(String devices){
-
-        view.setVisible(false);
-        Newpermission permission = new Newpermission(frame,devices);
-        permission.choice(pageBody);
 
     }
-
 
     public boolean verifMap(){
 
-        if((input.containsKey("per_date") && input.containsKey("permission") && !(listModelchosen.isEmpty())))
+        if((input.containsKey("valuePermissionName")  && !(listModelchosen.isEmpty())))
             return true;
         else return false;
 
     }
-
-
-    public void changePageDetail(String id,String result,String per){
-
-        view.setVisible(false);
-        MyPermission permission = new MyPermission(frame,id,result,per);
-        permission.choicepermission(pageBody);
-    }
-
-
 
     public JLabel styleJLabelBadge(JLabel l, int x, int y, int w, int h) {
         sizeComposant(new Dimension(200, 200), l);
@@ -323,7 +237,6 @@ public class BadgePermissions {
         l.setFont(new Font("Serif", Font.BOLD, 20));
         return l;
     }
-
 
     public void sizeComposant(Dimension dim, Component c) {
         c.setPreferredSize(dim);
@@ -350,4 +263,5 @@ public class BadgePermissions {
         return t;
     }
 }
+
 

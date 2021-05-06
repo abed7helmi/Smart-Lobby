@@ -8,38 +8,39 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 //Staff:Listener for table class
-class ButtonEditor extends DefaultCellEditor
+class ButtonEditorDevice extends DefaultCellEditor
 {
     protected JButton btn;
     private String lbl;
     private Boolean clicked;
     private String requestt;
-    AllBadge allbadge;
+    MyPermission permission;
+    private String idpermission;
 
-    public ButtonEditor(JTextField txt,String request,AllBadge b) {
+    public ButtonEditorDevice(JTextField txt,String request,String idpermission,MyPermission per) {
         super(txt);
         this.requestt=request;
-        allbadge=b;
+        this.idpermission=idpermission;
+        this.permission=per;
         btn=new JButton();
         btn.setOpaque(true);
+
         btn.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
+
                 if(requestt.equals("Delete")) {
 
-                    String request = "deletepermission";
+                    String request = "deletedevice";
+
                     Client.map.get(request).put("company_id", AcceuilPersonnel.id_company);
-                    Client.map.get(request).put("idemploye",lbl);
+                    Client.map.get(request).put("iddevice",lbl);
+                    Client.map.get(request).put("idpermission",idpermission);
 
-                    String result = Client.sendBd("deletepermission");
-
-
+                    String result = Client.sendBd("deletedevice");
                 }
 
-                if(requestt.equals("Detail")) {
-                    allbadge.changePageEdit(lbl);
-                }
                 fireEditingStopped();
             }
         });
@@ -61,10 +62,9 @@ class ButtonEditor extends DefaultCellEditor
 
         if(clicked)
         {
+
             if(requestt.equals("Delete")) {
-                JOptionPane.showMessageDialog(btn,  " employe "+lbl+" supprimé");
-            }else if(requestt.equals("Detail")) {
-                JOptionPane.showMessageDialog(btn,  "vous pouvez modifier l'employé d'ID "+lbl);
+                JOptionPane.showMessageDialog(btn,  " equipement "+lbl+" supprimé");
             }
         }
 

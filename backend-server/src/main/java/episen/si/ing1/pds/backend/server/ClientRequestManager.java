@@ -124,49 +124,16 @@ public class ClientRequestManager {
 						case "getdetailemployee":
 							getdetailemployee(map);
 							break;
-						case "updateemployee":
-							updateemployee(map);
-							break;
 
+						case "deletedevice":
+							deletedevice(map);
+							break;
+						case "CreateNewPermission":
+							CreateNewPermission(map);
+							break;
 
 					}
 
-
-					/*switch (requestType) {
-					case "insert":
-						StringBuilder request = new StringBuilder();
-						request.append("insert into test(name,age) values");
-						for (Map<String, String> m : map.values())
-							request.append("('" + m.get("name") + "','" + m.get("age") + "'),");
-						request.deleteCharAt(request.length() - 1);
-						output.println("Successfully inserted " + c.createStatement().executeUpdate(request.toString())
-								+ " rows.");
-						break;
-					case "select":
-						StringBuilder sb = new StringBuilder();
-						ResultSet result = c.createStatement().executeQuery("select * from test");
-						while (result.next()) {
-							sb.append("id=" + result.getInt(1) + ",name=" + result.getString(2) + ",age=" + result.getInt(3) +"|");
-						}
-						output.println(sb.toString());
-						break;
-					case "update":
-						int newAge = Integer.valueOf(map.get("toto").get("age"))+1;
-						output.println(
-								"Successfully updated "
-										+ c.createStatement()
-												.executeUpdate("update test set age=" + newAge
-														+ " where name='" + map.get("toto").get("name") + "'")
-										+ " rows.");
-						break;
-					case "delete":
-						output.println("Successfully deleted " + c.createStatement().executeUpdate("delete from test")
-								+ " rows.");
-						break;
-					default:
-						output.println("Invalid request type.");
-						break;
-					}*/
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -658,62 +625,33 @@ public class ClientRequestManager {
 	}
 
 
-
-
-
-
-
-
-
-
+	//Staff
 	public void getDetailPermission(Map<String, String> map){
-		logger.debug("testdetail FINAL");
 		try {
-
-
 			int id_company=Integer.parseInt(map.get("company_id"));
 			String permission=map.get("permission");
 			String per[]=permission.split(",");
 			int idpermission=Integer.parseInt(getNbr(per[0]));
 			String namepermission=per[1].split(":")[1];
-
-
-
 			ResultSet result = c.createStatement().executeQuery("select device.device_id,device_wording,device_active,device.room_id,permission_device.number_validity_use,equipement_validity_period " +
 					"from permission_device inner join device on device.device_id=permission_device.device_id where permission_device.permission_id='"+ idpermission +"';");
 
-			logger.debug("c bon");
 
 			StringBuilder sb = new StringBuilder();
-
 			sb.append(idpermission);
-
 			sb.append("//");
 			sb.append(namepermission);
 			sb.append("//");
-
-
-
 			while (result.next()) {
-
-				///sb.append("device_id=" + result.getInt(1) + ",device_wording=" + result.getString(2) + ",device_active=" + result.getBoolean(3) + ",room_id=" + result.getInt(4) +",number_validity_use=" + result.getInt(5) +",equipement_validity_period="+ result.getDate(6) +"#");
 				sb.append(result.getInt(1) + "," + result.getString(2) + "," + result.getBoolean(3) + "," + result.getInt(4) +"," + result.getInt(5) +","+ result.getDate(6) +","+result.getInt(1)+"#");
 			}
-
-
-
 			ResultSet result2 = c.createStatement().executeQuery("select device.device_id,device.device_wording,device.room_id from device inner join reservation on reservation.reservation_id=device.reservation_id inner join general_services_manager on general_services_manager.gs_manager_id=reservation.gs_manager_id inner join employee on employee.employee_id=general_services_manager.gs_manager_id where employee.company_id='" + id_company+"';");
-
 			sb.append("//");
-
 			while (result2.next()) {
 
 				sb.append("device_id=" + result2.getInt(1) + ",device_wording=" + result2.getString(2) + ",room_id=" + result2.getInt(3) +"#");
 			}
-
 			output.println(sb.toString());
-
-
 
 		}catch (Exception e){
 			output.println("notgood");
@@ -722,25 +660,61 @@ public class ClientRequestManager {
 
 	}
 
-
-
+	//Staff
 	static String getNbr(String str)
 	{
-
 		str = str.replaceAll("[^\\d]", " ");
 		str = str.trim();
 		str = str.replaceAll(" +", " ");
 		return str;
 	}
 
+	//Staff
+	public void CreateNewPermission(Map<String, String> map){
 
-
-
-	public void SaveBadge(Map<String, String> map){
-		logger.debug("bravo : test save employee rabek rabek rabekds");
 		try {
+			String devices =map.get("devices");
+			String chosendevices[]=devices.split("&");
+			String permissionname=map.get("permissionname");
+			int id_company=Integer.parseInt(map.get("company_id"));
 
+			ResultSet permission_id = c.createStatement().executeQuery("select * from permission_badge where name_permission like '"+permissionname + "';");
 
+			int test1=0;
+			while (permission_id.next()){
+				test1=1;
+			}
+			if (test1==1){
+				output.println("notgoodbadge");
+			}else{
+				String requestInsert = "insert into permission_badge (name_permission,company_id) values ('"+permissionname+ "','"+id_company+"');";
+				c.createStatement().executeUpdate(requestInsert);
+				ResultSet permissionlastid = c.createStatement().executeQuery(" select max(permission_badge.permission_id) from permission_badge; ");
+				int perid=0;
+				while (permissionlastid.next()){
+					perid=permissionlastid.getInt(1);
+				}
+				for (int i = 0; i < chosendevices.length; i++) {
+
+					String dev[]=chosendevices[i].split(",");
+					int iddev=Integer.parseInt(getNbr(dev[0]));
+					String insertrequest = "insert into permission_device (device_id,permission_id,equipement_validity_period,number_validity_use) values('"+iddev+"', '"+perid+"','2030-10-10',5   ) ;";
+					c.createStatement().executeUpdate(insertrequest);
+				}
+				output.println("good");
+			}
+
+		}catch (Exception e){
+			output.println("notgood");
+			e.printStackTrace();
+		}
+
+	}
+
+	//Staff
+	public void SaveBadge(Map<String, String> map){
+
+		try {
 			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 			String name1 =map.get("nomemploye");
 			String name2=map.get("prenomemploye");
@@ -755,15 +729,6 @@ public class ClientRequestManager {
 			int id_company=Integer.parseInt(map.get("company_id"));
 			String state="En Fonction";
 
-
-
-
-
-
-
-
-
-
 			ResultSet agentid = c.createStatement().executeQuery("select general_services_manager.gs_manager_id from general_services_manager where gs_manager_id = '"+agent+"';");
 			ResultSet badgeid = c.createStatement().executeQuery("select badge.badge_id from badge where badge.badge_id like'"+idbadge+"';");
 
@@ -772,20 +737,12 @@ public class ClientRequestManager {
 
 			while (agentid.next()){
 					test=0;
-					//id2=lastemployee.getInt(1);
-					//String requestupdate ="update general_services_manager set manager_email ='"+ emailagent +"'where gs_manager_id='"+id2   +" ';";
-					//c.createStatement().executeQuery(requestupdate);
-					logger.debug("test id agent");
 			}
 
 			while (badgeid.next()){
 				test1=1;
-				//id2=lastemployee.getInt(1);
-				//String requestupdate ="update general_services_manager set manager_email ='"+ emailagent +"'where gs_manager_id='"+id2   +" ';";
-				//c.createStatement().executeQuery(requestupdate);
-				logger.debug("badge");
-			}
 
+			}
 			if (test==1){
 				output.println("notgoodidagent");
 			}
@@ -793,11 +750,9 @@ public class ClientRequestManager {
 				output.println("notgoodbadge");
 			}
 
-
 			if (test==0 && test1==0){
 				String requestInsert = "insert into employee (employee_last_name,employee_first_name,company_id,contract_duration) values ('"+name1+"','"+name2+"','"+id_company+"','"+datecontract +"') ;";
 				c.createStatement().executeUpdate(requestInsert);
-
 
 				int id=0;
 				ResultSet lastemployee = c.createStatement().executeQuery("select employee.employee_id from employee order by employee.employee_id DESC LIMIT 1; ");
@@ -816,38 +771,6 @@ public class ClientRequestManager {
 			}else{output.println("notgoogood");}
 
 
-
-			/*try{
-
-			}catch (Exception e) {
-				test=1;
-				output.println("notgoodbadge");
-			}
-
-			if (test==0) {
-				String requestInsert = "insert into employee (employee_last_name,employee_first_name,company_id,contract_duration) values ('" + name1 + "','" + name2 + "','" + id_company + "','" + datecontract + "') ;";
-				try {
-
-
-					c.createStatement().executeUpdate(requestInsert);
-				} catch (Exception e) {
-					output.println("notgood employee");
-				}
-			}
-
-
-
-
-			try {
-
-			}catch (Exception e){
-				output.println("notgood permision");
-			}
-
-
-*/
-
-
 		}catch (Exception e){
 			output.println("notgood");
 			e.printStackTrace();
@@ -855,33 +778,23 @@ public class ClientRequestManager {
 
 	}
 
-
-
-
+	//Staff
 	public void getdevices(Map<String, String> map){
-		logger.debug("bravo2");
+
 		try {
-
-
-
-
 
 			ResultSet result = c.createStatement().executeQuery("select device.device_id,device.device_wording,device.room_id from device inner join reservation on reservation.reservation_id=device.reservation_id\n" +
 					"inner join general_services_manager on general_services_manager.gs_manager_id=reservation.gs_manager_id\n" +
 					"inner join employee on employee.employee_id=general_services_manager.gs_manager_id where employee.company_id='" +
 					Integer.parseInt(map.get("company_id"))+"';");
 
-
-
 			StringBuilder sb = new StringBuilder();
+
 			while (result.next()) {
 
 				sb.append("device_id=" + result.getInt(1) + ",device_wording=" + result.getString(2) + ",room_id=" + result.getInt(3) +"#");
 			}
-
 			output.println(sb.toString());
-
-
 
 		}catch (Exception e){
 			output.println("notgood");
@@ -892,30 +805,20 @@ public class ClientRequestManager {
 
 
 
-
+	//Staff
 	public void getallbadges(Map<String, String> map){
-		logger.debug("getallbadges test");
+
 		try {
 
 			int company = Integer.parseInt(map.get("company_id"));
-			logger.debug("getallbfds" +company);
 			ResultSet result = c.createStatement().executeQuery("select distinct (employee.employee_id),employee.employee_last_name,permission_badge.name_permission,permission_access.permission_validity_period from employee inner join badge on badge.employee_id=employee.employee_id inner join permission_access on permission_access.badge_id=badge.badge_id inner join permission_badge on permission_badge.permission_id=permission_access.permission_id inner join permission_device on permission_device.permission_id=permission_badge.permission_id where (employee.company_id='"+ company + "'  );");
-
-
-
-
-
-			logger.debug("bravo test");
 
 			StringBuilder sb = new StringBuilder();
 			while (result.next()) {
 
 				sb.append(result.getInt(1) +","+ result.getString(2) +","+  result.getString(3)  +","+ result.getDate(4)  +","+   result.getString(1) +","+  result.getString(1) +"#");
 			}
-
 			output.println(sb.toString());
-
-
 
 		}catch (Exception e){
 			output.println("notgood");
@@ -924,46 +827,24 @@ public class ClientRequestManager {
 
 	}
 
-
-
-
-
 	public void adddevicepermission(Map<String, String> map){
-		logger.debug("test add3");
+
 
 
 		try {
-
-
-			//int id_company=Integer.parseInt(map.get("requestadddevice").get("idcompany"));
-			String namepermission=map.get("permission");
-			//logger.debug(namepermission);
 			String device=map.get("device");
-			//logger.debug(device);
 
 			String dev[]=device.split(",");
 			int idpermission=Integer.parseInt(map.get("idpermission"));
-			//logger.debug(" waw "+idpermission);
 			int iddevice=Integer.parseInt(getNbr(dev[0]));
-
-
 			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 			Date today = dateFormat.parse(dateFormat.format(new Date()));
-
 			int x=3;
 
 			String requestInsert = "insert into permission_device (device_id,permission_id,equipement_validity_period,number_validity_use) values ('"+    iddevice     +"','"+  idpermission   +    " ','"+     today     +"','"+  x    +"'                                   ) ;";
-
-
 			c.createStatement().executeUpdate(requestInsert);
 
-
-
-
-
-			output.println("bravo");
-
-
+			output.println("good");
 
 		}catch (Exception e){
 			output.println("notgood");
@@ -973,13 +854,10 @@ public class ClientRequestManager {
 	}
 
 
-
-
-
+	//Staff
 	public void getPermissions(Map<String, String> map){
-		logger.debug("bravo2");
-		try {
 
+		try {
 			ResultSet result = c.createStatement().executeQuery("select permission_badge.permission_id,permission_badge.name_permission from permission_badge "+
 					"where company_id='" +
 					Integer.parseInt(map.get("company_id"))+"';");
@@ -991,8 +869,6 @@ public class ClientRequestManager {
 
 			output.println(sb.toString());
 
-
-
 		}catch (Exception e){
 			output.println("notgood");
 			e.printStackTrace();
@@ -1001,11 +877,10 @@ public class ClientRequestManager {
 	}
 
 
-
+	//Staff
 	public void updateemployee(Map<String, String> map){
-		logger.debug("updateemployee testrabek");
-		try {
 
+		try {
 
 			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 			String name1 =map.get("nomemploye");
@@ -1023,41 +898,17 @@ public class ClientRequestManager {
 			String state="En Fonction";
 			int idemployee=Integer.parseInt(map.get("idemploye"));
 
-			logger.debug(map.toString());
-
-
-
 			String updaterequest1 = "update employee set employee_last_name='"+name1+"',employee_first_name='" +name2+"',contract_duration='"+datecontract+"'where employee_id ='"+idemployee+"';";
-			//c.createStatement().executeUpdate(updaterequest1);
 			String updaterequest2 = "update badge set badge_id='"+idbadge+"',badge_end_date='"+dateendbadge+"',gs_manager_id='"+agent+"'where badge_id ='"+oldidbadge+"';";
-			//c.createStatement().executeUpdate(updaterequest2);
 			String updaterequest3 = "update permission_access set badge_id='"+idbadge+"',permission_validity_period='" +datepermission+"'where badge_id ='"+oldidbadge+"';";
-			//c.createStatement().executeUpdate(updaterequest3);
 			String requestupdate ="update general_services_manager set manager_email ='"+ emailagent +"'where gs_manager_id='"+agent+"';";
-			//c.createStatement().executeQuery(requestupdate);
-
-
-
-
 			PreparedStatement st2 = c.prepareStatement(updaterequest2);
 			st2.executeUpdate();
-
-
 			PreparedStatement st = c.prepareStatement(updaterequest3);
 			st.executeUpdate();
-
-
-
-
 			PreparedStatement st3 = c.prepareStatement(updaterequest1);
 			st3.executeUpdate();
-
-
-
-
 			output.println("good");
-
-
 		}catch (Exception e){
 			output.println("notgood");
 			e.printStackTrace();
@@ -1065,22 +916,16 @@ public class ClientRequestManager {
 
 	}
 
-
+	//Staff
 	public void getallemployees(Map<String, String> map){
 		try {
-
-
 			ResultSet result = c.createStatement().executeQuery("select  badge.badge_id,employee.employee_last_name,employee.employee_first_name from employee inner join badge on employee.employee_id=badge.employee_id where company_id='" + Integer.parseInt(map.get("company_id"))+"';");
 			StringBuilder sb = new StringBuilder();
 			while (result.next()) {
-
 				sb.append("ID Badge:" + result.getString(1) + ",Nom:" + result.getString(2) +",Prenom:" + result.getString(3) +"#");
 			}
 
 			output.println(sb.toString());
-
-
-
 		}catch (Exception e){
 			output.println("notgood");
 			e.printStackTrace();
@@ -1088,30 +933,27 @@ public class ClientRequestManager {
 
 	}
 
-
+	//Staff
 	public void saveallemployees( Map<String, String> map) {
-		logger.debug("saveallemployees test");
+
 		try {
-			logger.debug(map.toString());
+
 			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
-			int idcompany =Integer.parseInt(map.get("company_id"));
-			logger.debug("waaw"+idcompany);
+
 			String permission=map.get("permission");
 			String per[]=permission.split(",");
 			int idpermission=Integer.parseInt(getNbr(per[0]));
-			logger.debug("waaw"+idpermission);
+
 			String empls =map.get("employees");
 			String [] employees = empls.split("&");
 
 			Date datepermission = dateFormat.parse(map.get("date"));
 
-
 			for (int i = 0; i < employees.length; i++) {
-				logger.debug(employees[i]);
+
 				String emp[]=employees[i].split(",");
 				String idbadge=emp[0].substring(9,15);
-				logger.debug("sdss"+idbadge);
 				String insertrequest = "update permission_access set permission_id='" + idpermission + " ', permission_validity_period='" + datepermission +" 'where badge_id like'"+ idbadge +  "'                    ;";
 
 				try {
@@ -1130,11 +972,10 @@ public class ClientRequestManager {
 		}
 	}
 
-
+	//Staff
 	public void testpermissions( Map<String, String> map) {
 
 		try {
-
 			String name1 =map.get("employee_last_name");
 			String name2=map.get("employee_first_name");
 			String device=map.get("device_id");
@@ -1155,13 +996,31 @@ public class ClientRequestManager {
 		}
 	}
 
+	//Staff
+	public void deletedevice( Map<String, String> map) {
 
-	public void deletepermission( Map<String, String> map) {
-
-		logger.debug("test delete employee");
 
 		try {
 
+			int iddevice =Integer.parseInt(map.get("iddevice"));
+			int idpermission =Integer.parseInt(map.get("idpermission"));
+
+			PreparedStatement st = c.prepareStatement("delete from permission_device where permission_id='"+idpermission+"'and device_id='"+iddevice+"';");
+			st.executeUpdate();
+			output.println("good");
+
+
+		} catch (Exception e) {
+			output.println("notgod");
+			e.printStackTrace();
+		}
+	}
+
+
+	//Staff
+	public void deletepermission( Map<String, String> map) {
+
+		try {
 
 			int idcompany =Integer.parseInt(map.get("company_id"));
 			int idemploye =Integer.parseInt(map.get("idemploye"));
@@ -1175,10 +1034,8 @@ public class ClientRequestManager {
 				PreparedStatement st = c.prepareStatement("delete from permission_access where badge_id like '"+badge+"';");
 				st.executeUpdate();
 
-
 				PreparedStatement st2 = c.prepareStatement("delete from badge where badge_id like '"+badge+"';");
 				st2.executeUpdate();
-
 
 				PreparedStatement st3 = c.prepareStatement("delete from employee where employee.employee_id='"+idemploye+"';");
 				st3.executeUpdate();
@@ -1191,68 +1048,28 @@ public class ClientRequestManager {
 		}
 	}
 
-
+	//Staff
 	public void getdetailemployee( Map<String, String> map) {
-		logger.debug("test detail");
-
 
 		try {
 
-
 			//int company_id =Integer.parseInt(map.get("company_id"));
 			int idemploye =Integer.parseInt(map.get("idemploye"));
-			logger.debug("test detail"+idemploye);
 
 			String requestSelect = "select employee.employee_id,employee.employee_last_name,employee.employee_first_name,employee.contract_duration,permission_access.permission_validity_period,badge.badge_id,badge.badge_end_date,badge.gs_manager_id,permission_badge.name_permission " +
 					"from employee inner join badge on badge.employee_id=employee.employee_id inner join permission_access on permission_access.badge_id=badge.badge_id inner join permission_badge on permission_badge.permission_id=permission_access.permission_id " +
 					"where employee.employee_id='"+idemploye+"';";
 			ResultSet result = c.createStatement().executeQuery(requestSelect);
 
-
-
-			logger.debug("c bon");
-
 			StringBuilder sb = new StringBuilder();
-
-
-
-
 
 			while (result.next()) {
 
-				///sb.append("device_id=" + result.getInt(1) + ",device_wording=" + result.getString(2) + ",device_active=" + result.getBoolean(3) + ",room_id=" + result.getInt(4) +",number_validity_use=" + result.getInt(5) +",equipement_validity_period="+ result.getDate(6) +"#");
 				sb.append(result.getInt(1) + "," + result.getString(2) + "," + result.getString(3) + "," + result.getDate(4) +"," + result.getDate(5) +","+ result.getString(6) +","+result.getDate(7)+","+result.getInt(8)+","+result.getString(9));
 			}
-			logger.debug("c bon2");
-
-			logger.debug(sb.toString());
 
 			output.println(sb.toString());
 
-
-
-
-
-			/*String requeststring = "select badge.badge_id from employee inner join badge on badge.employee_id=employee.employee_id where employee.employee_id='"+ idemploye +"'   ;";
-
-			ResultSet idbadge=c.createStatement().executeQuery(requeststring);
-
-			if(idbadge.next()) {
-				String badge=idbadge.getString(1);
-				PreparedStatement st = c.prepareStatement("delete from permission_access where badge_id like '"+badge+"';");
-				st.executeUpdate();
-
-
-				PreparedStatement st2 = c.prepareStatement("delete from badge where badge_id like '"+badge+"';");
-				st2.executeUpdate();
-
-
-				PreparedStatement st3 = c.prepareStatement("delete from employee where employee.employee_id='"+idemploye+"';");
-				st3.executeUpdate();
-
-				output.println("Good");
-
-			}*/
 		} catch (Exception e) {
 			output.println("notgood");
 			e.printStackTrace();

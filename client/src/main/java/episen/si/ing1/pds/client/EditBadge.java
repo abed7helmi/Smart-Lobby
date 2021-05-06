@@ -11,6 +11,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
 
+//Staff:Edit badge and employee informations
 public class EditBadge {
     private Map<String, String> input = new HashMap<>();
     private JFrame frame;
@@ -40,10 +41,6 @@ public class EditBadge {
         input.put("oldbadge",valueemployee[5]);
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-
-
-
-
 
         this.pageBody = pb;
         pageBody.setBackground(Color.WHITE);
@@ -96,16 +93,9 @@ public class EditBadge {
             listPermissions.add(value[i]);
         }
 
-
-
         permissionsArray = new String[listPermissions.size()];
         permissionsArray = listPermissions.toArray(permissionsArray);
 
-
-
-
-
-        //String[] permissions = {"Droit Access aux Fenetres","Droit Equipe Laurent","Droit access aux capteurs"};
         JComboBox myPermissions = new JComboBox(permissionsArray);
         myPermissions.setEditable(true);
         myPermissions.setBounds(160,200, 350, 20);
@@ -129,11 +119,8 @@ public class EditBadge {
         JTextField valuedatepermission = new JTextField(valueemployee[4]);
         valuedatepermission.setBounds(450, 270, 100, 20);
 
-
         JLabel BadgeLabel = new JLabel("Badge : ");
         BadgeLabel = styleJLabelBadge(BadgeLabel, 20, 300,200,20);
-
-
 
         JTextField PuceLabel = new JTextField("Puce :");
         PuceLabel = styleJTextFieldBadge(PuceLabel, 110, 350, 50, 20);
@@ -147,9 +134,6 @@ public class EditBadge {
         JTextField valuedatebadge = new JTextField(valueemployee[6]);
         valuedatebadge.setBounds(450, 350, 100, 20);
 
-
-
-
         JLabel InfosAgent = new JLabel("InfosAgent : ");
         InfosAgent = styleJLabelBadge(InfosAgent, 20, 385,200,20);
 
@@ -162,16 +146,12 @@ public class EditBadge {
         JTextField mailagent = new JTextField("Email agent :");
         mailagent = styleJTextFieldBadge(mailagent, 320, 430, 100, 20);
 
-
         JTextField valuemailagent = new JTextField(" ");
         valuemailagent.setBounds(450, 430, 100, 20);
-
-
 
         JButton confirm = new JButton("Confirmer");
         confirm.setEnabled(false);
         JButton cancel = new JButton("Annuler");
-
 
         cancel.setBounds(300, 500, 150, 30);
         confirm.setBounds(500, 500, 150, 30);
@@ -180,8 +160,6 @@ public class EditBadge {
         newpermission.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
-                //choice.setVisible(false);
 
                 pageBody.repaint();
                 changePage();
@@ -193,18 +171,9 @@ public class EditBadge {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String request = "requestDetailBadge";
-
                 Client.map.get(request).put("permission", input.get("permission"));
-
                 Client.map.get(request).put("company_id",idcompany);
-
-
-
-
-
                 String result = Client.sendBd(request);
-
-
                 pageBody.repaint();
                 changePageDetail(idcompany,result,input.get("permission"));
             }
@@ -214,20 +183,14 @@ public class EditBadge {
         confirm.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-               /**/
-
 
                 String requestdelete = "deletepermission";
                 Client.map.get(requestdelete).put("company_id",idcompany);
                 Client.map.get(requestdelete).put("idemploye",valueemployee[0]);
                 try {
                     String result2 = Client.sendBd(requestdelete);
-                    System.out.println("waaaw"+result2);
-
                 }
                 catch(Exception a) {a.printStackTrace();}
-
-
                 String request = "requestNewBadge";
                 Client.map.get(request).put("contract_date", input.get("contract_date"));
                 Client.map.get(request).put("badge_date", input.get("badge_date"));
@@ -239,9 +202,6 @@ public class EditBadge {
                 Client.map.get(request).put("emailagent",input.get("emailagent"));
                 Client.map.get(request).put("permission_date",input.get("permission_date"));
                 Client.map.get(request).put("company_id",idcompany);
-
-
-
                 String result = Client.sendBd(request);
                 if (result.equals("Good")){
                     JOptionPane d = new JOptionPane();
@@ -263,39 +223,6 @@ public class EditBadge {
                             JOptionPane.WARNING_MESSAGE);
                 }
 
-
-
-                /*String request = "updateemployee";
-                Client.map.get(request).put("contract_date", input.get("contract_date"));
-                Client.map.get(request).put("badge_date", input.get("badge_date"));
-                Client.map.get(request).put("nomemploye", input.get("nomemploye"));
-                Client.map.get(request).put("prenomemploye", input.get("prenomemploye"));
-                Client.map.get(request).put("puceemploye", input.get("puceemploye"));
-                Client.map.get(request).put("idagent", input.get("idagent"));
-                Client.map.get(request).put("permission", input.get("permission"));
-                Client.map.get(request).put("emailagent",input.get("emailagent"));
-                Client.map.get(request).put("oldbadge",input.get("oldbadge"));
-                Client.map.get(request).put("permission_date",input.get("permission_date"));
-                Client.map.get(request).put("company_id",idcompany);
-                Client.map.get(request).put("idemploye",valueemployee[0]);
-
-                String result = Client.sendBd(request);
-                System.out.println("waaaw"+result);*/
-
-
-                /*if (result.equals("good")){
-                    JOptionPane d = new JOptionPane();
-                    d.showMessageDialog(view,
-                            "Employé bien modifié",
-                            " Confirmation",
-                            JOptionPane.INFORMATION_MESSAGE);
-                }else{
-                    JOptionPane d = new JOptionPane();
-                    d.showMessageDialog(view,
-                            "erreur,verifiez le ID agent et le badge",
-                            " Attention",
-                            JOptionPane.WARNING_MESSAGE);
-                }*/
             }
         });
 
@@ -312,17 +239,10 @@ public class EditBadge {
             }
         });
 
-
-
-
         valuecontract.addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {
-                /*Object source = e.getSource();
-                String m = (((JTextField)source).getText()).trim();
-                if (m==""){
-                    messageErrorStartDate.setVisible(false);
-                }*/
+
             }
             @Override
             public void focusLost(FocusEvent e) {
@@ -339,7 +259,7 @@ public class EditBadge {
                                 input.put("contract_date", ((JTextField)source).getText().trim());
                             ((JTextField)view.getComponentAt(740, 60)).setText(" ");
                             if(verifMap()) confirm.setEnabled(true);
-                            //System.out.println(input);
+
                         } else {
                             //messageErrorStartDate.setVisible(true);
                             messageErrorStartDate.setText("Veuillez rentrer une date valide");
@@ -347,7 +267,7 @@ public class EditBadge {
                         }
                     } catch(Exception a) {a.printStackTrace();}
                 }else {
-                    //messageErrorStartDate.setVisible(true);
+
                     messageErrorStartDate.setText("Veuillez respecter le format");
                     messageErrorStartDate.setForeground(Color.red);
                 }
@@ -370,7 +290,7 @@ public class EditBadge {
                             else input.put("badge_date", ((JTextField)source).getText().trim());
                             messageErrorEndDate.setText(" ");
                             if(verifMap()) confirm.setEnabled(true);
-                            //System.out.println(input);
+
                         } else {
                             messageErrorEndDate.setText("Veuillez rentrer une date valide");
                             messageErrorEndDate.setForeground(Color.red);
@@ -382,8 +302,6 @@ public class EditBadge {
                 }
             }
         });
-
-
 
         valuedatepermission.addFocusListener(new FocusListener() {
             @Override
@@ -401,7 +319,7 @@ public class EditBadge {
                             else input.put("permission_date", ((JTextField)source).getText().trim());
                             messageErrorPerDate.setText(" ");
                             if(verifMap()) confirm.setEnabled(true);
-                            //System.out.println(input);
+
                         } else {
                             messageErrorPerDate.setText("Veuillez rentrer une date valide");
                             messageErrorPerDate.setForeground(Color.red);
@@ -413,8 +331,6 @@ public class EditBadge {
                 }
             }
         });
-
-
 
         JTextField messageErroremailAgent = styleJTextFieldError(view,450, 410, 100, 20);
         valuemailagent.addFocusListener(new FocusListener() {
@@ -437,8 +353,6 @@ public class EditBadge {
             }
         });
 
-
-
         JTextField messageErrorIdAgent = styleJTextFieldError(view,200, 410, 100, 20);
         valueidagent.addFocusListener(new FocusListener() {
             @Override
@@ -459,7 +373,6 @@ public class EditBadge {
 
             }
         });
-
 
         JTextField messageErrorNom = styleJTextFieldError(view,20, 45, 100, 20);
         valuenom.addFocusListener(new FocusListener() {
@@ -491,12 +404,12 @@ public class EditBadge {
                 Object source = e.getSource();
                 String m = (((JTextField)source).getText()).trim();
                 if(m.matches("[a-zA-Z]+")) {
-                    // System.out.println("waaw");
+
                     input.put("prenomemploye", ((JTextField)source).getText().trim());
                     messageErrorPrenom.setText(" ");
                     if(verifMap()) confirm.setEnabled(true);
                 }else {
-                    //System.out.println("wiiw");
+
                     messageErrorPrenom.setText("X");
                     messageErrorPrenom.setForeground(Color.red);
                 }
@@ -512,22 +425,17 @@ public class EditBadge {
                 Object source = e.getSource();
                 String m = (((JTextField)source).getText()).trim();
                 if(m.matches("[a-zA-Z_0-9]{6}")) {
-                    // System.out.println("waaw");
+
                     input.put("puceemploye", ((JTextField)source).getText().trim());
                     messageErrorPuce.setText(" ");
                     if(verifMap()) confirm.setEnabled(true);
                 }else {
-                    //System.out.println("wiiw");
+
                     messageErrorPuce.setText("code doit etre de 6 caracteres");
                     messageErrorPuce.setForeground(Color.red);
                 }
             }
         });
-
-
-
-
-
 
         view.add(infoLabel);
         view.add(NomEmploye);
@@ -556,8 +464,6 @@ public class EditBadge {
         view.add(datepermission);
         view.add(valuedatepermission);
 
-
-
         pageBody.add(view, BorderLayout.SOUTH);
         pageBody.repaint();
         frame.repaint();
@@ -566,12 +472,10 @@ public class EditBadge {
     public void changePage(){
 
         view.setVisible(false);
-        // MyPermission permission = new MyPermission(frame);
-        // permission.choicepermission(pageBody);
+
     }
 
     public void changePageDetail(String id,String result,String per){
-
         view.setVisible(false);
         MyPermission permission = new MyPermission(frame,id,result,per);
         permission.choicepermission(pageBody);
@@ -579,7 +483,7 @@ public class EditBadge {
 
 
     public boolean verifMap(){
-        //System.out.println(input);
+
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         try {
             Date contract_date = dateFormat.parse(input.get("contract_date"));
@@ -656,8 +560,6 @@ public class EditBadge {
         view.setBackground(Color.white);
         sizeComposant(new Dimension(950,600), view);
         view.setLayout(null);
-
-
 
         return view;
 

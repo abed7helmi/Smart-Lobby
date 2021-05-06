@@ -1,5 +1,7 @@
 package episen.si.ing1.pds.client;
 
+import episen.si.ing1.pds.client.Client;
+
 import javax.swing.*;
 import javax.swing.table.TableCellRenderer;
 import java.awt.*;
@@ -12,6 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+//Staff:Test permission interface
 public class TestBadge {
 
     private JFrame frame;
@@ -27,18 +30,15 @@ public class TestBadge {
         input.clear();
         this.idcompany=i;
         this.devices=r;
-
         frame = f;
     }
 
     public void testbadge(JPanel pb){
-
         this.pageBody = pb;
         pageBody.setBackground(Color.WHITE);
-
         JPanel view = view();
 
-        JLabel infoLabel = new JLabel("Tester les droits d'un employé à un equipement : ");
+        JLabel infoLabel = new JLabel("Tester les droits d'un employe a un equipement : ");
         infoLabel = styleJLabelReservation(infoLabel, 20, 160,600,20);
 
         JTextField NomEmploye = new JTextField("Nom :");
@@ -56,38 +56,27 @@ public class TestBadge {
         JTextField device = new JTextField("Equipement :");
         device = styleJTextFieldReservation( device, 470, 220, 80, 20);
 
-
-
         String[] value = devices.split("#");
-        //System.out.println("sa7ayt;");
-        //System.out.println(value[0]);
 
         for(int i = 0; i< value.length; i++){
             listEquipment.add(value[i]);
         }
 
-
-
         equipementArray = new String[listEquipment.size()];
         equipementArray = listEquipment.toArray(equipementArray);
-        //System.out.println(equipementArray[0]);
+
         JComboBox mydevice = new JComboBox(equipementArray);
         mydevice.setEditable(true);
         mydevice.setBounds(570,220, 320, 20);
-
 
         JButton testbutton = new JButton("Tester");
         testbutton.setBounds(400, 280, 150, 30);
 
         testbutton.setEnabled(false);
 
-
         JTextField result = new JTextField("Resultat :");
         result = styleJTextFieldReservation(result, 400, 350, 60, 20);
-
         JTextField Valueresult = styleJTextFieldError(view,480, 350, 200, 20);
-
-
 
         JTextField messageErrorNom = styleJTextFieldError(view,170, 195, 100, 20);
         valuenom.addFocusListener(new FocusListener() {
@@ -132,7 +121,6 @@ public class TestBadge {
             }
         });
 
-
         mydevice.addActionListener(new ActionListener() {
 
             @Override
@@ -144,9 +132,6 @@ public class TestBadge {
             }
         });
 
-
-
-
         testbutton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -156,25 +141,16 @@ public class TestBadge {
                 Client.map.get("testpermissions").put("employee_first_name",input.get("prenomemploye"));
                 Client.map.get("testpermissions").put("device_id",input.get("device_id"));
 
-
                 String result = Client.sendBd("testpermissions");
-
-                System.out.println(result);
 
                 if (result.equals("Good")){
                     Valueresult.setText(" il a les doits");
                 }else{ Valueresult.setText(" il a pas les doits"); }
 
-                //choice.setVisible(false);
-
                 pageBody.repaint();
-                //changePage();
+
             }
         });
-
-
-
-
 
         view.add(infoLabel);
         view.add(NomEmploye);
@@ -192,13 +168,7 @@ public class TestBadge {
 
     }
 
-
-
-
-
-
     public boolean verifMap(){
-        System.out.println(input);
         if((input.containsKey("nomemploye") && input.containsKey("prenomemploye")))
             return true;
         else return false;
@@ -210,12 +180,9 @@ public class TestBadge {
         sizeComposant(new Dimension(950,600), view);
         view.setLayout(null);
 
-
-
         return view;
 
     }
-
 
     public JLabel styleJLabelReservation(JLabel l, int x, int y, int w, int h){
         sizeComposant(new Dimension(200, 200) ,l);
@@ -250,8 +217,6 @@ public class TestBadge {
         choice.add(t);
         return t;
     }
-
-
 
 
 }
