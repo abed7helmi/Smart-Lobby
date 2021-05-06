@@ -159,7 +159,8 @@ public class Ihm extends JFrame{
             home.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    Menu Menu = new Menu("Smart Lobby", company_id);
+                    Menu menu = new episen.si.ing1.pds.client.Menu("Smart Lobby", Menu.company_id);
+                    ChoiceCriteria.restartData();
                     frame.dispose();
                 }
             });

@@ -78,7 +78,7 @@ public class Bill {
             @Override
             public void actionPerformed(ActionEvent e) {
                 frame.dispose();
-                episen.si.ing1.pds.client.Menu menu = new episen.si.ing1.pds.client.Menu("Smart Lobby", ChoiceCriteria.input.get("company_id"));
+                episen.si.ing1.pds.client.Menu menu = new episen.si.ing1.pds.client.Menu("Smart Lobby", Menu.company_id);
                 ChoiceCriteria.restartData();
             }
         });

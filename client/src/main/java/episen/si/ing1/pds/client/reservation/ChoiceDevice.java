@@ -97,11 +97,6 @@ public class ChoiceDevice extends JFrame{
                 for(Map.Entry m : listButton.entrySet()){
                     if( m.getValue().equals("unvalidated") ) ViewWithPlan.verifConfiguration = false;
                 }
-                System.out.println("test");
-                for(Map.Entry m : listButton.entrySet()){
-                    System.out.println(m.getValue());
-                }
-
                 ViewWithPlan.reload(confirm);
                 frameDevice.dispose();
             }

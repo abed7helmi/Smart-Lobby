@@ -579,7 +579,6 @@ public class ClientRequestManager {
 
 	public void getManagerId(Map<String,String> map){
 		try {
-			System.out.println("test");
 			String request = "select gs_manager_id " +
 					"from general_services_manager g " +
 					"inner join employee e on g.gs_manager_id = e.employee_id " +
