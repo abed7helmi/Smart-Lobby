@@ -1,7 +1,8 @@
 package episen.si.ing1.pds.client;
 
-import episen.si.ing1.pds.client.Mapping.*;
+import episen.si.ing1.pds.client.Mapping.Mapping;
 import episen.si.ing1.pds.client.reservation.ChoiceCriteria;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -10,21 +11,22 @@ import java.awt.event.ActionListener;
 
 public class Ihm extends JFrame{
     private JFrame frame = new JFrame();
-    public JPanel pageBody = new JPanel();
+   private JPanel pageBody = new JPanel();
     public  static JButton buttonVoid = new JButton("Annuler");
     public  static JButton buttonContinue = new JButton("> Continuer");
-    public  JPanel pageBody1 ;
+    private JPanel pageBody1 ;
     private JPanel pageBody2 ;
     private JPanel pageBody3 ;
     private JPanel pageBody4 ;
     private JPanel pageBody7 ;
     private String company_id ="";
     public static String path = System.getenv("PDSIMG");
+    private CardLayout pages;
 
     public Ihm(String name, String page, String id) {
+        pages = new CardLayout();
         company_id = id;
         frame = this;
-        CardLayout pages = new CardLayout();
 
         pageBody.setLayout(pages);
         ChoiceCriteria reservation = new ChoiceCriteria(frame, company_id);
@@ -37,8 +39,8 @@ public class Ihm extends JFrame{
         AcceuilPersonnel personnel = new AcceuilPersonnel(frame,company_id);
         pageBody7=personnel.acceuil();
 
-        /*Window window=new Window();
-        pageBody4=window.firstMenu;*/
+        Window window=new Window(pages,pageBody);
+        pageBody4=window.firstMenu;
 
         Indicators indicator = new Indicators();
         pageBody3 = indicator.getIndicator();
@@ -46,18 +48,18 @@ public class Ihm extends JFrame{
         if(page.equals("realize")){
             pageBody.add(pageBody1,"realize");
             pageBody.add(pageBody2,"consult");
-            //pageBody.add(pageBody4,"Configurer fenêtre");
+            pageBody.add(pageBody4,"Configurer fenêtre");
             pageBody.add(pageBody3,"indicator");
             pageBody.add(pageBody7,"staff");
         } else if(page.equals("consult")){
             pageBody.add(pageBody2,"consult");
             pageBody.add(pageBody1,"realize");
-           // pageBody.add(pageBody4,"Configurer fenêtre");
+            pageBody.add(pageBody4,"Configurer fenêtre");
             pageBody.add(pageBody3,"indicator");
             pageBody.add(pageBody7,"staff");
         }
         else if(page.equals("Configurer fenêtre")){
-            //pageBody.add(pageBody4,"Configurer fenêtre");
+            pageBody.add(pageBody4,"Configurer fenêtre");
             pageBody.add(pageBody2,"consult");
             pageBody.add(pageBody1,"realize");
             pageBody.add(pageBody3,"indicator");
@@ -68,13 +70,13 @@ public class Ihm extends JFrame{
             pageBody.add(pageBody2,"consult");
             pageBody.add(pageBody1,"realize");
             pageBody.add(pageBody7,"staff");
-           // pageBody.add(pageBody4,"Configurer fenêtre");
+            pageBody.add(pageBody4,"Configurer fenêtre");
         }else if(page.equals("staff")){
             pageBody.add(pageBody7,"staff");
             pageBody.add(pageBody3,"indicator");
             pageBody.add(pageBody2,"consult");
             pageBody.add(pageBody1,"realize");
-            //pageBody.add(pageBody4,"Configurer fenêtre");
+            pageBody.add(pageBody4,"Configurer fenêtre");
 
         }
 
