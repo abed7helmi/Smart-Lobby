@@ -1,5 +1,8 @@
 package episen.si.ing1.pds.client;
 
+import episen.si.ing1.pds.client.Mapping.Mapping;
+import episen.si.ing1.pds.client.reservation.ChoiceCriteria;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
@@ -10,7 +13,7 @@ import java.io.File;
 
 public class Ihm extends JFrame{
     private JFrame frame = new JFrame();
-    private JPanel pageBody = new JPanel();
+   private JPanel pageBody = new JPanel();
     public  static JButton buttonVoid = new JButton("Annuler");
     public  static JButton buttonContinue = new JButton("> Continuer");
     private JPanel pageBody1 ;
@@ -19,22 +22,27 @@ public class Ihm extends JFrame{
     private JPanel pageBody4 ;
     private JPanel pageBody7 ;
     private String company_id ="";
-    protected static String path = System.getenv("PDSIMG");
+    public static String path = System.getenv("PDSIMG");
+    private CardLayout pages;
 
     public Ihm(String name, String page, String id) {
+        pages = new CardLayout();
         company_id = id;
         frame = this;
-        CardLayout pages = new CardLayout();
 
         pageBody.setLayout(pages);
-        ChoiceCriteria reservation = new ChoiceCriteria(frame, company_id);
+        ChoiceCriteria reservation = new ChoiceCriteria(frame);
         pageBody1 = reservation.realizeReservation();
 
         Mapping m = new Mapping();
+        m.mapping();
         pageBody2 = m.getPanel();
 
         AcceuilPersonnel personnel = new AcceuilPersonnel(frame,company_id);
         pageBody7=personnel.acceuil();
+
+        Window window=new Window(pages,pageBody);
+        pageBody4=window.firstMenu;
 
         Indicators indicator = new Indicators();
         pageBody3 = indicator.getIndicator();
@@ -42,9 +50,18 @@ public class Ihm extends JFrame{
         if(page.equals("realize")){
             pageBody.add(pageBody1,"realize");
             pageBody.add(pageBody2,"consult");
+            pageBody.add(pageBody4,"Configurer fenêtre");
             pageBody.add(pageBody3,"indicator");
             pageBody.add(pageBody7,"staff");
         } else if(page.equals("consult")){
+            pageBody.add(pageBody2,"consult");
+            pageBody.add(pageBody1,"realize");
+            pageBody.add(pageBody4,"Configurer fenêtre");
+            pageBody.add(pageBody3,"indicator");
+            pageBody.add(pageBody7,"staff");
+        }
+        else if(page.equals("Configurer fenêtre")){
+            pageBody.add(pageBody4,"Configurer fenêtre");
             pageBody.add(pageBody2,"consult");
             pageBody.add(pageBody1,"realize");
             pageBody.add(pageBody3,"indicator");
@@ -55,12 +72,13 @@ public class Ihm extends JFrame{
             pageBody.add(pageBody2,"consult");
             pageBody.add(pageBody1,"realize");
             pageBody.add(pageBody7,"staff");
+            pageBody.add(pageBody4,"Configurer fenêtre");
         }else if(page.equals("staff")){
             pageBody.add(pageBody7,"staff");
             pageBody.add(pageBody3,"indicator");
             pageBody.add(pageBody2,"consult");
             pageBody.add(pageBody1,"realize");
-
+            pageBody.add(pageBody4,"Configurer fenêtre");
 
         }
 
@@ -89,6 +107,10 @@ public class Ihm extends JFrame{
         consult.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                pageBody.remove(pageBody2);
+                m.mapping();
+                pageBody2 = m.getPanel();
+                pageBody.add(pageBody2,"consult");
                 pages.show(pageBody,"consult");
             }
         });
@@ -106,6 +128,14 @@ public class Ihm extends JFrame{
         setColor(staff,Color.white,new Color(0, 102,204));
 
         JButton configWindow = new JButton("Configurer fenêtre");
+        configWindow.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                pages.show(pageBody, "Configurer fenêtre");
+            }
+        });
+        sizeComposant(new Dimension(Integer.MAX_VALUE, 75), configWindow);
+        setColor(configWindow,Color.white,new Color(0, 102,204));
 
         JButton indicatorButton = new JButton("Indicateurs et locations");
         setColor(indicatorButton,Color.white,new Color(0, 102,204));
@@ -118,13 +148,11 @@ public class Ihm extends JFrame{
         sizeComposant(new Dimension(Integer.MAX_VALUE, 75), indicatorButton);
         setColor(consult,Color.white,new Color(0, 102,204));
 
-        sizeComposant(new Dimension(Integer.MAX_VALUE, 75), staff);
-        setColor(configWindow,Color.white,new Color(0, 102,204));
-
         JPanel underMenu = new JPanel(new FlowLayout(FlowLayout.LEFT));
         underMenu.setMaximumSize(new Dimension(Integer.MAX_VALUE, 100));
         underMenu.setBackground(new Color(0, 102,204));
 
+<<<<<<< HEAD
         JButton disconnect = new JButton("Deconnecter");
         /*disconnect.addActionListener(new ActionListener() {
             @Override
@@ -145,6 +173,8 @@ public class Ihm extends JFrame{
         });
 
 
+=======
+>>>>>>> e330c7c118f5134d8379d5326cdae5ca48fce34d
         try{
             ImageIcon iconHome = new ImageIcon(ImageIO.read(new File(path+"maison.png")));
             iconHome = new ImageIcon(iconHome.getImage().getScaledInstance(18, 18, Image.SCALE_DEFAULT));
@@ -152,7 +182,8 @@ public class Ihm extends JFrame{
             disconnect.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    Menu Menu = new Menu("Smart Lobby", company_id);
+                    Menu menu = new episen.si.ing1.pds.client.Menu("Smart Lobby", Menu.company_id);
+                    ChoiceCriteria.restartData();
                     frame.dispose();
                 }
             });
@@ -160,22 +191,22 @@ public class Ihm extends JFrame{
             underMenu.add(home);
         } catch(Exception e){}
 
-        try{
-            ImageIcon iconRefresh = new ImageIcon(ImageIO.read(new File(path+"actualiser.png")));
-            iconRefresh = new ImageIcon(iconRefresh.getImage().getScaledInstance(18, 18, Image.SCALE_DEFAULT));
-            JButton refresh = new JButton(iconRefresh);
-            refresh.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {}
-            });
-            setColor(refresh,Color.white,new Color(0, 102,204));
-            underMenu.add(refresh);
-         } catch(Exception e){}
 
+        JButton disconnect = new JButton("Deconnecter");
+        disconnect.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                frame.dispose();
+            }
+        });
+        disconnect.setMaximumSize(new Dimension(100, 100));
+        setColor(disconnect,Color.white,new Color(0, 102,204));
+        
         underMenu.add(disconnect);
 
         menu.add(realize);
         menu.add(consult);
+        menu.add(configWindow);
         menu.add(staff);
         menu.add(indicatorButton);
         menu.add(Box.createGlue());

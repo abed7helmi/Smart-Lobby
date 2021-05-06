@@ -1,14 +1,15 @@
-package episen.si.ing1.pds.client;
+package episen.si.ing1.pds.client.reservation;
 
-import javax.imageio.ImageIO;
+import episen.si.ing1.pds.client.Ihm;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
 import java.util.List;
 
 public class ViewWithPlan {
@@ -20,18 +21,20 @@ public class ViewWithPlan {
     private final JPanel configButton = new JPanel();
     private JTextField consign = new JTextField("**Veuillez configurer les salles qui sont rouges. " +
             "Les salles vertes sont configurees.");
-    protected static Map<JButton, String> listButton = new HashMap<>();
-    protected static Map<String,Map<String, String>> configRoom = new HashMap<>();
-    protected static List listDeviceId = new ArrayList();
-    protected static Map<String, String> listDeviceIdRoom = new HashMap<>();
+    public Map<JButton, String> listButton = new HashMap<>();
+    public static Map<String,Map<String, String>> configRoom = new HashMap<>();
+    public static List listDeviceId = new ArrayList();
+    public static Map<String, String> listDeviceIdRoom = new HashMap<>();
     private JPanel advancement = new JPanel();
     private JTextField orderSelected = new JTextField();
     private JFrame frame;
     private JButton confirm = new JButton("Continuer");
+    public static boolean verifConfiguration = false;
 
     public ViewWithPlan(JFrame frame, String o) {
         this.frame = frame;
         this.order = o;
+        listButton.clear();
     }
     public void viewWithPlan(JPanel pb){
         this.pageBody = pb;
@@ -44,12 +47,6 @@ public class ViewWithPlan {
         pageBody.add(view, BorderLayout.SOUTH);
         pageBody.repaint();
         frame.repaint();
-
-        System.out.println("////////");
-        System.out.println(ChoiceCriteria.input);
-        System.out.println("////////");
-        System.out.println(Choice.proposalSelected);
-
     }
     public JPanel view(){
         view = new JPanel();
@@ -59,10 +56,11 @@ public class ViewWithPlan {
 
         confirm = Ihm.navJButton(confirm, 780,10,100,50);
         view.add(confirm);
-        confirm.setEnabled(true);
+        confirm.setEnabled(false);
         confirm.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                listButton.clear();
                 view.setVisible(false);
                 advancement.setVisible(false);
                 pageBody.repaint();
@@ -77,7 +75,7 @@ public class ViewWithPlan {
         view.add(orderSelected);
 
         JPanel planPanel = new JPanel();
-        planPanel.setBounds(10,100,500,400);
+        planPanel.setBounds(10,100,500,420);
         ImageIcon planImage = new ImageIcon(Ihm.path+"plan.png");
         planImage = new ImageIcon(planImage.getImage().getScaledInstance(planPanel.getWidth(), planPanel.getHeight(), Image.SCALE_DEFAULT));
         JLabel planLabel = new JLabel(planImage, JLabel.CENTER);
@@ -129,14 +127,20 @@ public class ViewWithPlan {
         room.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                changePage(room, room_id);
+                changePage(room, room_id, confirm);
             }
         });
         listButton.put(room, "unvalidated");
         configButton.add(room);
     }
-    public void changePage(JButton room, String room_id){
+    public void changePage(JButton room, String room_id, JButton confirm){
         ChoiceDevice device = new ChoiceDevice(frame, room_id);
-        device.choice(room);
+        device.choice(room,confirm,listButton);
+    }
+    public static void reload(JButton c){
+        if(verifConfiguration){
+            c.setEnabled(true);
+        }
     }
 }
+

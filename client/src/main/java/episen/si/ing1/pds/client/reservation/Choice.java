@@ -1,8 +1,11 @@
-package episen.si.ing1.pds.client;
+package episen.si.ing1.pds.client.reservation;
 
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import episen.si.ing1.pds.client.Ihm;
+import episen.si.ing1.pds.client.Menu;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -14,13 +17,12 @@ public class Choice{
     private final JFrame frame;
     private JTextField selected = new JTextField("Vous avez choisi : ");
     private JPanel pageBody;
-    protected static Map<String , Map<String, Map<String ,String>>> mapProposals = new HashMap<>();
-    protected static Map<String ,Map<String,String>> proposalSelected = new HashMap<>();
+    public static Map<String , Map<String, Map<String ,String>>> mapProposals = new HashMap<>();
+    public static Map<String ,Map<String,String>> proposalSelected = new HashMap<>();
 
     //keep for link with the previous page
     public Choice(JFrame f) {
         this.frame = f;
-        System.out.println("tetste");
     }
 
     public void choice(JPanel pb, String proposals){
@@ -44,15 +46,17 @@ public class Choice{
         Ihm.buttonVoid.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Menu Menu = new Menu("Smart Lobby", ChoiceCriteria.input.get("company_id"));
-                ChoiceCriteria.input.clear();
+                pageBody.remove(view);
                 frame.dispose();
+                episen.si.ing1.pds.client.Menu Menu = new Menu("Smart Lobby", ChoiceCriteria.input.get("company_id"));
+                ChoiceCriteria.input.clear();
             }
         });
         view.add(Ihm.buttonVoid);
         view.add(Ihm.buttonContinue);
 
-
+        pageBody.add(advancement, BorderLayout.CENTER);
+        pageBody.add(view, BorderLayout.SOUTH);
         pageBody.repaint();
         frame.repaint();
     }
@@ -193,3 +197,4 @@ public class Choice{
         display.add(button);
     }
 }
+

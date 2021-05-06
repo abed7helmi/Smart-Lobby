@@ -1,5 +1,8 @@
-package episen.si.ing1.pds.client;
+package episen.si.ing1.pds.client.reservation;
 
+import episen.si.ing1.pds.client.Client;
+import episen.si.ing1.pds.client.Ihm;
+import episen.si.ing1.pds.client.Menu;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
@@ -57,13 +60,12 @@ public class Bill {
                 response = prepareRequest();
                 if(  !(response.equals("Not done") && !(response.equals("")))  ){
                     frame.dispose();
-                    Menu menu = new Menu("Smart Lobby", ChoiceCriteria.input.get("company_id"));
+                    episen.si.ing1.pds.client.Menu menu = new episen.si.ing1.pds.client.Menu("Smart Lobby", ChoiceCriteria.input.get("company_id"));
                     ChoiceCriteria.restartData();
                     menu.reservationDone(numberRoom);
                 } else{
                     Ihm ihm = new Ihm("Smart Lobby","realize", ChoiceCriteria.input.get("company_id"));
                     ChoiceCriteria.restartData();
-                    frame.dispose();
                     JOptionPane.showMessageDialog(null,"Nous sommes desoles mais l'offre n'est plus disponible. Veuillez reessayer.");
                 }
             }
@@ -75,9 +77,9 @@ public class Bill {
         cancel.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                ChoiceCriteria.restartData();
                 frame.dispose();
-                Menu Menu = new Menu("Smart Lobby", ChoiceCriteria.input.get("company_id"));
+                episen.si.ing1.pds.client.Menu menu = new episen.si.ing1.pds.client.Menu("Smart Lobby", Menu.company_id);
+                ChoiceCriteria.restartData();
             }
         });
         viewBill.add(cancel);
@@ -150,7 +152,7 @@ public class Bill {
     }
 
     public String prepareRequest(){
-        Client.map.get("requestLocation5").put("company_id", ChoiceCriteria.input.get("company_id"));
+        Client.map.get("requestLocation5").put("company_id", Menu.company_id);
         String manager_id = Client.sendBd("requestLocation5");
         Client.map.get("requestLocation4").put("end_date", ChoiceCriteria.input.get("end_date"));
         Client.map.get("requestLocation4").put("start_date", ChoiceCriteria.input.get("start_date"));

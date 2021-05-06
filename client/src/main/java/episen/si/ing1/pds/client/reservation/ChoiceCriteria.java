@@ -1,4 +1,8 @@
-package episen.si.ing1.pds.client;
+package episen.si.ing1.pds.client.reservation;
+
+import episen.si.ing1.pds.client.Client;
+import episen.si.ing1.pds.client.Ihm;
+import episen.si.ing1.pds.client.Menu;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -12,7 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ChoiceCriteria{
-    protected static Map<String, String> input = new HashMap<>();
+    public static Map<String, String> input = new HashMap<>();
     private final String page = "criteria";
     private final JButton buttonContinue = new JButton("> Continuer");
     private final JFrame frame;
@@ -27,14 +31,13 @@ public class ChoiceCriteria{
     private final JPanel pageBody = new JPanel();
     private String company_id = "";
 
-    public ChoiceCriteria(JFrame f,String id)  {
+    public ChoiceCriteria(JFrame f)  {
         restartData();
         frame = f;
-        company_id = id;
-        input.put("company_id", company_id);
     }
 
     public JPanel realizeReservation(){
+        input.put("company_id", Menu.company_id);
         pageBody.setLayout(new BorderLayout());
         TitleReservation title = new TitleReservation();
 
@@ -506,8 +509,8 @@ public class ChoiceCriteria{
         Choice.mapProposals.clear();
         ViewWithPlan.listDeviceIdRoom.clear();
         ViewWithPlan.configRoom.clear();
-        ViewWithPlan.listButton.clear();
         ViewWithPlan.listDeviceId.clear();
         ChoiceDevice.config.clear();
     }
 }
+

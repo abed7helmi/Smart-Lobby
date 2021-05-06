@@ -1,5 +1,13 @@
 package episen.si.ing1.pds.backend.server;
 
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -9,22 +17,16 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+<<<<<<< HEAD
 import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+=======
+>>>>>>> e330c7c118f5134d8379d5326cdae5ca48fce34d
 import java.text.SimpleDateFormat;
-import java.util.Date;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.*;
 
 public class ClientRequestManager {
 
@@ -45,6 +47,8 @@ public class ClientRequestManager {
 			@Override
 			public void run() {
 				try {
+					resetData();
+
 					String clientInput = input.readLine();
 					String requestType = clientInput.split("#")[0];
 					String values = clientInput.split("#")[1];
@@ -115,9 +119,16 @@ public class ClientRequestManager {
 						case "requestManyNewBadge":
 							saveallemployees(map);
 							break;
+						case "requestWindow":
+							getWindow(map);
+							break;
+						case "confWindow":
+							confWindow(map);
+							break;
 						case "getbadges":
 							getallbadges(map);
 							break;
+<<<<<<< HEAD
 						case "deletepermission":
 							deletepermission(map);
 							break;
@@ -132,6 +143,11 @@ public class ClientRequestManager {
 							CreateNewPermission(map);
 							break;
 
+=======
+						case "requestBuildList":
+							getGlobalIndicators();
+							break;
+>>>>>>> e330c7c118f5134d8379d5326cdae5ca48fce34d
 					}
 
 				} catch (Exception e) {
@@ -165,6 +181,44 @@ public class ClientRequestManager {
 			output.println(mapper.writeValueAsString(result));
 		} catch (JsonMappingException e) {} catch (JsonProcessingException e) {} catch (SQLException e) {}
 
+	}
+	public void getWindow(Map<String,String> map) throws SQLException {
+		System.out.println("ok");
+		try {
+			ObjectMapper mapper = new ObjectMapper(new JsonFactory());
+			String request="select device.device_id from device inner join windows on(device.device_id=windows.device_id);";
+			ResultSet rs = c.createStatement().executeQuery(request);
+			Map<String,Map<String, String>> result = new HashMap<String,Map<String, String>>();
+			int i=0;
+			while(rs.next()) {
+				Map<String, String> tab = new HashMap<String, String>();
+				tab.put("device_id", rs.getString(1));
+				result.put(""+i++, tab);
+			}System.out.println("ok");
+			output.println(mapper.writeValueAsString(result));
+		} catch (JsonMappingException e) {} catch (JsonProcessingException e) {}
+	}
+	public void confWindow(Map<String,String> map) throws SQLException {
+
+		try {
+			ObjectMapper mapper = new ObjectMapper(new JsonFactory());
+			String request="select * from windows where device-id='"+map.get("device_id")+"';";
+			ResultSet rs = c.createStatement().executeQuery(request);
+			Map<String,Map<String, String>> result = new HashMap<String,Map<String, String>>();
+			int i=0;
+			while(rs.next()) {
+				Map<String, String> resultmap = new HashMap<String, String>();
+				resultmap.put("device_id", rs.getString(1));
+				resultmap.put("outside_temperature", rs.getString(2));
+				resultmap.put("inside_temperature", rs.getString(3));
+				resultmap.put("outside_luminosity", rs.getString(4));
+				resultmap.put("inside_luminosity", rs.getString(5));
+				resultmap.put("percentage_store", rs.getString(6));
+				resultmap.put("percentage_tint", rs.getString(7));
+				result.put(""+i++, resultmap);
+			}System.out.println("ok");
+			output.println(mapper.writeValueAsString(result));
+		} catch (JsonMappingException e) {} catch (JsonProcessingException e) {}
 	}
 
 	public void reservationFloor(Map<String,String> map) {
@@ -272,16 +326,16 @@ public class ClientRequestManager {
 			Statement s = c.createStatement();
 			if(oldDevice.isEmpty()) {
 				s.executeUpdate("update device set device_placed='t', location_id="+location+" where device_id="+newDevice);
-				s.executeUpdate("update location set occupied_location='t' where location_id="+location);
 			}else if(newDevice.isEmpty()) {
 				s.executeUpdate("update device set device_placed='f', location_id=null where device_id="+oldDevice);
-				s.executeUpdate("update location set occupied_location='f' where location_id="+location);
 			}else {
 				s.executeUpdate("update device set device_placed='t', location_id="+location+" where device_id="+newDevice);
 				s.executeUpdate("update device set device_placed='f', location_id=null where device_id="+oldDevice);
 			}
-
+			s.executeUpdate("update location set occupied_location='t' where location_id in (select location_id from device where location_id is not null)");
+			s.executeUpdate("update location set occupied_location='f' where location_id not in (select location_id from device where location_id is not null)");
 			output.println("Done");
+
 		} catch (SQLException e) {}
 	}
 
@@ -520,7 +574,6 @@ public class ClientRequestManager {
 					"inner join employee e on g.gs_manager_id = e.employee_id " +
 					"where company_id = "+ map.get("company_id") +";";
 			ResultSet result = c.createStatement().executeQuery(request);
-
 			String companyId ="";
 			while(result.next()){
 				companyId = result.getString(1);
@@ -622,6 +675,22 @@ public class ClientRequestManager {
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	public void resetData(){
+		try{
+			String request = "select reservation_id from reservation where end_date <= current_date";
+			ResultSet result = c.createStatement().executeQuery(request);
+
+			while(result.next()){
+				request = "update device set device_status = 'free', reservation_id = null, room_id = null\n" +
+						"  where reservation_id = "+  result.getString(1) + "; "+
+						"  update room set reservation_id = null, " +
+						"  status = 'free' where reservation_id =" +  result.getString(1) + "; " +
+						"  delete from reservation where reservation_id = " +  result.getString(1) + ";";
+				c.createStatement().executeUpdate(request);
+			}
+		}catch (Exception e){}
+
 	}
 
 
@@ -1005,10 +1074,16 @@ public class ClientRequestManager {
 			int iddevice =Integer.parseInt(map.get("iddevice"));
 			int idpermission =Integer.parseInt(map.get("idpermission"));
 
+<<<<<<< HEAD
 			PreparedStatement st = c.prepareStatement("delete from permission_device where permission_id='"+idpermission+"'and device_id='"+iddevice+"';");
 			st.executeUpdate();
 			output.println("good");
 
+=======
+	public void testpermissions( Map<String, String> map) {
+		logger.debug("tesssssttttt");
+		try {
+>>>>>>> e330c7c118f5134d8379d5326cdae5ca48fce34d
 
 		} catch (Exception e) {
 			output.println("notgod");
@@ -1080,9 +1155,73 @@ public class ClientRequestManager {
 
 
 
+	public void getGlobalIndicators() throws Exception {
+		Double nb = 0.00;
+		Double wc = 0.00;
+		Double ec = 0.00;
+		Integer bg = 0;
+		Integer w = 0;
+		Integer fr = 0;
+		Integer bo = 0;
+	//	Integer la = 0;
 
+		String query = "SELECT ((SELECT COUNT(*) FROM room WHERE status LIKE 'booked')::numeric / (SELECT COUNT(*) FROM room)::numeric *100)";
+		Statement stmt = c.createStatement();
+		ResultSet rs = stmt.executeQuery(query);
+		if(rs.next()) {
+			nb = rs.getDouble(1);
+		}
+		String query2 = "SELECT SUM(water_consumption) FROM building";
+		Statement stmt2 = c.createStatement();
+		ResultSet rs2 = stmt2.executeQuery(query2);
+		while (rs2.next())
+			wc = rs2.getDouble(1);
 
+		String query3 = "SELECT SUM(electricity_consumption) FROM building";
+		Statement stmt3 = c.createStatement();
+		ResultSet rs3 = stmt3.executeQuery(query3);
 
+		while (rs3.next())
+			ec = rs3.getDouble(1);
+
+		String query4 = "SELECT COUNT(*) FROM badge WHERE badge_state LIKE 'En Fonction'";
+		Statement stmt4 = c.createStatement();
+		ResultSet rs4 = stmt4.executeQuery(query4);
+
+		while (rs4.next())
+			bg = rs4.getInt(1);
+
+		String query5 = "SELECT COUNT(*) FROM windows";
+		Statement stmt5 = c.createStatement();
+		ResultSet rs5 = stmt5.executeQuery(query5);
+		while (rs5.next())
+			w = rs5.getInt(1);
+
+		String query6 = "SELECT count(*) FROM device WHERE device_status LIKE 'free'";
+		Statement stmt6 = c.createStatement();
+		ResultSet rs6 = stmt6.executeQuery(query6);
+		while (rs6.next())
+			fr = rs6.getInt(1);
+
+		String query7 = "SELECT count(*) FROM device WHERE device_status LIKE 'booked';";
+		Statement stmt7 = c.createStatement();
+		ResultSet rs7 = stmt7.executeQuery(query7);
+		while (rs7.next())
+			bo = rs7.getInt(1);
+
+	//	String query8 = "SELECT reservation_id FROM reservation ORDER BY reservation_id DESC LIMIT 1";
+	//	Statement stmt8 = c.createStatement();
+	//	ResultSet rs8 = stmt8.executeQuery(query8);
+
+	//	while (rs8.next())
+	//		la = rs8.getInt(1);
+
+		String hm = "WC-"+wc+",OC-"+nb+",EC-"+ec+",BG-"+bg+",W-"+w+",FR-"+fr+",BO-"+bo ;
+
+		ObjectMapper mapper = new ObjectMapper();
+		String response = mapper.writeValueAsString(hm);
+		output.println(response);
+	}
 
 
 
