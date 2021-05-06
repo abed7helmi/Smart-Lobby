@@ -93,7 +93,7 @@ public class ChoiceDevice extends JFrame{
                 room.setBackground(Color.green);
                 ViewWithPlan.verifConfiguration = true;
                 for(Map.Entry m : ViewWithPlan.listButton.entrySet()){
-                    if( m.getKey().equals("unvalited") ) ViewWithPlan.verifConfiguration = false;
+                    if( m.getValue().equals("unvalidated") ) ViewWithPlan.verifConfiguration = false;
                 }
                 ViewWithPlan.reload(confirm);
                 frameDevice.dispose();

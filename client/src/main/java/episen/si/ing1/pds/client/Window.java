@@ -18,8 +18,13 @@ public class Window extends JFrame implements ActionListener {
     private JPanel managestore=new JPanel(new GridLayout(1,2,0,0));
     private JPanel managetint=new JPanel(new GridLayout(3,1,0,0));
 
+    private CarLayout pages = new CarLayout();
+    private JPanel pageBody = new JPanel();
 
-    public Window(){
+    public Window(CarLayout p, JPanel pb){
+        pages = p;
+        pageBody = pb
+
         this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         this.setTitle("configuration fenêtres");
         this.setSize(1200,800);
