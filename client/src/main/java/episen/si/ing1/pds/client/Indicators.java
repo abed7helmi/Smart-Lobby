@@ -73,17 +73,4 @@ public class Indicators {
         return pane;
     }
 
-    public static void main(String[] args) {
-        JFrame frame = new JFrame("Indicators");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(1200, 800);
-
-        frame.setPreferredSize(frame.getSize());
-
-        Indicators indi = new Indicators();
-        frame.setContentPane(indi.getIndicator());
-        frame.setVisible(true);
-        frame.pack();
-    }
-
 }

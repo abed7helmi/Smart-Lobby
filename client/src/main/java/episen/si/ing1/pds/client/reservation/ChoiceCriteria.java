@@ -509,7 +509,6 @@ public class ChoiceCriteria{
         Choice.mapProposals.clear();
         ViewWithPlan.listDeviceIdRoom.clear();
         ViewWithPlan.configRoom.clear();
-        ViewWithPlan.listButton.clear();
         ViewWithPlan.listDeviceId.clear();
         ChoiceDevice.config.clear();
     }

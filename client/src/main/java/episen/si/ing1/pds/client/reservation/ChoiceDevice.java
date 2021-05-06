@@ -41,6 +41,7 @@ public class ChoiceDevice extends JFrame{
     private final List keyConfigEquipment  = new ArrayList();
     private final List deviceIdInRoom = new ArrayList();
     private JButton confirm = new JButton();
+    private Map<JButton, String> listButton = new HashMap<>();
 
     public ChoiceDevice(JFrame f, String id) {
         mainFrame = f;
@@ -68,7 +69,8 @@ public class ChoiceDevice extends JFrame{
         setResizable(false);
     }
 
-    public void choice(JButton room, JButton c){
+    public void choice(JButton room, JButton c, Map<JButton, String> listB){
+        listButton = listB;
         roomName = room.getText();
         confirm = c;
 
@@ -89,12 +91,17 @@ public class ChoiceDevice extends JFrame{
             public void actionPerformed(ActionEvent e) {
                 String list = deviceIdInRoom.toString();
                 ViewWithPlan.listDeviceIdRoom.put(room_id, list);
-                ViewWithPlan.listButton.replace(room, "validated");
+                listButton.replace(room, "validated");
                 room.setBackground(Color.green);
                 ViewWithPlan.verifConfiguration = true;
-                for(Map.Entry m : ViewWithPlan.listButton.entrySet()){
+                for(Map.Entry m : listButton.entrySet()){
                     if( m.getValue().equals("unvalidated") ) ViewWithPlan.verifConfiguration = false;
                 }
+                System.out.println("test");
+                for(Map.Entry m : listButton.entrySet()){
+                    System.out.println(m.getValue());
+                }
+
                 ViewWithPlan.reload(confirm);
                 frameDevice.dispose();
             }

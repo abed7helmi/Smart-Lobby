@@ -21,7 +21,7 @@ public class ViewWithPlan {
     private final JPanel configButton = new JPanel();
     private JTextField consign = new JTextField("**Veuillez configurer les salles qui sont rouges. " +
             "Les salles vertes sont configurees.");
-    public static Map<JButton, String> listButton = new HashMap<>();
+    public Map<JButton, String> listButton = new HashMap<>();
     public static Map<String,Map<String, String>> configRoom = new HashMap<>();
     public static List listDeviceId = new ArrayList();
     public static Map<String, String> listDeviceIdRoom = new HashMap<>();
@@ -34,6 +34,7 @@ public class ViewWithPlan {
     public ViewWithPlan(JFrame frame, String o) {
         this.frame = frame;
         this.order = o;
+        listButton.clear();
     }
     public void viewWithPlan(JPanel pb){
         this.pageBody = pb;
@@ -59,6 +60,7 @@ public class ViewWithPlan {
         confirm.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                listButton.clear();
                 view.setVisible(false);
                 advancement.setVisible(false);
                 pageBody.repaint();
@@ -133,7 +135,7 @@ public class ViewWithPlan {
     }
     public void changePage(JButton room, String room_id, JButton confirm){
         ChoiceDevice device = new ChoiceDevice(frame, room_id);
-        device.choice(room,confirm);
+        device.choice(room,confirm,listButton);
     }
     public static void reload(JButton c){
         if(verifConfiguration){

@@ -3,10 +3,12 @@ package episen.si.ing1.pds.client;
 import episen.si.ing1.pds.client.Mapping.Mapping;
 import episen.si.ing1.pds.client.reservation.ChoiceCriteria;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 
 
 public class Ihm extends JFrame{
@@ -149,6 +151,22 @@ public class Ihm extends JFrame{
         JPanel underMenu = new JPanel(new FlowLayout(FlowLayout.LEFT));
         underMenu.setMaximumSize(new Dimension(Integer.MAX_VALUE, 100));
         underMenu.setBackground(new Color(0, 102,204));
+
+        try{
+            ImageIcon iconHome = new ImageIcon(ImageIO.read(new File(path+"maison.png")));
+            iconHome = new ImageIcon(iconHome.getImage().getScaledInstance(18, 18, Image.SCALE_DEFAULT));
+            JButton home = new JButton(iconHome);
+            home.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    Menu Menu = new Menu("Smart Lobby", company_id);
+                    frame.dispose();
+                }
+            });
+            setColor(home,Color.white,new Color(0, 102,204));
+            underMenu.add(home);
+        } catch(Exception e){}
+
 
         JButton disconnect = new JButton("Deconnecter");
         disconnect.addActionListener(new ActionListener() {
