@@ -17,14 +17,13 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-<<<<<<< HEAD
+
 import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-=======
->>>>>>> e330c7c118f5134d8379d5326cdae5ca48fce34d
+
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -128,7 +127,7 @@ public class ClientRequestManager {
 						case "getbadges":
 							getallbadges(map);
 							break;
-<<<<<<< HEAD
+
 						case "deletepermission":
 							deletepermission(map);
 							break;
@@ -143,11 +142,11 @@ public class ClientRequestManager {
 							CreateNewPermission(map);
 							break;
 
-=======
+
 						case "requestBuildList":
 							getGlobalIndicators();
 							break;
->>>>>>> e330c7c118f5134d8379d5326cdae5ca48fce34d
+
 					}
 
 				} catch (Exception e) {
@@ -1074,22 +1073,18 @@ public class ClientRequestManager {
 			int iddevice =Integer.parseInt(map.get("iddevice"));
 			int idpermission =Integer.parseInt(map.get("idpermission"));
 
-<<<<<<< HEAD
 			PreparedStatement st = c.prepareStatement("delete from permission_device where permission_id='"+idpermission+"'and device_id='"+iddevice+"';");
 			st.executeUpdate();
 			output.println("good");
 
-=======
-	public void testpermissions( Map<String, String> map) {
-		logger.debug("tesssssttttt");
-		try {
->>>>>>> e330c7c118f5134d8379d5326cdae5ca48fce34d
 
 		} catch (Exception e) {
 			output.println("notgod");
 			e.printStackTrace();
 		}
 	}
+
+
 
 
 	//Staff

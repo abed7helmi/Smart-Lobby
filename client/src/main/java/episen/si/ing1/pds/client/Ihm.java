@@ -13,7 +13,7 @@ import java.io.File;
 
 public class Ihm extends JFrame{
     private JFrame frame = new JFrame();
-   private JPanel pageBody = new JPanel();
+    private JPanel pageBody = new JPanel();
     public  static JButton buttonVoid = new JButton("Annuler");
     public  static JButton buttonContinue = new JButton("> Continuer");
     private JPanel pageBody1 ;
@@ -152,34 +152,11 @@ public class Ihm extends JFrame{
         underMenu.setMaximumSize(new Dimension(Integer.MAX_VALUE, 100));
         underMenu.setBackground(new Color(0, 102,204));
 
-<<<<<<< HEAD
-        JButton disconnect = new JButton("Deconnecter");
-        /*disconnect.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                frame.dispose();
-            }
-        });*/
-        disconnect.setMaximumSize(new Dimension(100, 100));
-        setColor(disconnect,Color.white,new Color(0, 102,204));
-
-
-        disconnect.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Menu Menu = new Menu("Smart Lobby", company_id);
-                frame.dispose();
-            }
-        });
-
-
-=======
->>>>>>> e330c7c118f5134d8379d5326cdae5ca48fce34d
         try{
             ImageIcon iconHome = new ImageIcon(ImageIO.read(new File(path+"maison.png")));
             iconHome = new ImageIcon(iconHome.getImage().getScaledInstance(18, 18, Image.SCALE_DEFAULT));
             JButton home = new JButton(iconHome);
-            disconnect.addActionListener(new ActionListener() {
+            home.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     Menu menu = new episen.si.ing1.pds.client.Menu("Smart Lobby", Menu.company_id);
@@ -201,7 +178,7 @@ public class Ihm extends JFrame{
         });
         disconnect.setMaximumSize(new Dimension(100, 100));
         setColor(disconnect,Color.white,new Color(0, 102,204));
-        
+
         underMenu.add(disconnect);
 
         menu.add(realize);
@@ -220,7 +197,7 @@ public class Ihm extends JFrame{
         frame.setVisible(true);
         frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setResizable(true);
+        frame.setResizable(false);
     }
 
     public void setColor(JButton button,Color font, Color back){
