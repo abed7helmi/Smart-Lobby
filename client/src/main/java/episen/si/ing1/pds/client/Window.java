@@ -17,9 +17,11 @@ public class Window extends JFrame implements ActionListener {
     private JPanel jstate=new JPanel(new GridLayout(5,1,0,0));
     private JPanel managestore=new JPanel(new GridLayout(1,2,0,0));
     private JPanel managetint=new JPanel(new GridLayout(3,1,0,0));
-
-
-    public Window(){
+    private JPanel pageBody;
+    private CardLayout pages;
+    public Window(CardLayout pages, JPanel pagesBody){
+        this.pageBody=pagesBody;
+        this.pages=pages;
         this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         this.setTitle("configuration fenêtres");
         this.setSize(1200,800);
@@ -90,19 +92,21 @@ public class Window extends JFrame implements ActionListener {
 
         if (e.getActionCommand().equals("Accéder au Plan")){
             Jplan.removeAll();
-            ImageIcon lplan = new ImageIcon(new ImageIcon("C:\\Users\\windows 10\\Desktop\\pds\\R3\\plan.jpg").getImage().getScaledInstance(800,800,Image.SCALE_DEFAULT));
-            plan = new JButton(lplan);
+            //ImageIcon lplan = new ImageIcon(new ImageIcon("C:\\Users\\windows 10\\Desktop\\pds\\R3\\plan.jpg").getImage().getScaledInstance(800,800,Image.SCALE_DEFAULT));
+            //plan = new JButton(lplan);
             mplan.add(new JLabel("cliquez sur l'emplacement   rouge(hors service)    vert(disponible)"));
             Jplan.add(mplan, BorderLayout.NORTH);
             Jplan.add(plan, BorderLayout.CENTER);
-            Ihm.pageBody.add(Jplan,"Accéder au plan");
-            Ihm.pages.show(Ihm.pageBody,"Accéder au plan");
+            pageBody.add(Jplan,"Accéder au plan");
+            pages.show(pageBody,"Accéder au plan");
         }
         if (e.getActionCommand().equals("Accéder à la liste des fenêtres")) {
             listWindow.removeAll();
             listWindow.add(new JLabel("cliquez sur la fenêtres de votre choix"));
+
+            /* String result= Client.sendBd("requestWindow");
             String result= Client.sendBd("requestWindow");
-            /*if (result == null){
+            if (result == null){
                 for (int i=589; i<596;i++){
                     JButton j=new JButton(""+i);
                     j.setBackground(Color.lightGray);
@@ -124,10 +128,10 @@ public class Window extends JFrame implements ActionListener {
                 j.addActionListener(this);
                 listWindow.add(j);
             }
-            Ihm.pageBody.add(listWindow,"Accéder à la liste des fenetres");
-            Ihm.pages.show(Ihm.pageBody,"Accéder à la liste des fenetres");
+            pageBody.add(listWindow,"Accéder à la liste des fenetres");
+            pages.show(pageBody,"Accéder à la liste des fenetres");
         }
-        if (e.getActionCommand().equals("590")||e.getActionCommand().equals("589")||e.getActionCommand().equals("3")||e.getActionCommand().equals("d")||e.getActionCommand().equals("f")){
+        if (e.getActionCommand().equals("590")||e.getActionCommand().equals("589")||e.getActionCommand().equals("591")||e.getActionCommand().equals("592")||e.getActionCommand().equals("593")){
             jstate.removeAll();
             JPanel onstate=new JPanel(new GridLayout(6,2,0,0));
             JPanel state=new JPanel(new BorderLayout());
@@ -161,8 +165,8 @@ public class Window extends JFrame implements ActionListener {
             jstate.add(state);
             jstate.add(store);
             jstate.add(tint);
-            Ihm.pageBody.add(jstate,"ok");
-            Ihm.pages.show(Ihm.pageBody,"ok");
+            pageBody.add(jstate,"ok");
+            pages.show(pageBody,"ok");
         }
         if (e.getActionCommand().equals("gérer les stores")){
             managestore.removeAll();
@@ -208,8 +212,8 @@ public class Window extends JFrame implements ActionListener {
             managestore.add(managestore2);
             managestore.setPreferredSize(dim);
             managestore.setBackground(Color.GRAY);
-            Ihm.pageBody.add(managestore,"gérer les stores");
-            Ihm.pages.show(Ihm.pageBody,"gérer les stores");
+            pageBody.add(managestore,"gérer les stores");
+            pages.show(pageBody,"gérer les stores");
         }
         if (e.getActionCommand().equals("gérer la teinte")){
             managetint.removeAll();
@@ -233,8 +237,8 @@ public class Window extends JFrame implements ActionListener {
             managetint1.add(new JLabel("45"));
             managetint1.add(new JLabel("56"));
             managetint.add(managetint1);
-            Ihm.pageBody.add(managetint,"gérer la teinte");
-            Ihm.pages.show(Ihm.pageBody,"gérer la teinte");
+            pageBody.add(managetint,"gérer la teinte");
+            pages.show(pageBody,"gérer la teinte");
         }
         if (e.getActionCommand().equals("100%")||e.getActionCommand().equals("75%")||e.getActionCommand().equals("50%")||e.getActionCommand().equals("25%")||e.getActionCommand().equals("0%")){
             JPanel state=new JPanel(new BorderLayout());
@@ -258,8 +262,8 @@ public class Window extends JFrame implements ActionListener {
             onstate.add(new JLabel("pourcentage des stores"));
             onstate.add(txt6);
             state.add(onstate,BorderLayout.CENTER);
-            Ihm.pageBody.add(state,"valide");
-            Ihm.pages.show(Ihm.pageBody,"valide");
+            pageBody.add(state,"valide");
+            pages.show(pageBody,"valide");
         }
     }
 
