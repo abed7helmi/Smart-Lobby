@@ -1113,8 +1113,13 @@ public class ClientRequestManager {
 	public void getGlobalIndicators() throws Exception {
 		Double nb = 0.00;
 		Double wc = 0.00;
+		Double ec = 0.00;
+		Integer bg = 0;
+		Integer w = 0;
+		Integer fr = 0;
+		Integer bo = 0;
 
-		String query = "SELECT ((SELECT COUNT(*) FROM room WHERE status LIKE 'booked')::numeric / (SELECT COUNT(*) FROM room)::numeric)";
+		String query = "SELECT ((SELECT COUNT(*) FROM room WHERE status LIKE 'booked')::numeric / (SELECT COUNT(*) FROM room)::numeric *100)";
 		Statement stmt = c.createStatement();
 		ResultSet rs = stmt.executeQuery(query);
 		if(rs.next()) {
@@ -1124,11 +1129,41 @@ public class ClientRequestManager {
 		Statement stmt2 = c.createStatement();
 		ResultSet rs2 = stmt2.executeQuery(query2);
 		while (rs2.next())
-			wc = rs.getDouble(1);
+			wc = rs2.getDouble(1);
 
+		String query3 = "SELECT SUM(electricity_consumption) FROM building";
+		Statement stmt3 = c.createStatement();
+		ResultSet rs3 = stmt3.executeQuery(query3);
 
+		while (rs3.next())
+			ec = rs3.getDouble(1);
 
-		String hm = "WC-"+wc+",OC-"+nb;
+		String query4 = "SELECT COUNT(*) FROM badge WHERE badge_state LIKE 'En Fonction'";
+		Statement stmt4 = c.createStatement();
+		ResultSet rs4 = stmt4.executeQuery(query4);
+
+		while (rs4.next())
+			bg = rs4.getInt(1);
+
+		String query5 = "SELECT COUNT(*) FROM windows";
+		Statement stmt5 = c.createStatement();
+		ResultSet rs5 = stmt5.executeQuery(query5);
+		while (rs5.next())
+			w = rs5.getInt(1);
+
+		String query6 = "SELECT count(*) FROM device WHERE device_status LIKE 'free'";
+		Statement stmt6 = c.createStatement();
+		ResultSet rs6 = stmt6.executeQuery(query6);
+		while (rs6.next())
+			fr = rs6.getInt(1);
+
+		String query7 = "SELECT count(*) FROM device WHERE device_status LIKE 'booked';";
+		Statement stmt7 = c.createStatement();
+		ResultSet rs7 = stmt7.executeQuery(query7);
+		while (rs7.next())
+			bo = rs7.getInt(1);
+
+		String hm = "WC-"+wc+",OC-"+nb+",EC-"+ec+",BG-"+bg+",W-"+w+",FR-"+fr+",BO-"+bo ;
 
 		ObjectMapper mapper = new ObjectMapper();
 		String response = mapper.writeValueAsString(hm);

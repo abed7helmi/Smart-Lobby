@@ -30,29 +30,35 @@ public class Indicators {
 
         Client.map = Map.of("test", Map.of("test", "tes"));
         String response = Client.sendBd("requestBuildList");
+        System.out.println(response);
 
-        String occuRate = response.split(",")[0].split("-")[1];
+        String[] resData = response.split(",");
+        //"WC-"+wc+",OC-"+nb+"EC-"+ec+"BG-"+bg+"W-"+w+"FR-"+fr+"BO-"+bo
+        String wc = resData[0].split("-")[1];
+        String oc = resData[1].split("-")[1];
+        String ec = resData[2].split("-")[1];
+        String bg = resData[3].split("-")[1];
+        String w = resData[4].split("-")[1];
+        String fr = resData[5].split("-")[1];
+        String bo = resData[6].split("-")[1];
 
         String[] cols = { "A", "B" };
         String[][] data = {
-                { "Taux d'occupation", occuRate},
-                { "Nombre de capteurs à installer", "2444" },
-                { "Nombre de capteurs installés", "2444" },
-                { "Nombre de fenêtres électrochromatiques actives", "2444" },
-                { "Nombre de fenêtres à configurer", "2444" },
-                { "Dernière location ajoutée", "2444" },
+                { "Taux d'occupation", oc},
+                { "Nombre de capteurs non installés", fr },
+                { "Nombre de capteurs installés", bo },
+                { "Nombre de fenêtres électrochromatiques ", w },
+
         };
         JTable table = new JTable(data, cols);
         table.setRowHeight(30);
 
 
         String[][] data2 = {
-                { "Consommation d’eau global", "2344" },
-                { "Consommation d’électricité globale ", "2444" },
-                { "Facture d’eau", "2444" },
-                { "Facture d’électricité", "2444" },
-                { "Type d’énergie utilisée", "2444" },
-                { "Dernièrement consultée le:", "2444" },
+                { "Consommation d’eau global", wc },
+                { "Consommation d’électricité globale ", ec },
+                { "Nombre de badges en fonction", bg },
+                { "Dernière location ajoutée", "2444" },
         };
         JTable table2 = new JTable(data2, cols);
         table2.setRowHeight(30);
