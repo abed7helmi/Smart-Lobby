@@ -1,4 +1,4 @@
-package episen.si.ing1.pds.client;
+/*package episen.si.ing1.pds.client;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -121,9 +121,9 @@ public class Window extends JFrame implements ActionListener {
                     j.addActionListener(this);
                     listWindow.add(j);
                 }
-            }*/
+            }*//*
 
-            for (int i=589; i<596;i++){
+            //for (int i=589; i<596;i++){
                 JButton j=new JButton(""+i);
                 j.setBackground(Color.lightGray);
                 j.addActionListener(this);
@@ -148,7 +148,7 @@ public class Window extends JFrame implements ActionListener {
                 String result = Client.sendBd("confWindow");
                 String outt = result.split(",")[1];
                 txt2=new JTextField(outt);
-            }*/
+            }*//*
             onstate.add(new JLabel("Température intérieure"));
             onstate.add(txt1);
             onstate.add(new JLabel("Température extérieure"));
@@ -268,4 +268,4 @@ public class Window extends JFrame implements ActionListener {
         }
     }
 
-}
+}*/
