@@ -357,7 +357,6 @@ public class ChoiceDevice extends JFrame{
             String verifyDispo = Client.sendBd("requestLocation3");
             if(verifyDispo.contains(",")){
                 String[] value = verifyDispo.split(",");
-                //List deviceIdInRoom = new ArrayList();
                 if(value.length == Integer.parseInt(str)){
                     stockDevice(value,deviceIdInRoom, text,str,messageError, price);
                     return true;
@@ -380,16 +379,15 @@ public class ChoiceDevice extends JFrame{
     }
 
     public void stockDevice(String[] value, List deviceIdInRoom, String text, String str, JTextField messageError, String price){
-        int count = 0;
+        float valuePrice = 0;
         for(int i = 0; i < value.length; i++) {
             ViewWithPlan.listDeviceId.add(value[i]);
             deviceIdInRoom.add(value[i]);
+            valuePrice = valuePrice + Float.parseFloat(price);
         }
 
         config.put(text, deviceIdInRoom.size()+"");
-        float valuePrice = 0;
 
-        valuePrice = Float.parseFloat(deviceIdInRoom.size()+"") * Float.parseFloat(price);
         if(config.containsKey("price")){
             valuePrice = valuePrice + Float.parseFloat(config.get("price"));
             config.put("price", valuePrice+"");
