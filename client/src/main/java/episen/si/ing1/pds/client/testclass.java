@@ -26,6 +26,11 @@ public class testclass {
         return str;
     }
 
+
+
+
+    /*Delete permission_acess.* from employee inner join badge on employee.employee_id=badge.employee_id inner join permission_access
+    on permission_access.badge_id=badge.badge_id where employee.employee_id=17 ;*/
 }
 
 

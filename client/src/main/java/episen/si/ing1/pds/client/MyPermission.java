@@ -4,8 +4,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -90,8 +88,8 @@ public class MyPermission {
         String devices=result.split("//")[3];
 
         String[] value = devices.split("#");
-        //System.out.println("sa7ayt;");
-        //System.out.println(value[0]);
+        System.out.println("sa7ayt;");
+        System.out.println(value[0]);
 
         for(int i = 0; i< value.length; i++){
             listEquipment.add(value[i]);
@@ -101,6 +99,11 @@ public class MyPermission {
 
         equipementArray = new String[listEquipment.size()];
         equipementArray = listEquipment.toArray(equipementArray);
+
+        for(int i = 0; i< equipementArray.length; i++){
+            System.out.print(equipementArray[i]);
+        }
+
 
 
        // String[] devices = {"Fenetre X45","PC 48","Capteur 45"};
@@ -112,6 +115,7 @@ public class MyPermission {
         mydevice.setBounds(200,50, 300, 20);
         panneau1.add(mydevice);
 
+        System.out.print("good");
 
         input.put("idcompany", idcompany);
 
@@ -239,9 +243,9 @@ public class MyPermission {
 
 
 
-        tableau.getColumnModel().getColumn(6).setCellRenderer(new ButtonRenderer());
+       // tableau.getColumnModel().getColumn(6).setCellRenderer(new ButtonRenderer());
 
-        tableau.getColumnModel().getColumn(6).setCellEditor(new ButtonEditor(new JTextField()));
+       // tableau.getColumnModel().getColumn(6).setCellEditor(new ButtonEditor(new JTextField(),"Delete2"));
 
 
 

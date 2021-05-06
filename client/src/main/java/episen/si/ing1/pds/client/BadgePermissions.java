@@ -312,6 +312,7 @@ public class BadgePermissions {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String request = "requestManyNewBadge";
+                System.out.println("test client requestManyNewBadge ");
 
 
 
@@ -319,9 +320,9 @@ public class BadgePermissions {
                     System.out.println(listModelchosen.get(i));
                     sb.append(listModelchosen.get(i) + "&");
                 }
-                System.out.println("sb");
+
                 System.out.println(sb);
-                System.out.println("sbsww");
+
                 System.out.println(sb.toString());
 
 
@@ -335,6 +336,20 @@ public class BadgePermissions {
 
                 String result = Client.sendBd(request);
                 System.out.println("waaaw"+result);
+
+                if (result.equals("good")){
+                    JOptionPane d = new JOptionPane();
+                    d.showMessageDialog(view,
+                            "Employés bien enregistrés",
+                            " Confirmation",
+                            JOptionPane.INFORMATION_MESSAGE);
+                }else{
+                    JOptionPane d = new JOptionPane();
+                    d.showMessageDialog(view,
+                            "Modification pas réussi",
+                            " Attention",
+                            JOptionPane.WARNING_MESSAGE);
+                }
             }
         });
 

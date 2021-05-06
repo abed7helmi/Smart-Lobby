@@ -11,7 +11,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
 
-public class NewBadge {
+public class EditBadge {
     private Map<String, String> input = new HashMap<>();
     private JFrame frame;
     private JPanel pageBody;
@@ -20,19 +20,30 @@ public class NewBadge {
     private String[] permissionsArray;
     private String allpermissions;
     private String idcompany;
+    private String infosemployee;
 
 
-    public NewBadge(JFrame f,String i,String r){
+    public EditBadge(JFrame f,String idcompany,String permissions,String infosemployee){
         input.clear();
 
         this.frame = f;
-        this.idcompany=i;
-        this.allpermissions=r;
+        this.idcompany=idcompany;
+        this.allpermissions=permissions;
+        this.infosemployee=infosemployee;
+
 
     }
 
     public void choice(JPanel pb){
+
+        String[] valueemployee = infosemployee.split(",");
+        input.put("oldbadge",valueemployee[5]);
+
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+
+
+
 
         this.pageBody = pb;
         pageBody.setBackground(Color.WHITE);
@@ -52,13 +63,13 @@ public class NewBadge {
         JTextField DateContract = new JTextField("Date fin contrat (YYYY-MM-DD)");
         DateContract = styleJTextFieldBadge(DateContract, 500, 80, 200, 20);
 
-        JTextField valuenom = new JTextField(" ");
+        JTextField valuenom = new JTextField(valueemployee[1]);
         valuenom.setBounds(100, 80, 100, 20);
 
-        JTextField valueprenom = new JTextField(" ");
+        JTextField valueprenom = new JTextField(valueemployee[2]);
         valueprenom.setBounds(380, 80, 100, 20);
 
-        JTextField valuecontract = new JTextField(" ");
+        JTextField valuecontract = new JTextField(valueemployee[3]);
         valuecontract.setBounds(720, 80, 100, 20);
 
 
@@ -68,6 +79,17 @@ public class NewBadge {
 
         JTextField permissionEmploye = new JTextField("Selectionnez Droits :");
         permissionEmploye = styleJTextFieldBadge(permissionEmploye, 20, 200, 120, 20);
+
+
+        JTextField oldper = new JTextField("Ancien droit :");
+        oldper = styleJTextFieldBadge(oldper, 20, 220, 80, 20);
+
+        JTextField Valueoldper = styleJTextFieldError(view,20, 240, 130, 20);
+
+        Valueoldper.setText(valueemployee[8]);
+        view.add(oldper);
+        view.add(Valueoldper);
+
 
         String[] value = allpermissions.split("#");
         for(int i = 0; i< value.length; i++){
@@ -104,7 +126,7 @@ public class NewBadge {
         JTextField datepermission = new JTextField("Date validite :");
         datepermission = styleJTextFieldBadge(datepermission, 300, 270, 120, 20);
 
-        JTextField valuedatepermission = new JTextField(" ");
+        JTextField valuedatepermission = new JTextField(valueemployee[4]);
         valuedatepermission.setBounds(450, 270, 100, 20);
 
 
@@ -116,13 +138,13 @@ public class NewBadge {
         JTextField PuceLabel = new JTextField("Puce :");
         PuceLabel = styleJTextFieldBadge(PuceLabel, 110, 350, 50, 20);
 
-        JTextField valuepuce = new JTextField(" ");
+        JTextField valuepuce = new JTextField(valueemployee[5]);
         valuepuce.setBounds(200, 350, 100, 20);
 
         JTextField datebadge = new JTextField("Date validite:");
         datebadge = styleJTextFieldBadge(datebadge, 320, 350, 100, 20);
 
-        JTextField valuedatebadge = new JTextField(" ");
+        JTextField valuedatebadge = new JTextField(valueemployee[6]);
         valuedatebadge.setBounds(450, 350, 100, 20);
 
 
@@ -132,9 +154,9 @@ public class NewBadge {
         InfosAgent = styleJLabelBadge(InfosAgent, 20, 385,200,20);
 
         JTextField Idagent = new JTextField("ID agent :");
-        Idagent = styleJTextFieldBadge(Idagent, 110, 430, 100, 20);
+        Idagent = styleJTextFieldBadge(Idagent, 110, 430, 70, 20);
 
-        JTextField valueidagent = new JTextField(" ");
+        JTextField valueidagent = new JTextField(valueemployee[7]);
         valueidagent.setBounds(200, 430, 100, 20);
 
         JTextField mailagent = new JTextField("Email agent :");
@@ -182,7 +204,7 @@ public class NewBadge {
 
                 String result = Client.sendBd(request);
 
-                System.out.println(result);
+
                 pageBody.repaint();
                 changePageDetail(idcompany,result,input.get("permission"));
             }
@@ -192,6 +214,20 @@ public class NewBadge {
         confirm.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+               /**/
+
+
+                String requestdelete = "deletepermission";
+                Client.map.get(requestdelete).put("company_id",idcompany);
+                Client.map.get(requestdelete).put("idemploye",valueemployee[0]);
+                try {
+                    String result2 = Client.sendBd(requestdelete);
+                    System.out.println("waaaw"+result2);
+
+                }
+                catch(Exception a) {a.printStackTrace();}
+
+
                 String request = "requestNewBadge";
                 Client.map.get(request).put("contract_date", input.get("contract_date"));
                 Client.map.get(request).put("badge_date", input.get("badge_date"));
@@ -206,13 +242,11 @@ public class NewBadge {
 
 
 
-
                 String result = Client.sendBd(request);
-
                 if (result.equals("Good")){
                     JOptionPane d = new JOptionPane();
                     d.showMessageDialog(view,
-                            "Employé bien enregistré",
+                            "Employé bien modifié",
                             " Confirmation",
                             JOptionPane.INFORMATION_MESSAGE);
                 }else if (result.equals("notgoodidagent")){
@@ -228,6 +262,40 @@ public class NewBadge {
                             " Attention",
                             JOptionPane.WARNING_MESSAGE);
                 }
+
+
+
+                /*String request = "updateemployee";
+                Client.map.get(request).put("contract_date", input.get("contract_date"));
+                Client.map.get(request).put("badge_date", input.get("badge_date"));
+                Client.map.get(request).put("nomemploye", input.get("nomemploye"));
+                Client.map.get(request).put("prenomemploye", input.get("prenomemploye"));
+                Client.map.get(request).put("puceemploye", input.get("puceemploye"));
+                Client.map.get(request).put("idagent", input.get("idagent"));
+                Client.map.get(request).put("permission", input.get("permission"));
+                Client.map.get(request).put("emailagent",input.get("emailagent"));
+                Client.map.get(request).put("oldbadge",input.get("oldbadge"));
+                Client.map.get(request).put("permission_date",input.get("permission_date"));
+                Client.map.get(request).put("company_id",idcompany);
+                Client.map.get(request).put("idemploye",valueemployee[0]);
+
+                String result = Client.sendBd(request);
+                System.out.println("waaaw"+result);*/
+
+
+                /*if (result.equals("good")){
+                    JOptionPane d = new JOptionPane();
+                    d.showMessageDialog(view,
+                            "Employé bien modifié",
+                            " Confirmation",
+                            JOptionPane.INFORMATION_MESSAGE);
+                }else{
+                    JOptionPane d = new JOptionPane();
+                    d.showMessageDialog(view,
+                            "erreur,verifiez le ID agent et le badge",
+                            " Attention",
+                            JOptionPane.WARNING_MESSAGE);
+                }*/
             }
         });
 
@@ -402,14 +470,14 @@ public class NewBadge {
                 Object source = e.getSource();
                 String m = (((JTextField)source).getText()).trim();
 
-                    if (m.matches("[a-zA-Z]+")) {
-                        input.put("nomemploye", ((JTextField) source).getText().trim());
-                        messageErrorNom.setText(" ");
-                        if (verifMap()) confirm.setEnabled(true);
-                    } else {
-                        messageErrorNom.setText("X");
-                        messageErrorNom.setForeground(Color.red);
-                    }
+                if (m.matches("[a-zA-Z]+")) {
+                    input.put("nomemploye", ((JTextField) source).getText().trim());
+                    messageErrorNom.setText(" ");
+                    if (verifMap()) confirm.setEnabled(true);
+                } else {
+                    messageErrorNom.setText("X");
+                    messageErrorNom.setForeground(Color.red);
+                }
 
             }
         });
@@ -423,7 +491,7 @@ public class NewBadge {
                 Object source = e.getSource();
                 String m = (((JTextField)source).getText()).trim();
                 if(m.matches("[a-zA-Z]+")) {
-                   // System.out.println("waaw");
+                    // System.out.println("waaw");
                     input.put("prenomemploye", ((JTextField)source).getText().trim());
                     messageErrorPrenom.setText(" ");
                     if(verifMap()) confirm.setEnabled(true);
@@ -498,8 +566,8 @@ public class NewBadge {
     public void changePage(){
 
         view.setVisible(false);
-       // MyPermission permission = new MyPermission(frame);
-       // permission.choicepermission(pageBody);
+        // MyPermission permission = new MyPermission(frame);
+        // permission.choicepermission(pageBody);
     }
 
     public void changePageDetail(String id,String result,String per){

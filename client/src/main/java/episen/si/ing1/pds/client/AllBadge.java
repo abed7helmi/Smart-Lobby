@@ -123,11 +123,11 @@ public class AllBadge {
 
         tableau.getColumnModel().getColumn(4).setCellRenderer(new ButtonRenderer());
 
-        tableau.getColumnModel().getColumn(4).setCellEditor(new ButtonEditor(new JTextField()));
+        tableau.getColumnModel().getColumn(4).setCellEditor(new ButtonEditor(new JTextField(),"Detail",this));
 
         tableau.getColumnModel().getColumn(5).setCellRenderer(new ButtonRenderer());
 
-        tableau.getColumnModel().getColumn(5).setCellEditor(new ButtonEditor(new JTextField()));
+        tableau.getColumnModel().getColumn(5).setCellEditor(new ButtonEditor(new JTextField(),"Delete",this));
 
 
 
@@ -177,7 +177,39 @@ public class AllBadge {
 
     }
 
+
+    public void changePageEdit(String id){
+
+
+        view.setVisible(false);
+
+        pageBody.repaint();
+
+        Client.map.get("getpermissions").put("company_id", AcceuilPersonnel.id_company);
+
+
+        String result = Client.sendBd("getpermissions");
+
+
+        String request2 = "getdetailemployee";
+
+        Client.map.get(request2).put("idemploye", id);
+        Client.map.get(request2).put("company_id", AcceuilPersonnel.id_company);
+
+        String result2 = Client.sendBd(request2);
+
+        System.out.println(result2);
+
+        EditBadge Badge = new EditBadge(frame,AcceuilPersonnel.id_company,result,result2);
+        Badge.choice(pageBody);
+    }
+
     public void changePageManage(){
+
+        /*AcceuilPersonnel personnel = new AcceuilPersonnel(frame,AcceuilPersonnel.id_company);
+        personnel.acceuil();
+        frame.dispose();*/
+        System.out.println("test final client rabek");
 
         String request = "requestallbadges";
 
@@ -185,15 +217,16 @@ public class AllBadge {
 
         String result = Client.sendBd(request);
 
-        System.out.println(result);
+
 
 
         String request2 = "getpermissions";
         Client.map.get(request2).put("company_id",idcompany);
 
         String result2 = Client.sendBd(request2);
-        System.out.println("waaw");
         System.out.println(result2);
+        System.out.println("test final client");
+        System.out.println(result);
         pageBody.repaint();
 
 

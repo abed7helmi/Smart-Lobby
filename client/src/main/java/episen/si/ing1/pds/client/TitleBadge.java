@@ -11,7 +11,7 @@ public class TitleBadge {
         sizeComposant(dimTitle, titlePage);
         titlePage.setBackground(Color.WHITE);
 
-        JTextField title = new JTextField("Espace Gestion de Personnel : ", 30);
+        JTextField title = new JTextField("Gestion de Personnel : ", 30);
         title.setFont(new Font("Serif", Font.BOLD, 35));
         title.setHorizontalAlignment(JTextField.RIGHT);
         title.setBackground(Color.WHITE);
