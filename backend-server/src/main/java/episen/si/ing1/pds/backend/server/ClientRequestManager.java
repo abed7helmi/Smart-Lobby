@@ -579,12 +579,12 @@ public class ClientRequestManager {
 
 	public void getManagerId(Map<String,String> map){
 		try {
+			System.out.println("test");
 			String request = "select gs_manager_id " +
 					"from general_services_manager g " +
 					"inner join employee e on g.gs_manager_id = e.employee_id " +
 					"where company_id = "+ map.get("company_id") +";";
 			ResultSet result = c.createStatement().executeQuery(request);
-
 			String companyId ="";
 			while(result.next()){
 				companyId = result.getString(1);

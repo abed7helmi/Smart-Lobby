@@ -78,8 +78,8 @@ public class Bill {
             @Override
             public void actionPerformed(ActionEvent e) {
                 frame.dispose();
-                ChoiceCriteria.restartData();
                 episen.si.ing1.pds.client.Menu menu = new episen.si.ing1.pds.client.Menu("Smart Lobby", ChoiceCriteria.input.get("company_id"));
+                ChoiceCriteria.restartData();
             }
         });
         viewBill.add(cancel);
@@ -152,7 +152,7 @@ public class Bill {
     }
 
     public String prepareRequest(){
-        Client.map.get("requestLocation5").put("company_id", ChoiceCriteria.input.get("company_id"));
+        Client.map.get("requestLocation5").put("company_id", Menu.company_id);
         String manager_id = Client.sendBd("requestLocation5");
         Client.map.get("requestLocation4").put("end_date", ChoiceCriteria.input.get("end_date"));
         Client.map.get("requestLocation4").put("start_date", ChoiceCriteria.input.get("start_date"));

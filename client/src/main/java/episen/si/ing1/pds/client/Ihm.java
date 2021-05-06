@@ -31,7 +31,7 @@ public class Ihm extends JFrame{
         frame = this;
 
         pageBody.setLayout(pages);
-        ChoiceCriteria reservation = new ChoiceCriteria(frame, company_id);
+        ChoiceCriteria reservation = new ChoiceCriteria(frame);
         pageBody1 = reservation.realizeReservation();
 
         Mapping m = new Mapping();
