@@ -380,19 +380,35 @@ public class ChoiceDevice extends JFrame{
 
     public void stockDevice(String[] value, List deviceIdInRoom, String text, String str, JTextField messageError, String price){
         float valuePrice = 0;
+        deviceIdInRoom.clear();
         for(int i = 0; i < value.length; i++) {
             ViewWithPlan.listDeviceId.add(value[i]);
             deviceIdInRoom.add(value[i]);
+
+        }
+
+        for(int i = 0; i < deviceIdInRoom.size(); i++){
             valuePrice = valuePrice + Float.parseFloat(price);
         }
 
         config.put(text, deviceIdInRoom.size()+"");
 
-        if(config.containsKey("price")){
-            valuePrice = valuePrice + Float.parseFloat(config.get("price"));
-            config.put("price", valuePrice+"");
-        } else config.put("price", valuePrice+"");
+        if(ChoiceCriteria.input.containsKey("price")){
+            valuePrice = valuePrice + Float.parseFloat(ChoiceCriteria.input.get("price"));
+            ChoiceCriteria.input.put("price", valuePrice+"");
+        } else ChoiceCriteria.input.put("price", valuePrice+"");
         messageError.setText(" ");
+
+        System.out.println(";;;;");
+        System.out.println(ViewWithPlan.listDeviceId);
+        System.out.println(";;;;");
+        System.out.println(deviceIdInRoom);
+        System.out.println(";;;;");
+        System.out.println(config);
+        System.out.println(";;;;");
+        System.out.println(";;;;");
+        System.out.println(ChoiceCriteria.input);
+
     }
 }
 
