@@ -1118,6 +1118,7 @@ public class ClientRequestManager {
 		Integer w = 0;
 		Integer fr = 0;
 		Integer bo = 0;
+	//	Integer la = 0;
 
 		String query = "SELECT ((SELECT COUNT(*) FROM room WHERE status LIKE 'booked')::numeric / (SELECT COUNT(*) FROM room)::numeric *100)";
 		Statement stmt = c.createStatement();
@@ -1162,6 +1163,13 @@ public class ClientRequestManager {
 		ResultSet rs7 = stmt7.executeQuery(query7);
 		while (rs7.next())
 			bo = rs7.getInt(1);
+
+	//	String query8 = "SELECT reservation_id FROM reservation ORDER BY reservation_id DESC LIMIT 1";
+	//	Statement stmt8 = c.createStatement();
+	//	ResultSet rs8 = stmt8.executeQuery(query8);
+
+	//	while (rs8.next())
+	//		la = rs8.getInt(1);
 
 		String hm = "WC-"+wc+",OC-"+nb+",EC-"+ec+",BG-"+bg+",W-"+w+",FR-"+fr+",BO-"+bo ;
 
