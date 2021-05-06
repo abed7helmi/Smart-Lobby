@@ -349,13 +349,15 @@ public class ChoiceCriteria{
         buttonValidate.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                int nbrOpenSpace, nbrClosedOffice;
+                int nbrOpenSpace, nbrClosedOffice = 0;
                 if(checkBoxOpenSpace.isSelected() && checkBoxClosedOffice.isSelected()){
                     nbrOpenSpace = (Integer.parseInt(input.get("numberEmployee")) / 50);
-                    if( nbrOpenSpace % 20 == 0) nbrClosedOffice = nbrOpenSpace / 20;
-                    else nbrClosedOffice = ( (Integer.parseInt(input.get("numberEmployee")) - (50 * nbrOpenSpace))/ 20) + 1;
+                    if( nbrOpenSpace > 0)  valueOpenSpace.setText(nbrOpenSpace+"");
+                    else {
+                        nbrClosedOffice =  (Integer.parseInt(input.get("numberEmployee")) / 20) ;
+                    }
+                    nbrClosedOffice++;
                     valueClosedOffice.setText(nbrClosedOffice+"");
-                    valueOpenSpace.setText(nbrOpenSpace+"");
 
                     input.put("numberClosedOffice",nbrClosedOffice+"");
                     input.put("numberOpenSpace", nbrOpenSpace+"");
