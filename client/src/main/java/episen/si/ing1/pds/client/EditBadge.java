@@ -161,8 +161,10 @@ public class EditBadge {
             @Override
             public void actionPerformed(ActionEvent e) {
 
+                Client.map.get("getdevices").put("company_id", AcceuilPersonnel.id_company);
+                String devices = Client.sendBd("getdevices");
                 pageBody.repaint();
-                changePage();
+                changePageNewPermission(devices);
             }
         });
 
@@ -469,9 +471,11 @@ public class EditBadge {
         frame.repaint();
     }
 
-    public void changePage(){
+    public void changePageNewPermission(String devices){
 
         view.setVisible(false);
+        Newpermission permission = new Newpermission(frame,devices);
+        permission.choice(pageBody);
 
     }
 

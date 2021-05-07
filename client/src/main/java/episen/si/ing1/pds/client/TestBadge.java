@@ -76,7 +76,7 @@ public class TestBadge {
 
         JTextField result = new JTextField("Resultat :");
         result = styleJTextFieldReservation(result, 400, 350, 60, 20);
-        JTextField Valueresult = styleJTextFieldError(view,480, 350, 200, 20);
+        JTextField Valueresult = styleJTextFieldError(view,480, 350, 300, 20);
 
         JTextField messageErrorNom = styleJTextFieldError(view,170, 195, 100, 20);
         valuenom.addFocusListener(new FocusListener() {
@@ -144,8 +144,8 @@ public class TestBadge {
                 String result = Client.sendBd("testpermissions");
 
                 if (result.equals("Good")){
-                    Valueresult.setText(" il a les doits");
-                }else{ Valueresult.setText(" il a pas les doits"); }
+                    Valueresult.setText(" L'employe a bien les droits a cette equipement");
+                }else{ Valueresult.setText(" L'employe n'a pas les droits a cette equipement "); }
 
                 pageBody.repaint();
 

@@ -111,7 +111,7 @@ public class BadgePermissions {
         myPermissions.setFont(new Font("Arial", Font.BOLD, 9));
         myPermissions.setMaximumRowCount(7);
 
-        JButton showpermission = new JButton("Detail droits selectionné");
+        JButton showpermission = new JButton("Detail droits selectionne");
         JButton newpermission = new JButton("Nouveau Droits");
         showpermission.setVisible(false);
 
@@ -130,7 +130,7 @@ public class BadgePermissions {
         showpermission.setBounds(540, 100, 200, 30);
         newpermission.setBounds(760, 100, 150, 30);
 
-        JTextField validtytime = new JTextField("Durée validité :");
+        JTextField validtytime = new JTextField("Duree validite :");
         validtytime = styleJTextFieldBadge(validtytime, 300, 200, 150, 20);
 
         JTextField datevalidity = new JTextField(" ");

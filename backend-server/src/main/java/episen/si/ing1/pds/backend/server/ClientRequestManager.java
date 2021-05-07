@@ -1051,9 +1051,9 @@ public class ClientRequestManager {
 			String per[]=device.split(",");
 			int device_id=Integer.parseInt(getNbr(per[0]));
 
-			ResultSet result = c.createStatement().executeQuery("select employee.employee_id from employee inner join badge on badge.employee_id=employee.employee_id inner join permission_access on" +
-					"permission_access.badge_id=badge.badge_id inner join permission_badge on permission_badge.permission_id=permission_access.permission_id inner join" +
-					"permission_device on permission_device.permission_id=permission_badge.permission_id where (employee_last_name='"+ name1  +"' and employee_first_name='"+name2+  "' and device_id='"+device_id+ "'                 );");
+			String request ="select employee.employee_id from employee inner join badge on badge.employee_id=employee.employee_id inner join permission_access on permission_access.badge_id=badge.badge_id inner join permission_badge on permission_badge.permission_id=permission_access.permission_id inner join permission_device on permission_device.permission_id=permission_badge.permission_id where (employee_last_name='"+name1+"' and employee_first_name='"+name2+"' and  device_id='"+device_id+"');";
+			ResultSet result = c.createStatement().executeQuery(request);
+
 
 			if(result.next()) {
 

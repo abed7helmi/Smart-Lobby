@@ -85,20 +85,6 @@ public class Newpermission {
         panneau1.add(EmployeList, BorderLayout.WEST);
         panneau1.add(panneau3, BorderLayout.CENTER);
 
-        JLabel permissionLabel = new JLabel("DROITS : ");
-        permissionLabel = styleJLabelBadge(permissionLabel, 20, 20,200,20);
-
-        JTextField permissionEmploye = new JTextField("Selectionnez Droits :");
-        permissionEmploye = styleJTextFieldBadge(permissionEmploye, 30, 100, 120, 20);
-
-
-        JButton showpermission = new JButton("Detail droits selectionné");
-        JButton newpermission = new JButton("Nouveau Droits");
-        showpermission.setVisible(false);
-
-        showpermission.setBounds(540, 100, 200, 30);
-        newpermission.setBounds(760, 100, 150, 30);
-
         JTextField PermissionName = new JTextField("Libelle droit:");
         PermissionName = styleJTextFieldBadge(PermissionName, 300, 200, 80, 20);
 
@@ -112,12 +98,9 @@ public class Newpermission {
         cancel.setBounds(300, 300, 150, 30);
         confirm.setBounds(500, 300, 150, 30);
 
-        panneau4.add(permissionLabel);
-        panneau4.add(permissionEmploye);
+
         panneau4.add(cancel);
         panneau4.add(confirm);
-        panneau4.add(showpermission);
-        panneau4.add(newpermission);
         panneau4.add(PermissionName);
         panneau4.add(valuePermissionName);
 
@@ -166,7 +149,7 @@ public class Newpermission {
             public void focusLost(FocusEvent e) {
                 Object source = e.getSource();
                 String m = (((JTextField)source).getText()).trim();
-                if(m.matches("[a-zA-Z_0-9]+")) {
+                if(m.matches("[a-zA-Z_0-9 ]+")) {
 
                     input.put("valuePermissionName", ((JTextField)source).getText().trim());
                     messageError.setText(" ");
@@ -195,7 +178,9 @@ public class Newpermission {
                 Client.map.get(request).put("devices",sb.toString());
 
                 String result = Client.sendBd(request);
+
                 if (result.equals("good")){
+                    //listModelchosen.clear();
                     JOptionPane d = new JOptionPane();
                     d.showMessageDialog(view,
                             "Pemission bien enregistrer",

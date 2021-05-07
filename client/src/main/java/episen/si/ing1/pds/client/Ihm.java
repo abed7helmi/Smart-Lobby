@@ -197,7 +197,7 @@ public class Ihm extends JFrame{
         frame.setVisible(true);
         frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setResizable(false);
+        frame.setResizable(true);
     }
 
     public void setColor(JButton button,Color font, Color back){
