@@ -173,13 +173,15 @@ public class Bill {
         return response;
     }
     public Float priceTotal(){
-        float price = 0;
+        float price = Float.parseFloat(ChoiceCriteria.input.get("price"));
+        System.out.println(ViewWithPlan.configRoom);
         for(Map<String, String> map : Choice.proposalSelected.values()){
             if( !((map.get("price")+"").equals("")) ) price = price + Float.parseFloat(map.get("price"));
         }// price room
-        for(Map<String, String> map : ViewWithPlan.configRoom.values()){
+
+        /*for(Map<String, String> map : ViewWithPlan.configRoom.values()){
             if( map.containsKey("price") ) price = price + Float.parseFloat(map.get("price")+"");
-        }//price device
+        }//price device*/
 
         Client.map.get("requestLocation4").put("price", price+"");
         return price;
