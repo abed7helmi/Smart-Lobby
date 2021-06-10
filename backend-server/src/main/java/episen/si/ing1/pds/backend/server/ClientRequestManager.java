@@ -50,15 +50,15 @@ public class ClientRequestManager {
 				try {
 					resetData();
 					String clientInput = input.readLine();
-					try {
+					String[] split = clientInput.split("#");
+					if(split.length <= 1) {
 						Request request = mapper.readValue(clientInput, Request.class);
 						logger.info("Request received: {}", clientInput);
 						RequestManager indicatorsManager = new RequestManager(connection, request);
 						indicatorsManager.respond(output);
-					} catch (Exception e) {
-						logger.debug("Indicators warning/Error: " + e.getLocalizedMessage(), e);
-						String requestType = clientInput.split("#")[0];
-						String values = clientInput.split("#")[1];
+					} else {
+						String requestType = split[0];
+						String values = split[1];
 
 						Map<String, String> map = mapper.readValue(values,new TypeReference<Map<String, String>>(){});
 

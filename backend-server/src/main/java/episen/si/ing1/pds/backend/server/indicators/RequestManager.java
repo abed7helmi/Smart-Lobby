@@ -112,7 +112,7 @@ private void mappingRate(PrintWriter output) throws Exception {
         JsonNode node = request.getRequestBody();
         int companyId = node.get("company_id").asInt();
         String query = "SELECT " +
-                "concat(rt.start_date, '/', rt.end_date) as reservation," +
+                "concat('No', rt.reservation_id ,' /', rt.start_date,'/', rt.end_date) as reservation," +
                 "ROUND(((SELECT count(*) from device d2 WHERE d2.reservation_id = rt.reservation_id AND d2.device_placed is TRUE)::NUMERIC / (SELECT count(*) from device d2 WHERE d2.reservation_id = rt.reservation_id)::NUMERIC), 2) as rate " +
                 "FROM device d " +
                 "JOIN reservation rt on rt.reservation_id = d.reservation_id " +
