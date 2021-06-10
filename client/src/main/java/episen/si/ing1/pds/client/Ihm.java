@@ -1,5 +1,6 @@
 package episen.si.ing1.pds.client;
 
+import episen.si.ing1.pds.client.Indicators.Indicators;
 import episen.si.ing1.pds.client.Mapping.Mapping;
 import episen.si.ing1.pds.client.reservation.ChoiceCriteria;
 
@@ -18,7 +19,6 @@ public class Ihm extends JFrame{
     public  static JButton buttonContinue = new JButton("> Continuer");
     private JPanel pageBody1 ;
     private JPanel pageBody2 ;
-    private JPanel pageBody3 ;
     private JPanel pageBody4 ;
     private JPanel pageBody7 ;
     private String company_id ="";
@@ -44,38 +44,24 @@ public class Ihm extends JFrame{
         Window window=new Window(pages,pageBody);
         pageBody4=window.firstMenu;
 
-        Indicators indicator = new Indicators();
-        pageBody3 = indicator.getIndicator();
-
         if(page.equals("realize")){
             pageBody.add(pageBody1,"realize");
             pageBody.add(pageBody2,"consult");
             pageBody.add(pageBody4,"Configurer fenêtre");
-            pageBody.add(pageBody3,"indicator");
             pageBody.add(pageBody7,"staff");
         } else if(page.equals("consult")){
             pageBody.add(pageBody2,"consult");
             pageBody.add(pageBody1,"realize");
             pageBody.add(pageBody4,"Configurer fenêtre");
-            pageBody.add(pageBody3,"indicator");
             pageBody.add(pageBody7,"staff");
         }
         else if(page.equals("Configurer fenêtre")){
             pageBody.add(pageBody4,"Configurer fenêtre");
             pageBody.add(pageBody2,"consult");
             pageBody.add(pageBody1,"realize");
-            pageBody.add(pageBody3,"indicator");
             pageBody.add(pageBody7,"staff");
-        }
-        else if(page.equals("indicator")){
-            pageBody.add(pageBody3,"indicator");
-            pageBody.add(pageBody2,"consult");
-            pageBody.add(pageBody1,"realize");
+        } else if(page.equals("staff")){
             pageBody.add(pageBody7,"staff");
-            pageBody.add(pageBody4,"Configurer fenêtre");
-        }else if(page.equals("staff")){
-            pageBody.add(pageBody7,"staff");
-            pageBody.add(pageBody3,"indicator");
             pageBody.add(pageBody2,"consult");
             pageBody.add(pageBody1,"realize");
             pageBody.add(pageBody4,"Configurer fenêtre");
@@ -137,16 +123,6 @@ public class Ihm extends JFrame{
         sizeComposant(new Dimension(Integer.MAX_VALUE, 75), configWindow);
         setColor(configWindow,Color.white,new Color(0, 102,204));
 
-        JButton indicatorButton = new JButton("Indicateurs et locations");
-        setColor(indicatorButton,Color.white,new Color(0, 102,204));
-        indicatorButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                pages.show(pageBody,"indicator");
-            }
-        });
-        sizeComposant(new Dimension(Integer.MAX_VALUE, 75), indicatorButton);
-        setColor(consult,Color.white,new Color(0, 102,204));
 
         JPanel underMenu = new JPanel(new FlowLayout(FlowLayout.LEFT));
         underMenu.setMaximumSize(new Dimension(Integer.MAX_VALUE, 100));
@@ -174,6 +150,7 @@ public class Ihm extends JFrame{
             @Override
             public void actionPerformed(ActionEvent e) {
                 frame.dispose();
+                new HomePage();
             }
         });
         disconnect.setMaximumSize(new Dimension(100, 100));
@@ -185,7 +162,6 @@ public class Ihm extends JFrame{
         menu.add(consult);
         menu.add(configWindow);
         menu.add(staff);
-        menu.add(indicatorButton);
         menu.add(Box.createGlue());
         menu.add(underMenu);
 

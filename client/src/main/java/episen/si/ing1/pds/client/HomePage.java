@@ -1,5 +1,7 @@
 package episen.si.ing1.pds.client;
 
+import episen.si.ing1.pds.client.Indicators.Indicators;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -51,8 +53,29 @@ public class HomePage extends JFrame {
                             JOptionPane.ERROR_MESSAGE);
             }
         });
+
+        JButton indicator = new JButton("Indicateurs");
+        indicator.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Indicators indicators = new Indicators(frame);
+                Dimension size = new Dimension(1200,800);
+                getContentPane().removeAll();
+                JPanel panel = indicators.getIndicator();
+                panel.setPreferredSize(size);
+                panel.setVisible(true);
+                setContentPane(panel);
+                setPreferredSize(size);
+                invalidate();
+                validate();
+                repaint();
+                pack();
+                setLocationRelativeTo(null);
+            }
+        });
         getContentPane().add(title, BorderLayout.NORTH);
         getContentPane().add(registeredCompany, BorderLayout.CENTER);
+        getContentPane().add(indicator, BorderLayout.SOUTH);
         setVisible(true);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

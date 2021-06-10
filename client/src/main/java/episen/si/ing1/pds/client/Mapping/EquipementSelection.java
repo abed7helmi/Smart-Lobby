@@ -35,13 +35,13 @@ public class EquipementSelection {
 			
 			Mapping.selection4.add(info);
 			if(equipmentPlaced.size()>0) {
-				info.setText("L'emplacement N°"+location_id+" est actuellement occupé par:");
+				info.setText("L'emplacement NÂ°"+location_id+" est actuellement occupÃ© par:");
 				JTextArea txt = new JTextArea("Id:"+equipmentPlaced.get("device_id")+" Nom:"+equipmentPlaced.get("device_wording")+" Actif:"+equipmentPlaced.get("device_active")
 						+" Prix:"+equipmentPlaced.get("device_price"));
 			
 				Mapping.selection4.add(txt);
 				Client.map.get("setEquipment").put("old_device_id", equipmentPlaced.get("device_id"));
-				JButton empty = new JButton("Libérer l'emplacement");
+				JButton empty = new JButton("LibÃ©rer l'emplacement");
 				empty.addActionListener(new ActionListener() {
 					@Override
 					public void actionPerformed(ActionEvent e) {
@@ -53,12 +53,12 @@ public class EquipementSelection {
 				Mapping.selection6.add(empty);
 				Mapping.selection6.revalidate();
 			}else {
-				info.setText("L'emplacement N°"+location_id+" est actuellement libre.");
+				info.setText("L'emplacement NÂ°"+location_id+" est actuellement libre.");
 				info.setFont(Mapping.titlefont);
 			}
 			Mapping.selection4.revalidate();
 			
-			JLabel deviceSelection = new JLabel("Sélectionnez un appareil à placer:");
+			JLabel deviceSelection = new JLabel("SÃ©lectionnez un appareil Ã  placer:");
 			deviceSelection.setFont(Mapping.titlefont);
 			Mapping.selection5.add(deviceSelection);
 		

@@ -35,7 +35,7 @@ public class RoomPlan {
 			Mapping.locationPlan.removeAll();
 		
 			
-			JLabel title = new JLabel("Sélectionnez un emplacement à configurer:");
+			JLabel title = new JLabel("SÃ©lectionnez un emplacement Ã  configurer:");
 			title.setFont(Mapping.titlefont);
 			title.setBorder(BorderFactory.createEmptyBorder(0,100,0,0));
 			Mapping.locationPlan.add(title,BorderLayout.NORTH);
@@ -106,10 +106,14 @@ public class RoomPlan {
 			p.setBackground(Color.WHITE);
 			p.add(refresh);
 			p.setBorder(BorderFactory.createEmptyBorder(200,0,0,0));
-			
+			System.out.println("display images");
 			Mapping.locationPlan.add(p,BorderLayout.WEST);
+			Mapping.locationPlan.invalidate();
 			Mapping.locationPlan.revalidate();
-			
-		} catch (IOException e1) {}
+			Mapping.locationPlan.repaint();
+
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
 	}
 }

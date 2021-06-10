@@ -5,6 +5,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import episen.si.ing1.pds.backend.server.indicators.Request;
+import episen.si.ing1.pds.backend.server.indicators.RequestManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,108 +49,114 @@ public class ClientRequestManager {
 			public void run() {
 				try {
 					resetData();
-
 					String clientInput = input.readLine();
-					String requestType = clientInput.split("#")[0];
-					String values = clientInput.split("#")[1];
+					try {
+						Request request = mapper.readValue(clientInput, Request.class);
+						logger.info("Request received: {}", clientInput);
+						RequestManager indicatorsManager = new RequestManager(connection, request);
+						indicatorsManager.respond(output);
+					} catch (Exception e) {
+						logger.debug("Indicators warning/Error: " + e.getLocalizedMessage(), e);
+						String requestType = clientInput.split("#")[0];
+						String values = clientInput.split("#")[1];
 
-					Map<String, String> map = mapper.readValue(values,new TypeReference<Map<String, String>>(){});
+						Map<String, String> map = mapper.readValue(values,new TypeReference<Map<String, String>>(){});
 
-					switch (requestType) {
-						case "companyReservation":
-							companyReservation(map);
-							break;
-						case "reservationFloor":
-							reservationFloor(map);
-							break;
-						case "floorRoom":
-							floorRoom(map);
-							break;
-						case "roomLocation":
-							roomLocation(map);
-							break;
-						case "locationEquipment":
-							locationEquipment(map);
-							break;
-						case "reservationEquipment":
-							reservationEquipment(map);
-							break;
-						case "setEquipment":
-							setEquipment(map);
-							break;
-						case "homePage1":
-							firstPage(map);
-							break;
-						case "requestLocation1":
-							getChoice(map);
-							break;
-						case "requestLocation2":
-							getDevice(map);
-							break;
-						case "requestLocation3":
-							getDisponibility(map);
-							break;
-						case "requestLocation5":
-							getManagerId(map);
-							break;
-						case "requestLocation4":
-							insertReservation(map);
-							break;
-						case "requestNewBadge":
-							SaveBadge(map);
-							break;
-						case "getpermissions":
-							getPermissions(map);
-							break;
-						case "testpermissions":
-							testpermissions(map);
-							break;
-						case "getdevices":
-							getdevices(map);
-							break;
-						case "requestDetailBadge":
-							getDetailPermission(map);
-							break;
-						case "requestadddevice":
-							adddevicepermission(map);
-							break;
-						case "requestallbadges":
-							getallemployees(map);
-							break;
-						case "requestManyNewBadge":
-							saveallemployees(map);
-							break;
-						case "requestWindow":
-							getWindow(map);
-							break;
-						case "confWindow":
-							confWindow(map);
-							break;
-						case "getbadges":
-							getallbadges(map);
-							break;
+						switch (requestType) {
+							case "companyReservation":
+								companyReservation(map);
+								break;
+							case "reservationFloor":
+								reservationFloor(map);
+								break;
+							case "floorRoom":
+								floorRoom(map);
+								break;
+							case "roomLocation":
+								roomLocation(map);
+								break;
+							case "locationEquipment":
+								locationEquipment(map);
+								break;
+							case "reservationEquipment":
+								reservationEquipment(map);
+								break;
+							case "setEquipment":
+								setEquipment(map);
+								break;
+							case "homePage1":
+								firstPage(map);
+								break;
+							case "requestLocation1":
+								getChoice(map);
+								break;
+							case "requestLocation2":
+								getDevice(map);
+								break;
+							case "requestLocation3":
+								getDisponibility(map);
+								break;
+							case "requestLocation5":
+								getManagerId(map);
+								break;
+							case "requestLocation4":
+								insertReservation(map);
+								break;
+							case "requestNewBadge":
+								SaveBadge(map);
+								break;
+							case "getpermissions":
+								getPermissions(map);
+								break;
+							case "testpermissions":
+								testpermissions(map);
+								break;
+							case "getdevices":
+								getdevices(map);
+								break;
+							case "requestDetailBadge":
+								getDetailPermission(map);
+								break;
+							case "requestadddevice":
+								adddevicepermission(map);
+								break;
+							case "requestallbadges":
+								getallemployees(map);
+								break;
+							case "requestManyNewBadge":
+								saveallemployees(map);
+								break;
+							case "requestWindow":
+								getWindow(map);
+								break;
+							case "confWindow":
+								confWindow(map);
+								break;
+							case "getbadges":
+								getallbadges(map);
+								break;
 
-						case "deletepermission":
-							deletepermission(map);
-							break;
-						case "getdetailemployee":
-							getdetailemployee(map);
-							break;
+							case "deletepermission":
+								deletepermission(map);
+								break;
+							case "getdetailemployee":
+								getdetailemployee(map);
+								break;
 
-						case "deletedevice":
-							deletedevice(map);
-							break;
-						case "CreateNewPermission":
-							CreateNewPermission(map);
-							break;
+							case "deletedevice":
+								deletedevice(map);
+								break;
+							case "CreateNewPermission":
+								CreateNewPermission(map);
+								break;
 
 
-						case "requestBuildList":
-							getGlobalIndicators();
-							break;
+							case "requestBuildList":
+								getGlobalIndicators();
+								break;
 
+						}
 					}
-
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

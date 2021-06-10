@@ -21,7 +21,7 @@ public class FloorSelection {
 
 	public static void floorSelection(String reservation_id) {
 		try {
-		JLabel title = new JLabel("Sélectionnez le bâtiment et l'étage à configurer:");
+		JLabel title = new JLabel("SÃ©lectionnez le batiment et l'Ã©tage Ã  configurer:");
 		title.setFont(Mapping.titlefont);
 		Mapping.selection2.add(title);
 		
@@ -30,7 +30,7 @@ public class FloorSelection {
 		Map<String, Map<String, String>> floors = mapper.readValue(Client.sendBd("reservationFloor"),new TypeReference<Map<String, Map<String, String>>>(){});
 		String[] floorList = new String[floors.size()];
 		for(int i=0;i<floorList.length;i++) {
-			floorList[i]="Bâtiment "+floors.get(""+i).get("building_name")+" étage "+floors.get(""+i).get("floor_number");
+			floorList[i]="Batiment "+floors.get(""+i).get("building_name")+" Ã©tage "+floors.get(""+i).get("floor_number");
 		}
 		JComboBox<String> cb = new JComboBox<String>(floorList);
 		cb.setSize(100,10);

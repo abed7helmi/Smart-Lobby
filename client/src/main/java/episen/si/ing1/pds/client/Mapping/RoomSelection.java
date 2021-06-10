@@ -20,7 +20,7 @@ public class RoomSelection {
 
 	public static void roomSelection(String floor_id,String reservation_id) {
 		try {
-			JLabel title = new JLabel("Sélectionnez la salle à configurer:");
+			JLabel title = new JLabel("SÃ©lectionnez la salle Ã  configurer:");
 			title.setFont(Mapping.titlefont);
 			Mapping.selection3.add(title);
 			
@@ -49,6 +49,7 @@ public class RoomSelection {
 						break;
 					}
 					Mapping.room_id=rooms.get(cb.getSelectedIndex()+"").get("room_id");
+					System.out.println("the path in img :" + Mapping.imgPath);
 					RoomPlan.roomPlan(Mapping.room_id,Mapping.imgPath);
 				}
 			});

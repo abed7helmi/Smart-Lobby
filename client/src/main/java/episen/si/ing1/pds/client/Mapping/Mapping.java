@@ -83,7 +83,7 @@ public class Mapping {
 	public void mapping() {
 		selection1.removeAll();
 		
-		JLabel title = new JLabel("Sélectionnez une location à configurer:");
+		JLabel title = new JLabel("Selectionnez une location a configurer:");
 		title.setFont(titlefont);
 		selection1.add(title);
 		
@@ -93,7 +93,7 @@ public class Mapping {
 		Map<String, Map<String, String>> reservations = mapper.readValue(Client.sendBd("companyReservation"),new TypeReference<Map<String, Map<String, String>>>(){});
 		String[] reservationList = new String[reservations.size()];
 		for(int i=0;i<reservationList.length;i++) {
-			reservationList[i]="N°"+reservations.get(""+i).get("reservation_id")+" du "+reservations.get(""+i).get("start_date");
+			reservationList[i]="NÂ°"+reservations.get(""+i).get("reservation_id")+" du "+reservations.get(""+i).get("start_date");
 		}
 		JComboBox<String> cb = new JComboBox<String>(reservationList);
 		cb.setSize(100,10);
@@ -119,7 +119,7 @@ public class Mapping {
 
 	/*public void floorSelection(String reservation_id) {
 		try {
-		JLabel title = new JLabel("Sélectionnez le bâtiment et l'étage à configurer:");
+		JLabel title = new JLabel("Sï¿½lectionnez le bï¿½timent et l'ï¿½tage ï¿½ configurer:");
 		title.setFont(titlefont);
 		selection2.add(title);
 		
@@ -149,7 +149,7 @@ public class Mapping {
 	
 	public void roomSelection(String floor_id,String reservation_id) {
 		try {
-			JLabel title = new JLabel("Sélectionnez la salle à configurer:");
+			JLabel title = new JLabel("Sï¿½lectionnez la salle ï¿½ configurer:");
 			title.setFont(titlefont);
 			selection3.add(title);
 			
@@ -192,7 +192,7 @@ public class Mapping {
 			locationPlan.removeAll();
 		
 			
-			JLabel title = new JLabel("Sélectionnez un emplacement à configurer:");
+			JLabel title = new JLabel("Sï¿½lectionnez un emplacement ï¿½ configurer:");
 			title.setFont(titlefont);
 			title.setBorder(BorderFactory.createEmptyBorder(0,50,0,0));
 			locationPlan.add(title,BorderLayout.NORTH);
@@ -288,7 +288,7 @@ public class Mapping {
 			
 			selection4.add(info);
 			if(equipmentPlaced.size()>0) {
-				info.setText("L'emplacement N°"+location_id+" est actuellement occupé par:");
+				info.setText("L'emplacement Nï¿½"+location_id+" est actuellement occupï¿½ par:");
 				JTextArea txt = new JTextArea("Id:"+equipmentPlaced.get("device_id")+" Nom:"+equipmentPlaced.get("device_wording")+" Actif:"+equipmentPlaced.get("device_active")
 						+" Prix:"+equipmentPlaced.get("device_price"));
 			
@@ -306,12 +306,12 @@ public class Mapping {
 				selection6.add(empty);
 				selection6.revalidate();
 			}else {
-				info.setText("L'emplacement N°"+location_id+" est actuellement libre.");
+				info.setText("L'emplacement Nï¿½"+location_id+" est actuellement libre.");
 				info.setFont(titlefont);
 			}
 			selection4.revalidate();
 			
-			JLabel deviceSelection = new JLabel("Sélectionnez un appareil à placer:");
+			JLabel deviceSelection = new JLabel("Sï¿½lectionnez un appareil ï¿½ placer:");
 			deviceSelection.setFont(titlefont);
 			selection5.add(deviceSelection);
 		
