@@ -11,6 +11,20 @@ public class IndicatorsTools {
         this.connection = connection;
     }
 
+
+    public Map<String, Integer> getRandomDeviceByReservation(int reservationID) throws SQLException {
+        String query = "SELECT device_id, room_id FROM device where reservation_id = ? AND device_placed is FALSE LIMIT 1";
+        PreparedStatement statement = connection.prepareStatement(query);
+        statement.setInt(1, reservationID);
+        ResultSet rs = statement.executeQuery();
+        Map<String, Integer> hm = new LinkedHashMap<>();
+        if (rs.next()) {
+            hm.put("device_id", rs.getInt(1));
+            hm.put("room_id", rs.getInt(2));
+        }
+        return hm;
+    }
+
     public Map<String, Integer> randomRoomId() throws SQLException {
         String query = "SELECT room_id, room_price FROM room WHERE status like 'free' OFFSET random() * (SELECT count(*) from room WHERE status LIKE 'free') LIMIT 1";
         Statement statement = connection.createStatement();

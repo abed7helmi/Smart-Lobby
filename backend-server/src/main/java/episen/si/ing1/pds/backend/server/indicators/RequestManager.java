@@ -59,10 +59,44 @@ public class RequestManager {
             case "test_reservation_mapping":
                 testReservation(output);
                 break;
-                /*
-                * TODO: Test for mapping only
-                * */
+            case "test_mapping":
+                testMapping(output);
+                break;
+
         }
+    }
+
+    private void testMapping(PrintWriter output) throws Exception {
+
+        /*
+         *
+         * Dep : reservation , quantity
+         *
+         * */
+
+        /*
+         * Algo
+         *[X] get reservation by indicating the id
+         *[X] For each n in qte
+         *[X]    SELECT (device_id, room_id) a device not mapped and booked for my reservation
+         *[X]    SELECT (location_id) a random location based on selected room_id
+         *[X]    Map this device on this location
+         * */
+
+        JsonNode node = request.getRequestBody();
+        int reservationID = node.get("reservation_id").asInt();
+        int qte = node.get("qte").asInt();
+
+        List<Map<String, Integer>> mapped = new LinkedList<>();
+
+        for (int i = 0; i < qte; i++) {
+            Map<String, Integer> device = tools.getRandomDeviceByReservation(reservationID);
+            int location = tools.findAndBookLocationByRoom(device.get("room_id"));
+            tools.mapDeviceByDeviceID(device.get("device_id"), location);
+            device.put("location_id", location);
+            mapped.add(device);
+        }
+        sendReponse(output, mapped);
     }
 
 
@@ -74,13 +108,13 @@ public class RequestManager {
          * [X] CREATE a reservation
          * [X] Inject this reservation in the room
          * [X] Loop over list of request
-             * [X] Init mapped variable counting
-             * [X] For each device type (for i in booked)
-             *   [X] SELECT random device where type is equal typeid
-             *   [X] Book this device for reservation and room
-             *   [X] Map it if init mapped variable is equal or less than mapped in type
-             *      [X] Occupy this location and SELECT first free location A.K.A position based on room ID
-             *      [X] Map the device A.K.A assign it to the location we booked
+         * [X] Init mapped variable counting
+         * [X] For each device type (for i in booked)
+         *   [X] SELECT random device where type is equal typeid
+         *   [X] Book this device for reservation and room
+         *   [X] Map it if init mapped variable is equal or less than mapped in type
+         *      [X] Occupy this location and SELECT first free location A.K.A position based on room ID
+         *      [X] Map the device A.K.A assign it to the location we booked
          * [X] Compute reservation price at the the end
          * */
         JsonNode node = request.getRequestBody();
@@ -98,10 +132,10 @@ public class RequestManager {
             List<Integer> bookedID = new ArrayList<>();
             List<Integer> mappedID = new ArrayList<>();
 
-            for (JsonNode device: equipments) {
+            for (JsonNode device : equipments) {
                 int mapped = 0;
                 for (int i = 0; i < device.get("booked").asInt(); i++) {
-                    if(device.get("booked").asInt() < device.get("mapped").asInt()) {
+                    if (device.get("booked").asInt() < device.get("mapped").asInt()) {
                         Map<String, String> hm = new HashMap<>();
                         hm.put("error", "Error! booked < mapped");
                         sendReponse(output, hm);
@@ -110,7 +144,7 @@ public class RequestManager {
                     int deviceID = tools.getRandomDeviceByType(device.get("type").asInt());
                     bookedID.add(deviceID);
                     tools.bookDeviceForRoom(reservationId, roomID, deviceID);
-                    if(mapped < device.get("mapped").asInt()) {
+                    if (mapped < device.get("mapped").asInt()) {
                         int locationID = tools.findAndBookLocationByRoom(roomID);
                         tools.mapDeviceByDeviceID(deviceID, locationID);
                         mappedID.add(deviceID);
@@ -189,22 +223,24 @@ public class RequestManager {
         List<Map<String, String>> list = new LinkedList<>();
         JsonNode node = request.getRequestBody();
         int companyId = node.get("company_id").asInt();
-        String query = "SELECT " +
-                "concat('No', rt.reservation_id ,' /', rt.start_date,'/', rt.end_date) as reservation," +
-                "ROUND(((SELECT count(*) from device d2 WHERE d2.reservation_id = rt.reservation_id AND d2.device_placed is TRUE)::NUMERIC / (SELECT count(*) from device d2 WHERE d2.reservation_id = rt.reservation_id)::NUMERIC), 2) as rate " +
-                "FROM device d " +
-                "JOIN reservation rt on rt.reservation_id = d.reservation_id " +
-                "JOIN employee e on e.employee_id = rt.gs_manager_id " +
-                "JOIN company c on c.company_id = e.company_id " +
-                "WHERE c.company_id = ? " +
-                "GROUP BY rt.reservation_id ORDER BY rate DESC";
+        String query = "SELECT" +
+                "\trt.reservation_id,\n" +
+                "\tconcat((SELECT count(reservation_id) FROM device WHERE reservation_id = rt.reservation_id AND device_placed is TRUE), '/', (SELECT count(reservation_id) FROM device WHERE reservation_id = rt.reservation_id)) as qte,\n" +
+                "\tROUND((SELECT count(*) from device d2 WHERE d2.reservation_id = rt.reservation_id AND d2.device_placed is TRUE)::NUMERIC / (SELECT count(*) from device d2 WHERE d2.reservation_id = rt.reservation_id)::NUMERIC, 2) as rate\n" +
+                "FROM device d\n" +
+                "LEFT JOIN reservation rt on rt.reservation_id = d.reservation_id\n" +
+                "LEFT JOIN employee e on e.employee_id = rt.gs_manager_id\n" +
+                "LEFT JOIN company c on c.company_id = e.company_id\n" +
+                "WHERE c.company_id = ?\n" +
+                "GROUP BY rt.reservation_id;";
         PreparedStatement statement = connection.prepareStatement(query);
         statement.setInt(1, companyId);
         ResultSet rs = statement.executeQuery();
         while (rs.next()) {
             Map<String, String> lhm = new LinkedHashMap<>();
-            lhm.put("Reservation", rs.getString("reservation"));
+            lhm.put("Reservation", "No " + rs.getString("reservation_id"));
             lhm.put("Taux de remplissage", (rs.getDouble("rate") * 100) + " %");
+            lhm.put("Mappes/Total", rs.getString("qte"));
             list.add(lhm);
         }
 

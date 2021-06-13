@@ -33,39 +33,74 @@ public class IndicatorsTest {
 
         Options options = new Options();
 
-        Option empIdOpt = Option.builder().longOpt("employeeId").required().hasArg().build();
+        Option testType = Option.builder()
+                .longOpt("test-type")
+                .argName("testType")
+                .desc("Indicate the test type")
+                .required()
+                .hasArg()
+                .build();
+        options.addOption(testType);
+
+        Option empIdOpt = Option.builder().longOpt("employee-id").hasArg().build();
         options.addOption(empIdOpt);
 
         Option paramsOpt = Option.builder()
-                .longOpt("params")
-                .required()
+                .longOpt("devices")
                 .hasArg()
                 .build();
         options.addOption(paramsOpt);
 
+        Option reservationOpt = Option.builder().longOpt("reservation-id").hasArg().build();
+        options.addOption(reservationOpt);
+
+
+        Option deviceNOpt = Option.builder().longOpt("to-be-mapped").hasArg().build();
+        options.addOption(deviceNOpt);
+
         DefaultParser parser = new DefaultParser();
         try {
             CommandLine cli = parser.parse(options, args);
-            int empID = Integer.parseInt(cli.getOptionValue(empIdOpt.getLongOpt()));
-            String paramsJson = cli.getOptionValue(paramsOpt.getLongOpt());
+            String tstType = cli.getOptionValue(testType.getLongOpt());
+            if(tstType.equalsIgnoreCase("booking-mapping")){
+                int empID = Integer.parseInt(cli.getOptionValue(empIdOpt.getLongOpt()));
+                String paramsJson = cli.getOptionValue(paramsOpt.getLongOpt());
 
-            logger.info("Params are : {}", paramsJson);
+                logger.info("Params are : {}", paramsJson);
 
-            ObjectNode node = mapper.createObjectNode();
-            node.put("emp_id", empID);
-            node.put("devices", mapper.readTree(paramsJson));
+                ObjectNode node = mapper.createObjectNode();
+                node.put("emp_id", empID);
+                node.put("devices", mapper.readTree(paramsJson));
 
-            Request request = new Request();
-            request.setRequestEvent("test_reservation_mapping");
-            request.setRequestBody(node);
+                Request request = new Request();
+                request.setRequestEvent("test_reservation_mapping");
+                request.setRequestBody(node);
 
-            Response response = send(request);
-            logger.info(mapper.writeValueAsString(response));
+                Response response = send(request);
+                logger.info(mapper.writeValueAsString(response));
+            } else if(tstType.equalsIgnoreCase("mapping")) {
+                int reservationID = Integer.parseInt(cli.getOptionValue(reservationOpt.getLongOpt()));
+                int qte = Integer.parseInt(cli.getOptionValue(deviceNOpt.getLongOpt()));
 
+                ObjectNode node = mapper.createObjectNode();
+                node.put("reservation_id", reservationID);
+                node.put("qte", qte);
+
+                Request request = new Request();
+                request.setRequestEvent("test_mapping");
+                request.setRequestBody(node);
+
+                Response response = send(request);
+                logger.info(mapper.writeValueAsString(response));
+
+            } else {
+                logger.warn("Test isn't found");
+            }
         } catch (ParseException e) {
-            logger.error(e.getLocalizedMessage(), e);
             HelpFormatter formatter = new HelpFormatter();
             formatter.printHelp("CLI Helper", options);
+            logger.error("Error: " + e.getLocalizedMessage(), e);
+
         } catch (Exception e) {
             logger.error(e.getLocalizedMessage(), e);
         }
