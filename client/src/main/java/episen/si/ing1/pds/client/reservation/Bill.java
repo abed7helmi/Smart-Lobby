@@ -63,10 +63,15 @@ public class Bill {
                     episen.si.ing1.pds.client.Menu menu = new episen.si.ing1.pds.client.Menu("Smart Lobby", ChoiceCriteria.input.get("company_id"));
                     ChoiceCriteria.restartData();
                     menu.reservationDone(numberRoom);
+                    ViewWithPlan.listDeviceIdRoom.clear();
+                    Client.map.get("requestLocation4").clear();
                 } else{
-                    Ihm ihm = new Ihm("Smart Lobby","realize", ChoiceCriteria.input.get("company_id"));
+                    frame.dispose();
+                    episen.si.ing1.pds.client.Menu menu = new episen.si.ing1.pds.client.Menu("Smart Lobby", ChoiceCriteria.input.get("company_id"));
                     ChoiceCriteria.restartData();
                     JOptionPane.showMessageDialog(null,"Nous sommes desoles mais l'offre n'est plus disponible. Veuillez reessayer.");
+                    ViewWithPlan.listDeviceIdRoom.clear();
+                    Client.map.get("requestLocation4").clear();
                 }
             }
         });
@@ -137,14 +142,19 @@ public class Bill {
     public String[][] fillTable(){
         String[][] data = new String[ViewWithPlan.configRoom.size()][4];
         int i = 0;
+
+        System.out.println("lolo");
+
         for(Map<String, String> m : Choice.proposalSelected.values()){
             if(m.get("room_wording").contains("reunion")){
                 data[i][0] = (m.get("room_wording")).split("reunion")[0] + "reunion";
             } else data[i][0] = (m.get("room_wording")).split("salle")[0];
             data[i][1] = m.get("building_name");
             data[i][2] = m.get("floor_number");
-            data[i][3] = ViewWithPlan.configRoom.get(m.get("room_id")).get("config_sensor");
-            data[i][3] = data[i][3] + " / " + ViewWithPlan.configRoom.get(m.get("room_id")).get("config_equipment");
+            if(ViewWithPlan.listDeviceIdRoom.get(m.get("room_id")).equals("[]")){
+                data[i][3] = "non";
+            } else data[i][3] = "oui";
+
             i++;
         }
         numberRoom = i;
@@ -169,12 +179,12 @@ public class Bill {
         for(Map.Entry map : ViewWithPlan.listDeviceIdRoom.entrySet()){
             if( !((map.getValue()+"").equals("")) ) Client.map.get("requestLocation4").put(map.getKey()+"" , map.getValue()+"");
         }
+
         response = Client.sendBd("requestLocation4");
         return response;
     }
     public Float priceTotal(){
         float price = Float.parseFloat(ChoiceCriteria.input.get("price"));
-        System.out.println(ViewWithPlan.configRoom);
         for(Map<String, String> map : Choice.proposalSelected.values()){
             if( !((map.get("price")+"").equals("")) ) price = price + Float.parseFloat(map.get("price"));
         }// price room

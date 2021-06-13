@@ -4,17 +4,21 @@ import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.PrintWriter;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.*;
 
 public class RequestManager {
     private final Connection connection;
     private final Request request;
+    private final IndicatorsTools tools;
 
     private final ObjectMapper mapper = new ObjectMapper(new JsonFactory());
     private final Logger logger = LoggerFactory.getLogger(RequestManager.class.getName());
@@ -22,6 +26,7 @@ public class RequestManager {
     public RequestManager(Connection connection, Request request) {
         this.connection = connection;
         this.request = request;
+        this.tools = new IndicatorsTools(connection);
     }
 
     public void respond(PrintWriter output) throws Exception {
@@ -51,6 +56,77 @@ public class RequestManager {
             case "global_occupancy_rate":
                 globalOccupancyRate(output);
                 break;
+            case "test_reservation_mapping":
+                testReservation(output);
+                break;
+                /*
+                * TODO: Test for mapping only
+                * */
+        }
+    }
+
+
+    private void testReservation(PrintWriter output) throws Exception {
+        /* ALgo
+         * [{ type: 2, mapped: 2, booked: 2 }, { type: 3, mapped: 3, booked:4 }]
+         * [X] Request sample!
+         * [X] Select one room
+         * [X] CREATE a reservation
+         * [X] Inject this reservation in the room
+         * [X] Loop over list of request
+             * [X] Init mapped variable counting
+             * [X] For each device type (for i in booked)
+             *   [X] SELECT random device where type is equal typeid
+             *   [X] Book this device for reservation and room
+             *   [X] Map it if init mapped variable is equal or less than mapped in type
+             *      [X] Occupy this location and SELECT first free location A.K.A position based on room ID
+             *      [X] Map the device A.K.A assign it to the location we booked
+         * [X] Compute reservation price at the the end
+         * */
+        JsonNode node = request.getRequestBody();
+
+        int empID = node.get("emp_id").asInt();
+        Map<String, Integer> room = tools.randomRoomId();
+        ArrayNode equipments = (ArrayNode) node.get("devices");
+
+        if (room.size() > 0) {
+            int roomID = room.get("room_id");
+            int roomPrice = room.get("room_price");
+            int reservationId = tools.createReservation(roomPrice, empID);
+            tools.injectRoomReservation(roomID, reservationId);
+
+            List<Integer> bookedID = new ArrayList<>();
+            List<Integer> mappedID = new ArrayList<>();
+
+            for (JsonNode device: equipments) {
+                int mapped = 0;
+                for (int i = 0; i < device.get("booked").asInt(); i++) {
+                    if(device.get("booked").asInt() < device.get("mapped").asInt()) {
+                        Map<String, String> hm = new HashMap<>();
+                        hm.put("error", "Error! booked < mapped");
+                        sendReponse(output, hm);
+                        return;
+                    }
+                    int deviceID = tools.getRandomDeviceByType(device.get("type").asInt());
+                    bookedID.add(deviceID);
+                    tools.bookDeviceForRoom(reservationId, roomID, deviceID);
+                    if(mapped < device.get("mapped").asInt()) {
+                        int locationID = tools.findAndBookLocationByRoom(roomID);
+                        tools.mapDeviceByDeviceID(deviceID, locationID);
+                        mappedID.add(deviceID);
+                        ++mapped;
+                    }
+                }
+            }
+
+            tools.computeFPriceReservation(reservationId);
+
+            Map<String, Object> lhm = new LinkedHashMap<>();
+            lhm.put("room_id", room);
+            lhm.put("reservation_id", reservationId);
+            lhm.put("booked", bookedID);
+            lhm.put("mapped", mappedID);
+            sendReponse(output, lhm);
         }
     }
 
@@ -87,6 +163,7 @@ public class RequestManager {
         sendReponse(output, list);
 
     }
+
     private void windowsByCompany(PrintWriter output) throws Exception {
         List<Map<String, String>> list = new LinkedList<>();
         String query = "SELECT c.company_name, COUNT(d.device_id) as qte " +
@@ -107,7 +184,8 @@ public class RequestManager {
 
         sendReponse(output, list);
     }
-private void mappingRate(PrintWriter output) throws Exception {
+
+    private void mappingRate(PrintWriter output) throws Exception {
         List<Map<String, String>> list = new LinkedList<>();
         JsonNode node = request.getRequestBody();
         int companyId = node.get("company_id").asInt();
