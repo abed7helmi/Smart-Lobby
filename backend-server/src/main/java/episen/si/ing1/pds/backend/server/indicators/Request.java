@@ -2,6 +2,7 @@ package episen.si.ing1.pds.backend.server.indicators;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+
 public class Request {
     private String requestEvent;
     private ObjectNode requestBody;

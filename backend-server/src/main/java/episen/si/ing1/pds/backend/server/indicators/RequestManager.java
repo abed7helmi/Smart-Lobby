@@ -96,7 +96,7 @@ public class RequestManager {
             device.put("location_id", location);
             mapped.add(device);
         }
-        sendReponse(output, mapped);
+        sendResponse(output, mapped);
     }
 
 
@@ -138,7 +138,7 @@ public class RequestManager {
                     if (device.get("booked").asInt() < device.get("mapped").asInt()) {
                         Map<String, String> hm = new HashMap<>();
                         hm.put("error", "Error! booked < mapped");
-                        sendReponse(output, hm);
+                        sendResponse(output, hm);
                         return;
                     }
                     int deviceID = tools.getRandomDeviceByType(device.get("type").asInt());
@@ -160,7 +160,7 @@ public class RequestManager {
             lhm.put("reservation_id", reservationId);
             lhm.put("booked", bookedID);
             lhm.put("mapped", mappedID);
-            sendReponse(output, lhm);
+            sendResponse(output, lhm);
         }
     }
 
@@ -173,7 +173,7 @@ public class RequestManager {
             lhm.put("rate", rs.getDouble(1) + " %");
         }
 
-        sendReponse(output, lhm);
+        sendResponse(output, lhm);
 
     }
 
@@ -194,7 +194,7 @@ public class RequestManager {
             list.add(lhm);
         }
 
-        sendReponse(output, list);
+        sendResponse(output, list);
 
     }
 
@@ -216,7 +216,7 @@ public class RequestManager {
             list.add(lhm);
         }
 
-        sendReponse(output, list);
+        sendResponse(output, list);
     }
 
     private void mappingRate(PrintWriter output) throws Exception {
@@ -244,7 +244,7 @@ public class RequestManager {
             list.add(lhm);
         }
 
-        sendReponse(output, list);
+        sendResponse(output, list);
     }
 
     private void companiesList(PrintWriter output) throws Exception {
@@ -259,7 +259,7 @@ public class RequestManager {
             list.add(lhm);
         }
 
-        sendReponse(output, list);
+        sendResponse(output, list);
     }
 
 
@@ -280,7 +280,7 @@ public class RequestManager {
             list.add(lhm);
         }
 
-        sendReponse(output, list);
+        sendResponse(output, list);
     }
 
     private void occupancyRateByBuilding(PrintWriter output) throws Exception {
@@ -295,7 +295,7 @@ public class RequestManager {
             list.add(lhm);
         }
 
-        sendReponse(output, list);
+        sendResponse(output, list);
 
     }
 
@@ -309,7 +309,7 @@ public class RequestManager {
             list.add(obc);
         }
 
-        sendReponse(output, list);
+        sendResponse(output, list);
     }
 
     private Response responseFactory(Object data) {
@@ -319,7 +319,7 @@ public class RequestManager {
         return response;
     }
 
-    private void sendReponse(PrintWriter output, Object data) throws JsonProcessingException {
+    private void sendResponse(PrintWriter output, Object data) throws JsonProcessingException {
         Response response = responseFactory(data);
         String serializedResponse = mapper.writeValueAsString(response);
         logger.info("Serialized response sent to client {}", serializedResponse);
